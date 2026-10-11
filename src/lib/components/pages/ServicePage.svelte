@@ -8,6 +8,7 @@
   import ServiceOptions from './ServiceOptions.svelte'
   import SubscribeSection from './SubscribeSection.svelte'
   import WebsiteBuildPricing from './WebsiteBuildPricing.svelte'
+  import GeoServiceDetail from './GeoServiceDetail.svelte'
   import { LOCALE_ROUTES, type Locale } from '$lib/locale'
   import { words } from '$lib/text'
 
@@ -49,6 +50,10 @@
   </section>
 
   <ServiceOptions {locale} {service} />
+
+  {#if locale === 'pt-BR' && service === 'geo'}
+    <GeoServiceDetail contactRoute={contactRoute} />
+  {/if}
 
   {#if service === 'web-development'}
     <WebsiteBuildPricing {locale} />
