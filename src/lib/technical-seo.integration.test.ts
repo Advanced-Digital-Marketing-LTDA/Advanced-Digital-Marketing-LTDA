@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render } from 'svelte/server'
+import ServicePage from './components/pages/ServicePage.svelte'
+import { SITE_MOTION } from './client/site-motion'
 import TechnicalSeoRouteFixture from './test-utils/TechnicalSeoRouteFixture.svelte'
 import { load as serverLoad } from '../routes/services/[slug]/+page.server'
 import { load as pageLoad } from '../routes/services/[slug]/+page'
@@ -171,5 +173,42 @@ describe('Portuguese technical SEO page', () => {
     expect(body).toContain('index-home service-page portuguese')
     expect(body).not.toContain('seo-page')
     expect(head).toContain(`rel="canonical" href="https://advanceddigitalmarketingltda.com/pt-br/servicos/${slug}/"`)
+  })
+})
+
+describe('Portuguese GEO service refresh', () => {
+  function geoDocument(locale: 'en-US' | 'pt-BR') {
+    state.url = new URL('/pt-br/servicos/geo/', 'https://preview.example.test')
+    return render(ServicePage, {
+      props: { locale, service: 'geo' },
+      context: new Map([[SITE_MOTION, { state: { hero: 'waiting' } }]]),
+    })
+  }
+
+  it('renders the PT-BR audit scope, synthetic capture fields, sources, and FAQs', () => {
+    const { body } = geoDocument('pt-BR')
+    expect(body).toContain('id="geo-scope"')
+    expect(body).toContain('id="geo-access"')
+    expect(body).toContain('id="geo-original"')
+    expect(body).toContain('id="geo-audit-example"')
+    expect(body).toContain('id="geo-reporting"')
+    expect(body).toContain('id="geo-faq"')
+    expect(body.match(/<th\b/g)).toHaveLength(6)
+    expect(body.match(/<details(?:\s[^>]*)?>/g)).toHaveLength(4)
+    expect(body).toContain('target="_blank" rel="noopener"')
+    expect(body).toContain('href="/pt-br/contato/"')
+  })
+
+  it('preserves the three GEO offers and renders no new GEO block on the English page', () => {
+    const portuguese = geoDocument('pt-BR').body
+    expect(portuguese).toContain('R$ 2.400')
+    expect(portuguese).toContain('R$ 6.800')
+    expect(portuguese).toContain('R$ 2.900')
+
+    const english = geoDocument('en-US').body
+    expect(english).not.toContain('geo-detail')
+    for (const offer of ['The Citation Audit', 'Citation Sprint', 'Visibility Retainer']) {
+      expect(english).toContain(offer)
+    }
   })
 })
