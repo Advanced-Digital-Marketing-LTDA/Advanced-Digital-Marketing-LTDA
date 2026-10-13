@@ -377,7 +377,7 @@ const PAGE_COPY_SOURCE: CopySource<PageCopy> = {
     operator: L('The operator', 'O operador'),
     hero: L(
       'Founder and operator of Advanced Digital Marketing LTDA. SEO engineer, web developer, and paid media practitioner.',
-      'Fundador e operador da Advanced Digital Marketing LTDA. Atua com SEO técnico, desenvolvimento web e mídia paga.',
+      'Fundador e operador da Advanced Digital Marketing LTDA., com atuação em SEO técnico, GEO, desenvolvimento web e mídia paga.',
     ),
     portraitAlt: L('Portrait of Andrew Philip Weilbacher', 'Retrato de Andrew Philip Weilbacher'),
     background: L('Background', 'Trajetória'),
@@ -385,15 +385,15 @@ const PAGE_COPY_SOURCE: CopySource<PageCopy> = {
     story: [
       L(
         'Andrew was born in the United States, built his early career between Pennsylvania and Florida, and now runs his agency from São Paulo, Brazil. Advanced Digital Marketing LTDA is a CNPJ-registered Brazilian company serving clients on both sides of the border.',
-        'Andrew Philip Weilbacher é fundador e operador da Advanced Digital Marketing LTDA, empresa brasileira registrada no CNPJ e sediada em São Paulo. A empresa atende negócios no Brasil e nos Estados Unidos.',
+        'Andrew Philip Weilbacher é fundador e operador da Advanced Digital Marketing LTDA., empresa brasileira registrada no CNPJ e sediada em São Paulo. A ADM atende empresas no Brasil e nos Estados Unidos.',
       ),
       L(
         'His background is technical: search infrastructure, machine-learning-assisted ranking research, and agent-assisted web development. Strategy, implementation, and measurement come from the same desk.',
-        'O trabalho divulgado pela ADM reúne SEO técnico, GEO, desenvolvimento web e mídia paga. O processo apresentado pela empresa vai do diagnóstico à implementação e à medição.',
+        'Na ADM, Andrew trabalha com SEO técnico, GEO, desenvolvimento web e mídia paga, acompanhando o trabalho do diagnóstico à implementação e à mensuração.',
       ),
       L(
         "The agency's edge is GEO: optimizing not only for Google's classic results, but for the AI answer engines that increasingly decide which businesses get mentioned at all.",
-        'O próprio site da ADM permite examinar os serviços, a operação em português e inglês e o formulário de contato com confirmação por e-mail. Essa demonstração documenta o trabalho da empresa; não comprova resultados de clientes. Empresas podem contratar diretamente, e agências podem conversar sobre apoio técnico em projetos de busca e web.',
+        'Este site apresenta o trabalho da ADM em português e inglês, e o formulário de contato confirma o e-mail informado. Essa demonstração documenta a operação da empresa, mas não comprova resultados de clientes. A ADM atende empresas diretamente e pode apoiar agências em projetos de busca e web.',
       ),
     ],
     capabilities: L('Capabilities', 'Capacidades'),
@@ -417,12 +417,12 @@ const PAGE_COPY_SOURCE: CopySource<PageCopy> = {
     ],
     facts: [
       [C('Base'), C('São Paulo, BR')],
-      [L('Markets', 'Mercado'), L('US + Brazil', 'Empresas brasileiras')],
-      [L('Structure', 'Estrutura'), L('Owner-operated', 'Operação direta')],
+      [L('Markets', 'Mercados'), L('US + Brazil', 'Brasil e Estados Unidos')],
+      [L('Structure', 'Estrutura'), L('Owner-operated', 'Operação conduzida pelo fundador')],
       [L('Entity', 'Empresa'), L('LTDA, CNPJ-registered', 'LTDA, registrada no CNPJ')],
     ],
     contactHeading: L('Work with the person who does the work.', 'Trabalhe com quem executa o trabalho.'),
-    bookCall: L('Book a strategy call', 'Agende uma conversa'),
+    bookCall: L('Book a strategy call', 'Fale com a ADM'),
     whatsapp: L('Book via WhatsApp', 'Falar pelo WhatsApp'),
   },
   contact: {
