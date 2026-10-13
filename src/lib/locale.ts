@@ -40,7 +40,7 @@ export const PAGE_META: Record<Locale, Record<PageId, { title: string; descripti
     },
     about: {
       title: 'Sobre Andrew Philip Weilbacher | Engenharia de busca em São Paulo',
-      description: 'Conheça o fundador e engenheiro-chefe por trás de SEO local, sites, GEO e mídia paga para empresas brasileiras.',
+      description: 'Conheça Andrew Weilbacher, fundador e operador da Advanced Digital Marketing LTDA. Atua com SEO técnico, GEO, desenvolvimento web e mídia paga.',
     },
     contact: {
       title: 'Contato | SEO local e visibilidade em IA',
