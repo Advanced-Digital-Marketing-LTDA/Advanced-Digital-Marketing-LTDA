@@ -445,16 +445,6 @@ understandable inside Mercado Pago without any local database.
   otherwise exhaust the shared bucket and 429 unrelated visitors
   (AGENTS.md: no silent fallbacks).
 
-## Analytics
-
-Before redirecting, the client pushes a `begin_checkout` event to
-`window.dataLayer` when Google Tag Manager is present
-(`{ event, currency, value, items: [{ item_id, item_name }] }`). A `purchase`
-conversion fires on the return page ONLY when the server has verified the
-payment/subscription live against the API (`confirmed`/`payment_confirmed`),
-with the verified amount and reference, deduped per id in sessionStorage so a
-refresh or revisit cannot double-count.
-
 ---
 
 ## Testing

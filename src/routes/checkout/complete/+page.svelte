@@ -3,8 +3,6 @@
   import type { PageProps } from './$types'
   import { SITE_MOTION, type SiteMotion } from '$lib/client/site-motion'
   import { setupReveals } from '$lib/client/reveal'
-  import { firePurchase, purchaseItemsFromReference } from '$lib/client/analytics'
-  import { getSessionItem, setSessionItem } from '$lib/client/session-storage'
   import { LOCALE_ROUTES } from '$lib/locale'
 
   const motion = getContext<SiteMotion>(SITE_MOTION)
@@ -39,32 +37,6 @@
             ? 'Too many verification attempts from your connection. Please wait a few minutes and refresh.'
             : 'We could not confirm your payment. Please try again or contact us.',
   )
-
-  // Purchase conversion: fired only when the SERVER verified the session is
-  // paid (data.state === 'confirmed'), and only once per session id
-  // (sessionStorage dedupe) so a refresh or revisit cannot double-count.
-  $effect(() => {
-    if (data.state !== 'confirmed') return
-    const sessionId = data.sessionId
-    const key = 'adm-stripe-purchase-fired'
-    const raw = getSessionItem(key)
-    let fired: Record<string, boolean> = {}
-    try {
-      fired = raw ? (JSON.parse(raw) as Record<string, boolean>) : {}
-    } catch {
-      // Corrupt storage value: ignore and overwrite with a fresh record.
-    }
-    if (fired[sessionId]) return
-    // Persist the dedupe flag only when analytics accepted the event — if the
-    // gtag was unavailable, a later revisit must still be able to fire it.
-    const accepted = firePurchase({
-      orderId: sessionId,
-      value: data.amountTotal ?? 0,
-      currency: 'USD',
-      items: purchaseItemsFromReference(data.clientReferenceId),
-    })
-    if (accepted) setSessionItem(key, JSON.stringify({ ...fired, [sessionId]: true }))
-  })
 </script>
 
 <svelte:head><title>Payment result | Advanced Digital Marketing LTDA</title><meta name="robots" content="noindex" /></svelte:head>

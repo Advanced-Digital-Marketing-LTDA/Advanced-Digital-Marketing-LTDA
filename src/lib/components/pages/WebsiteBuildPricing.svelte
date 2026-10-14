@@ -26,7 +26,6 @@
   import type { Locale } from '$lib/locale'
   import { words } from '$lib/text'
   import { fetchCheckoutUrl } from '$lib/client/checkout'
-  import { fireBeginCheckout } from '$lib/client/analytics'
 
   let { locale }: { locale: Locale } = $props()
 
@@ -100,19 +99,6 @@
     errorMessage = undefined
     submitting = true
     try {
-      fireBeginCheckout(
-        [
-          {
-            item_id: `website-build:${type}:${kind}`,
-            item_name: WEBSITE_BUILD_NAMES[locale][type],
-          },
-        ],
-        // pt-BR: the display price IS the billed BRL amount. en-US: the USD
-        // display price is the billed amount too (Stripe).
-        websiteBuildPrice(locale, type, kind),
-        locale === 'en-US' ? 'USD' : 'BRL',
-      )
-
       // pt-BR bills BRL through Mercado Pago; en-US bills USD through Stripe.
       const endpoint = locale === 'en-US' ? '/api/checkout/stripe' : '/api/checkout/build'
       const selection = `${type}:${kind}`

@@ -30,7 +30,7 @@ Customer pays; Stripe redirects to /checkout/complete?session_id=…
 - **Return page:** `/checkout/complete/` verifies `session_id` live against
   Stripe before claiming success; only `payment_status: paid` renders
   "approved" (open/processing → pending; complete-but-unpaid → truthfully
-  unconfirmed). Fires the `purchase` analytics event once per session id.
+  unconfirmed).
 - **Webhook:** `POST /api/webhooks/stripe` verifies the `stripe-signature`
   header with `STRIPE_WEBHOOK_SECRET` (signed payload `<ts>.<body>`,
   HMAC-SHA256, 5-minute recency) and emails the owner on
