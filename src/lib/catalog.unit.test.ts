@@ -136,7 +136,7 @@ describe('option-card pricing stays in sync with the catalog', () => {
     const option = SERVICE_CONTENT[locale]['technical-seo'].options.find((item) => item.preselect === 'seo-content')
     expect(option?.priceBRL).toBe(2000)
     expect(SERVICES['seo-content'].pricing).toEqual({ kind: 'fixed', monthlyBRL: 2000, monthlyUSD: 400 })
-    expect(option?.per).toBe(locale === 'en-US' ? 'Per month · no minimum term' : 'Por mês · sem prazo mínimo')
+    expect(option?.per).toBe(locale === 'en-US' ? 'Per month' : 'Por mês')
     expect(option?.items).toContain(locale === 'en-US' ? '4 articles per month' : '4 artigos por mês')
   })
 
