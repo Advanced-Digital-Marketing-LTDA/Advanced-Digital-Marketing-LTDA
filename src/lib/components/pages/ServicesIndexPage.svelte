@@ -21,7 +21,7 @@
     'en-US': {
       kicker: 'Services',
       heading: 'Every channel, one standard of work.',
-      sub: 'Search visibility, paid media, web and AI automation. Subscribe monthly to the mix that fits, or engage per project — monthly subscriptions are billed securely through Mercado Pago.',
+      sub: 'Search visibility, paid media, web and AI automation. Subscribe monthly to the mix that fits, or engage per project — monthly subscriptions are billed securely through Stripe.',
       perMonth: 'per month',
       monthly: 'Monthly subscription',
       quoteOnly: 'Quote only',
