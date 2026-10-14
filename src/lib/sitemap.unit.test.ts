@@ -7,7 +7,10 @@ const read = (file: string) => readFileSync(new URL(`../../static/${file}`, impo
 const sitemapLocs = [...read('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
 const sitemapPaths = sitemapLocs.map((loc) => loc.slice(SITE_ORIGIN.length))
 
+// Routes that must never be in the sitemap. Only /api/ is blocked in robots.txt: the HTML ones
+// are noindex pages, and a robots block would stop crawlers from ever reading that directive.
 const PRIVATE_PREFIXES = ['/api/', '/checkout/', '/pt-br/checkout/', '/contact/verify/', '/pt-br/contato/verificar/']
+const ROBOTS_DISALLOWED = ['/api/']
 
 describe('sitemap.xml', () => {
   it('lists every localized public page, services index and service detail', () => {
@@ -39,9 +42,9 @@ describe('robots.txt', () => {
     expect(robots).toContain(`Sitemap: ${SITE_ORIGIN}/sitemap.xml`)
   })
 
-  it('blocks private routes and never blocks a sitemap URL', () => {
+  it('blocks only the API and never blocks a sitemap URL', () => {
     const disallowed = [...robots.matchAll(/^Disallow:\s*(\S+)/gm)].map((match) => match[1])
-    for (const prefix of PRIVATE_PREFIXES) expect(disallowed, prefix).toContain(prefix)
+    expect(disallowed).toEqual(ROBOTS_DISALLOWED)
     for (const path of sitemapPaths) expect(disallowed.some((rule) => path.startsWith(rule)), path).toBe(false)
   })
 })
