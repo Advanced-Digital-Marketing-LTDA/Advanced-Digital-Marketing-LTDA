@@ -1,9 +1,12 @@
 /**
  * Browser-side analytics initialization and checkout events.
  *
- * Pushes a `begin_checkout` event to `window.dataLayer` when Google Tag
- * Manager is present; a no-op (logged with console.info) otherwise. Shared by
- * the subscription configurator and the one-time website build purchase.
+ * Sends `begin_checkout` and `purchase` through the page's gtag.js command
+ * queue (`gtag('event', ...)`). gtag.js ignores plain objects pushed onto
+ * `dataLayer` (that is a GTM-only convention), so events must go through
+ * `window.gtag`. A missing gtag (blocked, excluded route) is logged with
+ * console.info and reported to the caller. Shared by the subscription
+ * configurator, the one-time website build purchase and both return pages.
  */
 import type { BeforeNavigate } from '@sveltejs/kit'
 import { analyticsReferrer, isSensitiveAnalyticsUrl } from '$lib/analytics-privacy'
@@ -56,18 +59,31 @@ export function protectAnalyticsNavigation(navigation: Pick<BeforeNavigate, 'fro
   window.location.assign(navigation.to.url.href)
 }
 
-function dataLayer(): unknown[] | undefined {
+type GtagFunction = NonNullable<AnalyticsWindow['gtag']>
+
+function gtagFunction(): GtagFunction | undefined {
   if (typeof window === 'undefined') return undefined
   if (isSensitiveAnalyticsUrl(new URL(window.location.href))) return undefined
-  const layer = (window as unknown as { dataLayer?: unknown[] }).dataLayer
-  return Array.isArray(layer) ? layer : undefined
+  const { gtag } = window as AnalyticsWindow
+  return typeof gtag === 'function' ? gtag : undefined
+}
+
+/** Queue a GA4 event via gtag.js. Returns false (logged) when gtag is unavailable. */
+function sendEvent(name: string, parameters: Record<string, unknown>): boolean {
+  const gtag = gtagFunction()
+  if (!gtag) {
+    console.info(`[checkout] analytics: gtag unavailable; ${name} was not fired`)
+    return false
+  }
+  gtag('event', name, parameters)
+  return true
 }
 
 /**
- * Shared purchase-conversion push. Only ever called with a server-verified
+ * Shared purchase-conversion event. Only ever called with a server-verified
  * payment/subscription (the return page's live Mercado Pago / Stripe check) —
- * never from the browser on its own. Returns false when no dataLayer exists
- * (logged loudly) or when the event was already fired for this id.
+ * never from the browser on its own. Returns false when gtag is unavailable
+ * (logged loudly); callers dedupe per order id so revisits do not recount.
  */
 export function firePurchase(input: {
   orderId: string
@@ -75,26 +91,14 @@ export function firePurchase(input: {
   currency: 'BRL' | 'USD'
   items: { item_id: string; item_name: string }[]
 }): boolean {
-  const layer = dataLayer()
-  if (!layer) {
-    console.info('[checkout] analytics: no dataLayer found; purchase was not fired')
-    return false
-  }
-  layer.push({
-    event: 'purchase',
+  return sendEvent('purchase', {
     currency: input.currency,
     value: input.value,
     transaction_id: input.orderId,
     items: input.items,
   })
-  return true
 }
 
 export function fireBeginCheckout(items: { item_id: string; item_name: string }[], value: number, currency: 'BRL' | 'USD' = 'BRL'): void {
-  const layer = dataLayer()
-  if (!layer) {
-    console.info('[checkout] analytics: no dataLayer found; begin_checkout was not fired')
-    return
-  }
-  layer.push({ event: 'begin_checkout', currency, value, items })
+  sendEvent('begin_checkout', { currency, value, items })
 }

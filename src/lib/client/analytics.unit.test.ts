@@ -7,30 +7,48 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
+/** Stub window with a real gtag.js-style queue: commands are pushed as `arguments` objects. */
+function stubGtagWindow(path: string) {
+  const layer: unknown[] = []
+  const gtag = function (..._parameters: unknown[]) {
+    layer.push(arguments)
+  }
+  vi.stubGlobal('window', { location: { href: `https://example.test${path}` }, dataLayer: layer, gtag })
+  return () => layer.map((command) => Array.from(command as ArrayLike<unknown>))
+}
+
 const items = [{ item_id: 'synthetic-service', item_name: 'Synthetic service' }]
 
 describe('checkout analytics privacy', () => {
-  it.each(['/contact/', '/contact/verify/?token=synthetic.token', '/pt-br/contato/verificar/?token=synthetic.token', '/about/?token=synthetic.token'])('does not enqueue checkout events on %s even if a dataLayer exists', (path) => {
-    const layer: unknown[] = []
-    vi.stubGlobal('window', { location: { href: `https://example.test${path}` }, dataLayer: layer })
+  it.each(['/contact/', '/contact/verify/?token=synthetic.token', '/pt-br/contato/verificar/?token=synthetic.token', '/about/?token=synthetic.token'])('does not enqueue checkout events on %s even if gtag exists', (path) => {
+    const commands = stubGtagWindow(path)
     vi.spyOn(console, 'info').mockImplementation(() => {})
 
     fireBeginCheckout(items, 100)
     const accepted = firePurchase({ orderId: 'synthetic-order', value: 100, currency: 'USD', items })
 
     expect(accepted).toBe(false)
+    expect(commands()).toEqual([])
+  })
+
+  it('reports and logs when gtag is unavailable instead of pushing to a bare dataLayer', () => {
+    const layer: unknown[] = []
+    vi.stubGlobal('window', { location: { href: 'https://example.test/checkout/complete/' }, dataLayer: layer })
+    const info = vi.spyOn(console, 'info').mockImplementation(() => {})
+
+    expect(firePurchase({ orderId: 'synthetic-order', value: 100, currency: 'USD', items })).toBe(false)
     expect(layer).toEqual([])
+    expect(info).toHaveBeenCalledWith(expect.stringContaining('purchase was not fired'))
   })
 
   it('preserves checkout events on ordinary service and return pages', () => {
-    const layer: unknown[] = []
-    vi.stubGlobal('window', { location: { href: 'https://example.test/checkout/complete/' }, dataLayer: layer })
+    const commands = stubGtagWindow('/checkout/complete/')
 
     fireBeginCheckout(items, 100)
     expect(firePurchase({ orderId: 'synthetic-order', value: 100, currency: 'USD', items })).toBe(true)
-    expect(layer).toEqual([
-      { event: 'begin_checkout', currency: 'BRL', value: 100, items },
-      { event: 'purchase', currency: 'USD', value: 100, transaction_id: 'synthetic-order', items },
+    expect(commands()).toEqual([
+      ['event', 'begin_checkout', { currency: 'BRL', value: 100, items }],
+      ['event', 'purchase', { currency: 'USD', value: 100, transaction_id: 'synthetic-order', items }],
     ])
   })
 })

@@ -32,7 +32,7 @@
     }
     if (fired[id]) return
     // Persist the dedupe flag only when analytics accepted the event — if the
-    // dataLayer was unavailable, a later revisit must still be able to fire it.
+    // gtag was unavailable, a later revisit must still be able to fire it.
     const accepted = firePurchase({
       orderId: data.externalReference ?? id,
       value: data.amountBRL ?? 0,
