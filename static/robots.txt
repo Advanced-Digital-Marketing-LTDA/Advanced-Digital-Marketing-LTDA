@@ -1,0 +1,11 @@
+# Crawling policy for search engines. AI/training crawler controls are a
+# separate decision and intentionally not set here.
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /checkout/
+Disallow: /pt-br/checkout/
+Disallow: /contact/verify/
+Disallow: /pt-br/contato/verificar/
+
+Sitemap: https://advanceddigitalmarketingltda.com/sitemap.xml
