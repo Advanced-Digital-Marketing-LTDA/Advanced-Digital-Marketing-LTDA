@@ -101,7 +101,7 @@ O acesso depende do trabalho. A proposta deve definir URLs, acessos, controle do
 |---|---|---|
 | Auditoria técnica | A opção “A Auditoria” é apresentada como **grátis e sem compromisso** | O escopo anunciado inclui rastreamento e análise de logs, relatório de Core Web Vitals por página, revisão de dados estruturados e indexação, lista priorizada com estimativas de esforço e roadmap de 90 dias |
 | Diagnóstico adicional ou implementação | Valor técnico não informado nesta página | URLs, templates e idiomas incluídos; diagnóstico ou implementação; acessos; dependências do desenvolvedor; validação e relatório combinados |
-| Desenvolvimento de conteúdo | Oferta separada: **4 artigos por mês; R$ 2.000/mês ou US$ 400/mês; sem prazo mínimo** | Esta oferta não é o preço de diagnóstico ou implementação de SEO técnico |
+| Desenvolvimento de conteúdo | Oferta separada: **4 artigos por mês; R$ 2.000/mês ou US$ 400/mês** | Esta oferta não é o preço de diagnóstico ou implementação de SEO técnico |
 
 Confirme escopo, valor e critérios de aceite antes de iniciar. A auditoria não implica implementação.
 
