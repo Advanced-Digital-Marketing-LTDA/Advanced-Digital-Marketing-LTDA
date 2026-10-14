@@ -100,7 +100,7 @@ Before approving an engagement, ask for a written scope that names:
 - Whether the work is diagnosis, implementation, developer pairing, content planning, or a combination.
 - The accounts and technical access required, and who will provide them.
 - Dependencies, review rounds, reporting, maintenance, and any work excluded.
-- The fee, currency, billing basis, taxes, payment terms, and the contract term.
+- The fee, currency, billing basis, taxes, and payment terms.
 
 A fee or timeline should not be inferred from a sample, another service, or an unconfirmed public package. Ask ADM to confirm the current offer for your situation before committing.
 
