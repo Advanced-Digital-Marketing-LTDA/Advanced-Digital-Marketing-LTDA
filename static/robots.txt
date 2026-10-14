@@ -1,0 +1,10 @@
+# Crawling policy for search engines. AI/training crawler controls are a
+# separate decision and intentionally not set here.
+# Checkout-return and contact-verify pages are deliberately NOT disallowed:
+# they carry <meta name="robots" content="noindex">, which crawlers can only
+# honor if they are allowed to fetch the page.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://advanceddigitalmarketingltda.com/sitemap.xml

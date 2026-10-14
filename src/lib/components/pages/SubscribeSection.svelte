@@ -26,7 +26,6 @@
   import { parseBRLInput } from '$lib/brl'
   import { BRL_USD_REFERENCE_RATE } from '$lib/catalog'
   import { parseUSDInput } from '$lib/usd'
-  import { fireBeginCheckout } from '$lib/client/analytics'
   import { fetchCheckoutUrl } from '$lib/client/checkout'
   import type { Locale } from '$lib/locale'
 
@@ -242,12 +241,6 @@
         idempotencyKey = crypto.randomUUID()
         payloadFingerprint = fingerprint
       }
-
-      fireBeginCheckout(
-        serviceIds.map((id) => ({ item_id: id, item_name: SERVICES[id].name[locale] })),
-        totalAmount,
-        locale === 'en-US' ? 'USD' : 'BRL',
-      )
 
       // pt-BR bills BRL through Mercado Pago; en-US bills USD through Stripe.
       const endpoint = locale === 'en-US' ? '/api/checkout/stripe' : '/api/checkout/subscription'

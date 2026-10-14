@@ -26,15 +26,3 @@ export function sensitiveDocumentReferrerPolicy(url: URL): 'same-origin' | 'no-r
   const contactForm = url.pathname === '/contact/' || url.pathname === '/pt-br/contato/'
   return contactForm && !hasTokenQuery(url) ? 'same-origin' : 'no-referrer'
 }
-
-/** Never forward a verification URL through a later safe page's referrer. */
-export function analyticsReferrer(referrer: string): string {
-  if (!referrer) return ''
-  try {
-    const url = new URL(referrer)
-    return isSensitiveAnalyticsUrl(url) ? '' : `${url.origin}${url.pathname}`
-  } catch {
-    console.warn('[analytics] invalid referrer; referrer omitted')
-    return ''
-  }
-}
