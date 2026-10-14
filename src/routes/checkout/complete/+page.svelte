@@ -58,7 +58,7 @@
     // Persist the dedupe flag only when analytics accepted the event — if the
     // gtag was unavailable, a later revisit must still be able to fire it.
     const accepted = firePurchase({
-      orderId: data.clientReferenceId ?? sessionId,
+      orderId: sessionId,
       value: data.amountTotal ?? 0,
       currency: 'USD',
       items: purchaseItemsFromReference(data.clientReferenceId),
