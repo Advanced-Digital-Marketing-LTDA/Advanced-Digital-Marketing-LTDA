@@ -3,7 +3,7 @@
   import type { PageProps } from './$types'
   import { SITE_MOTION, type SiteMotion } from '$lib/client/site-motion'
   import { setupReveals } from '$lib/client/reveal'
-  import { firePurchase } from '$lib/client/analytics'
+  import { firePurchase, purchaseItemsFromReference } from '$lib/client/analytics'
   import { getSessionItem, setSessionItem } from '$lib/client/session-storage'
   import { LOCALE_ROUTES } from '$lib/locale'
 
@@ -61,7 +61,7 @@
       orderId: data.clientReferenceId ?? sessionId,
       value: data.amountTotal ?? 0,
       currency: 'USD',
-      items: [],
+      items: purchaseItemsFromReference(data.clientReferenceId),
     })
     if (accepted) setSessionItem(key, JSON.stringify({ ...fired, [sessionId]: true }))
   })

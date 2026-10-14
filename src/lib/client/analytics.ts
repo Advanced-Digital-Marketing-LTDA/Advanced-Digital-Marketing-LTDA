@@ -99,6 +99,16 @@ export function firePurchase(input: {
   })
 }
 
+/**
+ * GA4 items for a verified order. The checkout reference is the `+`-joined list of
+ * catalog ids (or a single website-build reference), so each id is one item; the
+ * id doubles as the name because the return pages carry no display names or prices.
+ */
+export function purchaseItemsFromReference(reference: string | null): { item_id: string; item_name: string }[] {
+  if (!reference) return []
+  return reference.split('+').filter(Boolean).map((id) => ({ item_id: id, item_name: id }))
+}
+
 export function fireBeginCheckout(items: { item_id: string; item_name: string }[], value: number, currency: 'BRL' | 'USD' = 'BRL'): void {
   sendEvent('begin_checkout', { currency, value, items })
 }

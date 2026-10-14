@@ -3,7 +3,7 @@
   import type { PageProps } from './$types'
   import { SITE_MOTION, type SiteMotion } from '$lib/client/site-motion'
   import { setupReveals } from '$lib/client/reveal'
-  import { firePurchase } from '$lib/client/analytics'
+  import { firePurchase, purchaseItemsFromReference } from '$lib/client/analytics'
   import { getSessionItem, setSessionItem } from '$lib/client/session-storage'
   import { LOCALE_ROUTES } from '$lib/locale'
 
@@ -22,6 +22,10 @@
   $effect(() => {
     if (data.state !== 'confirmed' && data.state !== 'payment_confirmed') return
     const id = data.state === 'confirmed' ? data.subscriptionId : data.paymentId
+    if (!id) {
+      console.error('[checkout] confirmed state without a payment/subscription id; purchase was not fired')
+      return
+    }
     const key = 'adm-mp-purchase-fired'
     const raw = getSessionItem(key)
     let fired: Record<string, boolean> = {}
@@ -37,7 +41,7 @@
       orderId: data.externalReference ?? id,
       value: data.amountBRL ?? 0,
       currency: 'BRL',
-      items: [],
+      items: purchaseItemsFromReference(data.externalReference),
     })
     if (accepted) setSessionItem(key, JSON.stringify({ ...fired, [id]: true }))
   })

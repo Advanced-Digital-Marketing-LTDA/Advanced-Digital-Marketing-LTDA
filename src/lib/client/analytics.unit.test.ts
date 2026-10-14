@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fireBeginCheckout, firePurchase, initializeAnalytics, protectAnalyticsNavigation } from './analytics'
+import { fireBeginCheckout, firePurchase, initializeAnalytics, protectAnalyticsNavigation, purchaseItemsFromReference } from './analytics'
 import type { NavigationTarget } from '@sveltejs/kit'
 
 afterEach(() => {
@@ -134,5 +134,19 @@ describe('analytics navigation isolation', () => {
     protectAnalyticsNavigation({ from: target(new URL(browser.location.href)), to: null, willUnload: true, cancel })
     expect(cancel).not.toHaveBeenCalled()
     expect(browser.location.assign).not.toHaveBeenCalled()
+  })
+})
+
+describe('purchaseItemsFromReference', () => {
+  it('maps each catalog id in a checkout reference to an item', () => {
+    expect(purchaseItemsFromReference('seo+geo')).toEqual([
+      { item_id: 'seo', item_name: 'seo' },
+      { item_id: 'geo', item_name: 'geo' },
+    ])
+  })
+
+  it('returns no items when the reference is missing', () => {
+    expect(purchaseItemsFromReference(null)).toEqual([])
+    expect(purchaseItemsFromReference('')).toEqual([])
   })
 })
