@@ -207,7 +207,7 @@ const SHARED = {
   flagMostChosen: L('Most chosen', 'Mais escolhido'),
   perTwoWeeks: L('One time · 2 weeks', 'Pagamento único · 2 semanas'),
   perFourWeeks: L('One time · 4 weeks', 'Pagamento único · 4 semanas'),
-  perSixMonths: L('Per month · 6-month minimum', 'Por mês · mínimo de 6 meses'),
+  perMonth: L('Per month', 'Por mês'),
   ctaBookSprint: L('Book the sprint', 'Agendar o sprint'),
   ctaTalkRetainers: L('Talk retainers', 'Falar sobre mensalidade'),
   itemRoadmap90: L('90-day roadmap, in writing', 'Roteiro de 90 dias, por escrito'),
@@ -263,7 +263,7 @@ function sprintOption(
 }
 
 /** The four engagement services offer the same R$2,900/month retainer
- *  (6-month minimum). Fixed-price retainers are not catalog products, so the
+ *  (billed monthly). Fixed-price retainers are not catalog products, so the
  *  CTA stays in the contact flow with its subject. */
 function retainerOption(
   name: CopySource<string>,
@@ -275,7 +275,7 @@ function retainerOption(
     jp: C('計測'),
     name,
     priceBRL: 2900,
-    per: SHARED.perSixMonths,
+    per: SHARED.perMonth,
     desc,
     items,
     cta: SHARED.ctaTalkRetainers,
@@ -313,10 +313,10 @@ const TECHNICAL_SEO_OPTIONS: CopySource<ServiceOption[]> = [
     jp: C('設計'),
     name: L('Content Development', 'Desenvolvimento de Conteúdo'),
     priceBRL: 2000,
-    per: L('Per month · no minimum term', 'Por mês · sem prazo mínimo'),
+    per: SHARED.perMonth,
     desc: L(
-      'Four articles each month, planned around your buyers’ questions, with writing, on-page editing, and internal links. No minimum term.',
-      'Quatro artigos por mês, planejados para responder às dúvidas dos seus compradores, com redação, edição on-page e links internos. Sem prazo mínimo.',
+      'Four articles each month, planned around your buyers’ questions, with writing, on-page editing, and internal links.',
+      'Quatro artigos por mês, planejados para responder às dúvidas dos seus compradores, com redação, edição on-page e links internos.',
     ),
     items: [
       L('4 articles per month', '4 artigos por mês'),
@@ -336,7 +336,7 @@ const TECHNICAL_SEO_OPTIONS: CopySource<ServiceOption[]> = [
     jp: C('検索'),
     name: C('Backlinks'),
     priceBRL: 3000,
-    per: L('Per month · 3-month minimum', 'Por mês · mínimo de 3 meses'),
+    per: SHARED.perMonth,
     desc: L(
       'Authority earned from sites that matter: outreach, digital PR and linkable assets, with the source and the rationale reported for every placement.',
       'Autoridade conquistada de sites que importam: divulgação, relações públicas digitais e ativos linkáveis, com fonte e justificativa reportadas para cada colocação.',
