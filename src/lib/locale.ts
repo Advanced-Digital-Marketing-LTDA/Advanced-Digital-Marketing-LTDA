@@ -1,3 +1,5 @@
+import { L, resolveCopy } from './localized-copy'
+
 export const SITE_ORIGIN = 'https://advanceddigitalmarketingltda.com'
 
 export const LOCALES = ['en-US', 'pt-BR'] as const
@@ -177,7 +179,7 @@ export function blogPathForPath(pathname: string): string | undefined {
 }
 
 /** Preserve the English blog URL until reviewed Portuguese equivalents exist. */
-const BLOG_NAV_ITEM = { to: '/blog/', label: 'Blog', jp: '記事' } as const
+const BLOG_NAV_ITEM = { to: '/blog/', label: L('Blog', 'Blog (em inglês)'), jp: '記事' } as const
 
 export function navigationForLocale(locale: Locale) {
   return [
@@ -186,7 +188,7 @@ export function navigationForLocale(locale: Locale) {
       label: CHROME_COPY[locale].navigation[page],
       jp: PAGE_JP[page],
     })),
-    { ...BLOG_NAV_ITEM, label: locale === 'pt-BR' ? 'Blog (em inglês)' : BLOG_NAV_ITEM.label },
+    { ...BLOG_NAV_ITEM, label: resolveCopy<string>(BLOG_NAV_ITEM.label, locale) },
   ]
 }
 
