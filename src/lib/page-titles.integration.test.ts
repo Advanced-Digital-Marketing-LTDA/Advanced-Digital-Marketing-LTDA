@@ -117,6 +117,21 @@ function canonicalHref(head: string): string {
 }
 
 describe('rendered page titles', () => {
+  it.each(['/blog/', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+    'keeps %s in English with its original canonical and no false alternate', async (path) => {
+      const { response, html } = await page(`${path}?utm_source=synthetic`)
+      const head = documentHead(html)
+      expect(response.status).toBe(200)
+      expect(html).toMatch(/<html lang="en(?:-US)?"/)
+      expect(canonicalHref(head)).toBe(`${SITE_ORIGIN}${path}`)
+      expect(head).not.toContain('rel="alternate"')
+      const switchers = [...html.matchAll(/<nav class="language-switcher"[^>]*>([\s\S]*?)<\/nav>/g)]
+      expect(switchers).toHaveLength(1)
+      expect(switchers[0][1]).toContain(`href="${path}" hreflang="en-US"`)
+      expect(switchers[0][1]).not.toContain('hreflang="pt-BR"')
+    }, 15_000,
+  )
+
   it.each(routes)('renders one appropriate title and preserves the canonical for $path', async ({ path, title }) => {
     const { response, html } = await page(path)
     const head = documentHead(html)
