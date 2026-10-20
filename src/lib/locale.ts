@@ -165,6 +165,13 @@ export function localizedPath(pathname: string, locale: Locale) {
   return service ? SERVICE_ROUTES[service][locale] : undefined
 }
 
+/** Only unknown routes use a homepage destination; missing translations do not. */
+export function languageSwitcherPath(pathname: string, locale: Locale): string | undefined {
+  const destination = localizedPath(pathname, locale)
+  const known = destination !== undefined || LOCALES.some((availableLocale) => localizedPath(pathname, availableLocale) !== undefined)
+  return known ? destination : LOCALE_ROUTES.home[locale]
+}
+
 export function absoluteUrl(pathname: string) {
   return new URL(pathname, SITE_ORIGIN).toString()
 }
