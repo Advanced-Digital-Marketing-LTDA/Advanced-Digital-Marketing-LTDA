@@ -1,7 +1,26 @@
 import { describe, expect, it } from 'vitest'
-import { absoluteUrl, blogPathForPath, decideLocaleRequest, isCheckoutPath, LOCALE_ROUTES, localeForPath, localizedPath, navigationForLocale } from './locale'
+import { absoluteUrl, blogPathForPath, decideLocaleRequest, isCheckoutPath, languageSwitcherPath, LOCALE_ROUTES, localeForPath, localizedPath, navigationForLocale } from './locale'
 
 describe('locale routes', () => {
+  it.each(['/blog/', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+    'distinguishes an unavailable translation from an unknown route for %s', (path) => {
+      expect(languageSwitcherPath(path, 'en-US')).toBe(path)
+      expect(languageSwitcherPath(path, 'pt-BR')).toBeUndefined()
+    },
+  )
+
+  it.each(['/unknown/', '/blogs/', '/blog-archive/', '/blogroll/'])(
+    'keeps the existing homepage destinations for unknown route %s', (path) => {
+      expect(languageSwitcherPath(path, 'en-US')).toBe('/')
+      expect(languageSwitcherPath(path, 'pt-BR')).toBe('/pt-br/')
+    },
+  )
+
+  it('uses equivalent bilingual destinations before any homepage fallback', () => {
+    expect(languageSwitcherPath('/about/', 'pt-BR')).toBe('/pt-br/sobre/')
+    expect(languageSwitcherPath('/pt-br/servicos/technical-seo/', 'en-US')).toBe('/services/technical-seo/')
+  })
+
   it.each(['/blogs/', '/blog-archive/', '/blogroll/'])(
     'does not classify the look-alike prefix %s as a blog route', (path) => {
       expect(blogPathForPath(path)).toBeUndefined()
