@@ -49,6 +49,7 @@ describe('catalog pricing (user-defined)', () => {
     expect(SERVICES['seo-content'].pricing).toEqual({ kind: 'fixed', monthlyBRL: 2000, monthlyUSD: 400 })
     expect(SERVICES.backlinks.pricing).toEqual({ kind: 'fixed', monthlyBRL: 3000, monthlyUSD: 600 })
     expect(SERVICES.hosting.pricing).toEqual({ kind: 'fixed', monthlyBRL: 300, monthlyUSD: 60 })
+    expect(SERVICES['conversion-tracking'].pricing).toEqual({ kind: 'fixed', monthlyBRL: 2500, monthlyUSD: 500 })
   })
 
   it('prices ads services by the ad-spend rule', () => {

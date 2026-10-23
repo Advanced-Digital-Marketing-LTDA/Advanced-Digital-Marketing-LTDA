@@ -17,6 +17,7 @@ export const CATALOG_SERVICE_IDS = [
   'seo-content',
   'backlinks',
   'hosting',
+  'conversion-tracking',
   'paid-search',
   'meta-ads',
   'ai-automation',
@@ -95,6 +96,18 @@ export const SERVICES: Record<CatalogServiceId, CatalogService> = {
       'pt-BR': 'Hospedagem com manutenção e alterações no site incluídas, todo mês.',
     },
     pricing: { kind: 'fixed', monthlyBRL: 300, monthlyUSD: 60 },
+    active: true,
+  },
+  'conversion-tracking': {
+    id: 'conversion-tracking',
+    name: { 'en-US': 'Conversion Tracking', 'pt-BR': 'Rastreamento de Conversões' },
+    description: {
+      'en-US':
+        'Conversion tracking built, tested, and maintained: an audit and event dictionary in month one, then a monthly data check, fixes, and one report.',
+      'pt-BR':
+        'Rastreamento de conversões implementado, testado e mantido: auditoria e dicionário de eventos no primeiro mês, depois checagem mensal dos dados, correções e um relatório.',
+    },
+    pricing: { kind: 'fixed', monthlyBRL: 2500, monthlyUSD: 500 },
     active: true,
   },
   'paid-search': {
