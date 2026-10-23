@@ -1,3 +1,5 @@
+import { L, resolveCopy } from './localized-copy'
+
 export const SITE_ORIGIN = 'https://advanceddigitalmarketingltda.com'
 
 export const LOCALES = ['en-US', 'pt-BR'] as const
@@ -158,9 +160,16 @@ export function localizedPath(pathname: string, locale: Locale) {
   const servicesLocale = servicesIndexForPath(pathname)
   if (servicesLocale) return SERVICES_INDEX_ROUTES[locale]
   const blogPath = blogPathForPath(pathname)
-  if (blogPath) return blogPath
+  if (blogPath) return locale === 'en-US' ? blogPath : undefined
   const service = serviceForPath(pathname)
   return service ? SERVICE_ROUTES[service][locale] : undefined
+}
+
+/** Only unknown routes use a homepage destination; missing translations do not. */
+export function languageSwitcherPath(pathname: string, locale: Locale): string | undefined {
+  const destination = localizedPath(pathname, locale)
+  const known = destination !== undefined || LOCALES.some((availableLocale) => localizedPath(pathname, availableLocale) !== undefined)
+  return known ? destination : LOCALE_ROUTES.home[locale]
 }
 
 export function absoluteUrl(pathname: string) {
@@ -168,17 +177,16 @@ export function absoluteUrl(pathname: string) {
 }
 
 /**
- * Blog routes are English-only and locale-independent: the language switcher
- * preserves the current blog path for either locale instead of falling back
- * to a localized homepage.
+ * Blog routes are English-only. Recognize them separately so callers can
+ * distinguish an unavailable translation from an unknown route.
  */
 export function blogPathForPath(pathname: string): string | undefined {
   const normalized = normalizePath(pathname)
   return normalized === '/blog' || normalized.startsWith('/blog/') ? `${normalized}/` : undefined
 }
 
-/** The blog nav entry is identical in both locales — declare it once. */
-const BLOG_NAV_ITEM = { to: '/blog/', label: 'Blog', jp: '記事' } as const
+/** Preserve the English blog URL until reviewed Portuguese equivalents exist. */
+const BLOG_NAV_ITEM = { to: '/blog/', label: L('Blog', 'Blog (em inglês)'), jp: '記事' } as const
 
 export function navigationForLocale(locale: Locale) {
   return [
@@ -187,7 +195,7 @@ export function navigationForLocale(locale: Locale) {
       label: CHROME_COPY[locale].navigation[page],
       jp: PAGE_JP[page],
     })),
-    { ...BLOG_NAV_ITEM },
+    { ...BLOG_NAV_ITEM, label: resolveCopy<string>(BLOG_NAV_ITEM.label, locale) },
   ]
 }
 

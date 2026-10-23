@@ -1,7 +1,49 @@
 import { describe, expect, it } from 'vitest'
-import { absoluteUrl, decideLocaleRequest, isCheckoutPath, LOCALE_ROUTES, localeForPath, localizedPath } from './locale'
+import { absoluteUrl, blogPathForPath, decideLocaleRequest, isCheckoutPath, languageSwitcherPath, LOCALE_ROUTES, localeForPath, localizedPath, navigationForLocale } from './locale'
 
 describe('locale routes', () => {
+  it.each(['/blog/', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+    'distinguishes an unavailable translation from an unknown route for %s', (path) => {
+      expect(languageSwitcherPath(path, 'en-US')).toBe(path)
+      expect(languageSwitcherPath(path, 'pt-BR')).toBeUndefined()
+    },
+  )
+
+  it.each(['/unknown/', '/blogs/', '/blog-archive/', '/blogroll/'])(
+    'keeps the existing homepage destinations for unknown route %s', (path) => {
+      expect(languageSwitcherPath(path, 'en-US')).toBe('/')
+      expect(languageSwitcherPath(path, 'pt-BR')).toBe('/pt-br/')
+    },
+  )
+
+  it('uses equivalent bilingual destinations before any homepage fallback', () => {
+    expect(languageSwitcherPath('/about/', 'pt-BR')).toBe('/pt-br/sobre/')
+    expect(languageSwitcherPath('/pt-br/servicos/technical-seo/', 'en-US')).toBe('/services/technical-seo/')
+  })
+
+  it.each(['/blogs/', '/blog-archive/', '/blogroll/'])(
+    'does not classify the look-alike prefix %s as a blog route', (path) => {
+      expect(blogPathForPath(path)).toBeUndefined()
+      expect(localizedPath(path, 'en-US')).toBeUndefined()
+      expect(localizedPath(path, 'pt-BR')).toBeUndefined()
+    },
+  )
+
+  it.each(['/blog', '/blog/', '/blog/chatgpt-ads-complete-guide-august-2026', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+    'keeps %s English-only without inventing a Portuguese equivalent', (path) => {
+      expect(localizedPath(path, 'en-US')).toBe(`${path.replace(/\/$/, '')}/`)
+      expect(localizedPath(path, 'pt-BR')).toBeUndefined()
+      expect(localeForPath(path)).toBe('en-US')
+      expect(decideLocaleRequest({ method: 'GET', pathname: path, search: '?utm_source=synthetic', language: 'pt-BR', country: 'BR' }))
+        .toEqual({ type: 'next' })
+    },
+  )
+
+  it('labels the English blog destination in Portuguese navigation', () => {
+    expect(navigationForLocale('pt-BR').find(({ to }) => to === '/blog/')?.label).toBe('Blog (em inglês)')
+    expect(navigationForLocale('en-US').find(({ to }) => to === '/blog/')?.label).toBe('Blog')
+  })
+
   it('maps every existing public page to its Brazilian Portuguese counterpart', () => {
     expect(localizedPath('/', 'pt-BR')).toBe('/pt-br/')
     expect(localizedPath('/about/', 'pt-BR')).toBe('/pt-br/sobre/')
