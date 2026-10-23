@@ -106,7 +106,7 @@ describe('end-to-end runs on a nested source tree', () => {
     writeFileSync(join(tree, path), lines.join('\n'))
   }
   const baseline = () => JSON.parse(readFileSync(join(tree, '.ratchet/baseline.json'), 'utf8'))
-  const writeBaseline = (values: object) => put('.ratchet/baseline.json', [JSON.stringify(values)])
+  const writeBaseline = (values: object) => { put('.ratchet/baseline.json', [JSON.stringify(values)]); }
 
   beforeEach(() => {
     vi.stubEnv('RATCHET_BASE_REF', '')
