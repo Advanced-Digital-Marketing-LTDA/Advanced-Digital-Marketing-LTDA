@@ -13,6 +13,8 @@
     "test:integration": "vitest run --config vitest.config.ts .integration.test.ts",
     "test:watch": "vitest --config vitest.config.ts",
     "mutate": "stryker run",
+    "ratchet": "node scripts/ratchet.mjs all",
+    "ratchet:update": "node scripts/ratchet.mjs all --update",
     "prepare": "svelte-kit sync",
     "predev": "node scripts/sync-assets.mjs",
     "prebuild": "node scripts/sync-assets.mjs"
