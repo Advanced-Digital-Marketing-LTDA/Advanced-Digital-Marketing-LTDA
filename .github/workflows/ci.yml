@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm run check
       - run: npm run test
       - name: npm run ratchet (base branch baseline stays binding on PRs)
