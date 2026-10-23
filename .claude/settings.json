@@ -1,4 +1,9 @@
 {
+  "extraKnownMarketplaces": {
+    "adversarial-review": {
+      "source": { "source": "github", "repo": "bobby-beckmann/adversarial-review" }
+    }
+  },
   "enabledPlugins": {
     "pr-review-toolkit@claude-plugins-official": true,
     "adversarial-review@adversarial-review": true

@@ -1,95 +1,136 @@
 // Ratchets: counts may only move in the safe direction. Usage:
-//   node scripts/ratchet.mjs [test|suppress|type|all] [--update]
-import { readFileSync, writeFileSync, readdirSync, lstatSync, existsSync } from 'node:fs'
-import { join } from 'node:path'
+//   node scripts/ratchet.mjs [test|suppress|type|all] [--update [--allow-regression]]
+// In CI, RATCHET_BASE_REF (e.g. origin/main) makes the base branch's baseline
+// binding too, so a PR cannot loosen the gate by editing its own baseline.
+import { execFileSync } from 'node:child_process'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
-const BASELINE = '.ratchet/baseline.json'
-export const RATCHETS = Object.freeze({
-  // tests may only grow; counts it(, test( and variants such as it.each( / test.skip(
-  test: {
-    dir: 'src',
-    files: /\.test\.ts$/,
-    pattern: /^[ \t]*(?:it|test)(?:\.[a-z]+)?\(/gm,
-    direction: 'min',
-  },
-  // suppressions may only shrink
-  suppress: {
-    dir: 'src',
-    files: /\.(ts|svelte)$/,
-    pattern: /@ts-ignore|@ts-expect-error|@ts-nocheck|eslint-disable|svelte-ignore/g,
-    direction: 'max',
-  },
-  // loose typing may only shrink
-  type: {
-    dir: 'src',
-    files: /\.(ts|svelte)$/,
-    pattern: /: ?any\b|\bas any\b|<any>|\bas unknown as\b/g,
-    direction: 'max',
-  },
+const BASELINE_FILE = '.ratchet/baseline.json'
+const SELF = ':(exclude,glob)scripts/ratchet*'
+// Same discovery scope as vitest.config.ts
+const TEST_FILES = [':(glob)src/**/*.test.ts', ':(glob)scripts/**/*.unit.test.ts', SELF]
+const SOURCE_FILES = [':(glob)src/**/*.ts', ':(glob)src/**/*.svelte', ':(glob)scripts/**/*.ts', SELF]
+
+// git grep ERE patterns; counts are matching lines
+export const PATTERNS = Object.freeze({
+  testDeclared: String.raw`^[[:space:]]*(it|test)(\.[a-z]+)?\(`,
+  testDisabled: String.raw`^[[:space:]]*(it|test)\.(skip|todo)\(`,
+  suppress: '@ts-ignore|@ts-expect-error|@ts-nocheck|eslint-disable|svelte-ignore',
+  looseType: String.raw`[:<,|&=] ?any\b|\bas any\b|\bany\[\]|\bas unknown as\b`,
 })
 
-// Symlinks are skipped so the walk never leaves the intended root.
-function* walk(dir) {
-  for (const name of readdirSync(dir)) {
-    const path = join(dir, name)
-    const stat = lstatSync(path)
-    if (stat.isSymbolicLink()) continue
-    if (stat.isDirectory()) yield* walk(path)
-    else yield path
+export function grepCount(pattern, pathspecs, cwd = process.cwd()) {
+  let output
+  try {
+    output = execFileSync('git', ['grep', '--untracked', '-c', '-E', '-e', pattern, '--', ...pathspecs], {
+      cwd,
+      encoding: 'utf8',
+    })
+  } catch (error) {
+    if (error.status === 1 && !error.stderr?.length) return 0 // no matches
+    throw new Error(`git grep failed: ${error.stderr || error.message}`)
   }
+  return output
+    .split('\n')
+    .filter(Boolean)
+    .reduce((sum, line) => sum + Number(line.slice(line.lastIndexOf(':') + 1)), 0)
 }
 
-export function count({ dir, files, pattern }) {
-  let total = 0
-  for (const path of walk(dir)) {
-    if (files.test(path)) total += (readFileSync(path, 'utf8').match(pattern) ?? []).length
-  }
-  return total
-}
+// Skipped and todo tests do not count as live tests.
+export const RATCHETS = new Map([
+  ['test', { direction: 'min', count: (cwd) => grepCount(PATTERNS.testDeclared, TEST_FILES, cwd) - grepCount(PATTERNS.testDisabled, TEST_FILES, cwd) }],
+  ['suppress', { direction: 'max', count: (cwd) => grepCount(PATTERNS.suppress, SOURCE_FILES, cwd) }],
+  ['type', { direction: 'max', count: (cwd) => grepCount(PATTERNS.looseType, SOURCE_FILES, cwd) }],
+])
 
 export function selectRatchets(names) {
-  if (!names.length || names[0] === 'all') return Object.keys(RATCHETS)
+  if (!names.length || names[0] === 'all') return [...RATCHETS.keys()]
   for (const name of names) {
-    if (!Object.hasOwn(RATCHETS, name)) throw new Error(`Unknown ratchet "${name}"`)
+    if (!RATCHETS.has(name)) throw new Error(`Unknown ratchet "${name}"`)
   }
   return names
 }
 
-function main() {
-  const args = process.argv.slice(2)
-  const update = args.includes('--update')
-  let selected
+export function parseBaseline(text, source) {
+  const values = new Map()
+  for (const [name, value] of Object.entries(JSON.parse(text))) {
+    if (!RATCHETS.has(name)) throw new Error(`${source}: unknown ratchet "${name}"`)
+    if (!Number.isInteger(value) || value < 0) throw new Error(`${source}: "${name}" must be a non-negative integer, got ${JSON.stringify(value)}`)
+    values.set(name, value)
+  }
+  return values
+}
+
+export const isWorse = (direction, current, limit) => (direction === 'min' ? current < limit : current > limit)
+
+function readHeadBaseline() {
+  return existsSync(BASELINE_FILE) ? parseBaseline(readFileSync(BASELINE_FILE, 'utf8'), BASELINE_FILE) : new Map()
+}
+
+function readBaseBaseline(ref) {
+  if (!ref) return null
+  if (!/^[\w./-]+$/.test(ref)) throw new Error(`Invalid RATCHET_BASE_REF "${ref}"`)
   try {
-    selected = selectRatchets(args.filter((a) => !a.startsWith('--')))
+    const text = execFileSync('git', ['show', `${ref}:${BASELINE_FILE}`], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+    return parseBaseline(text, `${ref}:${BASELINE_FILE}`)
+  } catch (error) {
+    if (!/does not exist|exists on disk, but not in/.test(String(error.stderr))) throw error
+    console.warn(`::warning::${ref} has no ${BASELINE_FILE}; checking against this branch's baseline only.`)
+    return null
+  }
+}
+
+export function checkRatchet(name, direction, current, limits) {
+  if (!limits.length) return { ok: false, message: `${name}: no baseline. Run "npm run ratchet:update".` }
+  const broken = limits.find((limit) => isWorse(direction, current, limit))
+  if (broken === undefined) return { ok: true, message: `${name}: ok (${current}, baseline ${limits.join(' / ')})` }
+  const rule = direction === 'min' ? 'must not drop' : 'must not rise'
+  return { ok: false, message: `${name}: FAILED. ${current} now vs baseline ${broken} (${rule}).` }
+}
+
+function runCheck(names) {
+  const head = readHeadBaseline()
+  const base = readBaseBaseline(process.env.RATCHET_BASE_REF)
+  let ok = true
+  for (const name of names) {
+    const { direction, count } = RATCHETS.get(name)
+    const limits = [head, base].filter((b) => b?.has(name)).map((b) => b.get(name))
+    const result = checkRatchet(name, direction, count(), limits)
+    if (result.ok) console.log(result.message)
+    else console.error(result.message)
+    ok &&= result.ok
+  }
+  return ok ? 0 : 1
+}
+
+function runUpdate(names, allowRegression) {
+  const baseline = readHeadBaseline()
+  const regressions = []
+  for (const name of names) {
+    const { direction, count } = RATCHETS.get(name)
+    const current = count()
+    if (baseline.has(name) && isWorse(direction, current, baseline.get(name))) regressions.push(`${name}: ${baseline.get(name)} -> ${current}`)
+    baseline.set(name, current)
+  }
+  if (regressions.length && !allowRegression) {
+    console.error(`Refusing to loosen baselines (${regressions.join(', ')}). Pass --allow-regression to accept.`)
+    return 1
+  }
+  for (const regression of regressions) console.warn(`WARNING: loosened ${regression}`)
+  writeFileSync(BASELINE_FILE, JSON.stringify(Object.fromEntries(baseline), null, 2) + '\n')
+  console.log(`Baseline written: ${JSON.stringify(Object.fromEntries(baseline))}`)
+  return 0
+}
+
+export function main(args = process.argv.slice(2)) {
+  try {
+    const names = selectRatchets(args.filter((a) => !a.startsWith('--')))
+    return args.includes('--update') ? runUpdate(names, args.includes('--allow-regression')) : runCheck(names)
   } catch (error) {
     console.error(error.message)
     return 2
   }
-  const baseline = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf8')) : {}
-  let failed = false
-
-  for (const name of selected) {
-    const rule = RATCHETS[name]
-    const current = count(rule)
-    const previous = Object.hasOwn(baseline, name) ? baseline[name] : undefined
-    const worse = previous !== undefined && (rule.direction === 'min' ? current < previous : current > previous)
-    if (update) {
-      baseline[name] = current
-      console.log(`${name}: baseline set to ${current}`)
-    } else if (previous === undefined) {
-      console.error(`${name}: no baseline. Run "npm run ratchet:update".`)
-      failed = true
-    } else if (worse) {
-      console.error(`${name}: FAILED. ${current} now vs baseline ${previous} (${rule.direction === 'min' ? 'must not drop' : 'must not rise'}).`)
-      failed = true
-    } else {
-      console.log(`${name}: ok (${current}, baseline ${previous})`)
-    }
-  }
-
-  if (update) writeFileSync(BASELINE, JSON.stringify(baseline, null, 2) + '\n')
-  return failed ? 1 : 0
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) process.exit(main())

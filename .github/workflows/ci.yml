@@ -2,6 +2,9 @@ name: CI
 
 on:
   pull_request:
+  push:
+    branches: [main]
+  merge_group:
 
 permissions:
   contents: read
@@ -9,9 +12,11 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
@@ -20,4 +25,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run test
-      - run: npm run ratchet
+      - name: npm run ratchet (base branch baseline stays binding on PRs)
+        env:
+          RATCHET_BASE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
+        run: npm run ratchet
