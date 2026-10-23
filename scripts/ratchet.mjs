@@ -3,7 +3,8 @@
 // In CI, RATCHET_BASE_REF (e.g. origin/main) makes the base branch's baseline
 // binding too, so a PR cannot loosen the gate by editing its own baseline.
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const BASELINE_FILE = '.ratchet/baseline.json'
@@ -64,15 +65,16 @@ export function parseBaseline(text, source) {
 
 export const isWorse = (direction, current, limit) => (direction === 'min' ? current < limit : current > limit)
 
-function readHeadBaseline() {
-  return existsSync(BASELINE_FILE) ? parseBaseline(readFileSync(BASELINE_FILE, 'utf8'), BASELINE_FILE) : new Map()
+function readHeadBaseline(cwd) {
+  const file = join(cwd, BASELINE_FILE)
+  return existsSync(file) ? parseBaseline(readFileSync(file, 'utf8'), BASELINE_FILE) : new Map()
 }
 
-function readBaseBaseline(ref) {
+function readBaseBaseline(ref, cwd) {
   if (!ref) return null
   if (!/^[\w./-]+$/.test(ref)) throw new Error(`Invalid RATCHET_BASE_REF "${ref}"`)
   try {
-    const text = execFileSync('git', ['show', `${ref}:${BASELINE_FILE}`], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+    const text = execFileSync('git', ['show', `${ref}:${BASELINE_FILE}`], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
     return parseBaseline(text, `${ref}:${BASELINE_FILE}`)
   } catch (error) {
     if (!/does not exist|exists on disk, but not in/.test(String(error.stderr))) throw error
@@ -89,14 +91,14 @@ export function checkRatchet(name, direction, current, limits) {
   return { ok: false, message: `${name}: FAILED. ${current} now vs baseline ${broken} (${rule}).` }
 }
 
-function runCheck(names) {
-  const head = readHeadBaseline()
-  const base = readBaseBaseline(process.env.RATCHET_BASE_REF)
+function runCheck(names, cwd) {
+  const head = readHeadBaseline(cwd)
+  const base = readBaseBaseline(process.env.RATCHET_BASE_REF, cwd)
   let ok = true
   for (const name of names) {
     const { direction, count } = RATCHETS.get(name)
     const limits = [head, base].filter((b) => b?.has(name)).map((b) => b.get(name))
-    const result = checkRatchet(name, direction, count(), limits)
+    const result = checkRatchet(name, direction, count(cwd), limits)
     if (result.ok) console.log(result.message)
     else console.error(result.message)
     ok &&= result.ok
@@ -104,12 +106,12 @@ function runCheck(names) {
   return ok ? 0 : 1
 }
 
-function runUpdate(names, allowRegression) {
-  const baseline = readHeadBaseline()
+function runUpdate(names, allowRegression, cwd) {
+  const baseline = readHeadBaseline(cwd)
   const regressions = []
   for (const name of names) {
     const { direction, count } = RATCHETS.get(name)
-    const current = count()
+    const current = count(cwd)
     if (baseline.has(name) && isWorse(direction, current, baseline.get(name))) regressions.push(`${name}: ${baseline.get(name)} -> ${current}`)
     baseline.set(name, current)
   }
@@ -118,15 +120,17 @@ function runUpdate(names, allowRegression) {
     return 1
   }
   for (const regression of regressions) console.warn(`WARNING: loosened ${regression}`)
-  writeFileSync(BASELINE_FILE, JSON.stringify(Object.fromEntries(baseline), null, 2) + '\n')
+  const file = join(cwd, BASELINE_FILE)
+  mkdirSync(dirname(file), { recursive: true })
+  writeFileSync(file, JSON.stringify(Object.fromEntries(baseline), null, 2) + '\n')
   console.log(`Baseline written: ${JSON.stringify(Object.fromEntries(baseline))}`)
   return 0
 }
 
-export function main(args = process.argv.slice(2)) {
+export function main(args = process.argv.slice(2), cwd = process.cwd()) {
   try {
     const names = selectRatchets(args.filter((a) => !a.startsWith('--')))
-    return args.includes('--update') ? runUpdate(names, args.includes('--allow-regression')) : runCheck(names)
+    return args.includes('--update') ? runUpdate(names, args.includes('--allow-regression'), cwd) : runCheck(names, cwd)
   } catch (error) {
     console.error(error.message)
     return 2

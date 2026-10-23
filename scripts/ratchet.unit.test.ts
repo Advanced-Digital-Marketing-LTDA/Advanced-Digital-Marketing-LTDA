@@ -3,11 +3,12 @@
  * that names and baseline values are validated loudly, and the direction logic.
  */
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { checkRatchet, grepCount, isWorse, parseBaseline, PATTERNS, selectRatchets } from './ratchet.mjs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { checkRatchet, grepCount, isWorse, main, parseBaseline, PATTERNS, selectRatchets } from './ratchet.mjs'
 
 let repo: string
 const count = (pattern: string) => grepCount(pattern, ['sample.ts'], repo)
@@ -95,5 +96,90 @@ describe('direction logic', () => {
 
   it('fails without a baseline', () => {
     expect(checkRatchet('test', 'min', 1, []).ok).toBe(false)
+  })
+})
+
+describe('end-to-end runs on a nested source tree', () => {
+  let tree: string
+  const put = (path: string, lines: string[]) => {
+    mkdirSync(dirname(join(tree, path)), { recursive: true })
+    writeFileSync(join(tree, path), lines.join('\n'))
+  }
+  const baseline = () => JSON.parse(readFileSync(join(tree, '.ratchet/baseline.json'), 'utf8'))
+  const writeBaseline = (values: object) => put('.ratchet/baseline.json', [JSON.stringify(values)])
+
+  beforeEach(() => {
+    vi.stubEnv('RATCHET_BASE_REF', '')
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    tree = mkdtempSync(join(tmpdir(), 'ratchet-tree-'))
+    execFileSync('git', ['init', '-q'], { cwd: tree })
+    put('src/lib/deep/a.test.ts', ["it('a', () => {})", "test('b', () => {})"])
+    put('scripts/tools/c.unit.test.ts', ["it('c', () => {})"])
+    put('src/routes/page/x.ts', ['// @ts-ignore', 'const v: any = 1'])
+    put('src/lib/Widget.svelte', ['<!-- svelte-ignore a11y -->'])
+  })
+
+  afterEach(() => {
+    rmSync(tree, { recursive: true, force: true })
+    vi.restoreAllMocks()
+    vi.unstubAllEnvs()
+  })
+
+  it('counts recursively and passes within the baseline', () => {
+    expect(main(['all', '--update'], tree)).toBe(0)
+    expect(baseline()).toEqual({ test: 3, suppress: 2, type: 1 })
+    expect(main([], tree)).toBe(0)
+  })
+
+  it('fails when a test is removed', () => {
+    writeBaseline({ test: 3, suppress: 2, type: 1 })
+    put('src/lib/deep/a.test.ts', ["it('a', () => {})"])
+    expect(main(['test'], tree)).toBe(1)
+  })
+
+  it('fails when a test is skipped', () => {
+    writeBaseline({ test: 3, suppress: 2, type: 1 })
+    put('src/lib/deep/a.test.ts', ["it('a', () => {})", "test.skip('b', () => {})"])
+    expect(main(['test'], tree)).toBe(1)
+  })
+
+  it('fails when a suppression is added', () => {
+    writeBaseline({ test: 3, suppress: 2, type: 1 })
+    put('src/lib/new.ts', ['// eslint-disable-next-line'])
+    expect(main(['suppress'], tree)).toBe(1)
+  })
+
+  it('fails when a loose type is added', () => {
+    writeBaseline({ test: 3, suppress: 2, type: 1 })
+    put('src/lib/new.ts', ['const m: Record<string, any> = {}'])
+    expect(main(['type'], tree)).toBe(1)
+  })
+
+  it('update mode writes current counts and tightens freely', () => {
+    writeBaseline({ test: 1, suppress: 5, type: 4 })
+    expect(main(['all', '--update'], tree)).toBe(0)
+    expect(baseline()).toEqual({ test: 3, suppress: 2, type: 1 })
+  })
+
+  it('update mode refuses to loosen without --allow-regression', () => {
+    writeBaseline({ test: 9, suppress: 0, type: 0 })
+    expect(main(['all', '--update'], tree)).toBe(1)
+    expect(baseline()).toEqual({ test: 9, suppress: 0, type: 0 })
+    expect(main(['all', '--update', '--allow-regression'], tree)).toBe(0)
+    expect(baseline()).toEqual({ test: 3, suppress: 2, type: 1 })
+  })
+})
+
+describe('CI workflow', () => {
+  const ci = readFileSync(fileURLToPath(new URL('../.github/workflows/ci.yml', import.meta.url)), 'utf8')
+
+  it('runs on pull requests', () => {
+    expect(ci).toMatch(/^on:\n(?:\s+.*\n)*?\s+pull_request:/m)
+  })
+
+  it.each(['npm run check', 'npm run test', 'npm run ratchet'])('runs %s', (command) => {
+    expect(ci).toMatch(new RegExp(`^\\s+(?:- )?run: ${command}$`, 'm'))
   })
 })
