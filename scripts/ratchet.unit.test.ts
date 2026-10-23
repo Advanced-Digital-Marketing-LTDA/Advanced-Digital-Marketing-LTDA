@@ -36,7 +36,7 @@ beforeAll(() => {
   )
 })
 
-afterAll(() => rmSync(repo, { recursive: true, force: true }))
+afterAll(() => { rmSync(repo, { recursive: true, force: true }); })
 
 describe('ratchet patterns', () => {
   it('counts test declarations and disabled tests separately', () => {
