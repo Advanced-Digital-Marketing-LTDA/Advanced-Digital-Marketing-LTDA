@@ -16,3 +16,4 @@ enabled = true
 [content.context]
 I = ["static/sitemap.xml"]
 P = ["docs/contact-form.md"]
+B = ["PRODUCT.md"]
