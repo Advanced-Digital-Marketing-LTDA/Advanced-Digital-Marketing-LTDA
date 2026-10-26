@@ -15,7 +15,7 @@ function serviceLinks(locale: Locale) {
     let previous: string
     do {
       previous = sanitized
-      sanitized = sanitized.replace(/<!--.*?-->/g, '')
+      sanitized = sanitized.replace(/<!--.*?-->/gs, '')
     } while (sanitized !== previous)
 
     return {
