@@ -148,8 +148,8 @@ const SERVICE_META_SOURCE: CopySource<Record<ServiceId, ServiceMeta>> = {
   geo: {
     title: L('Advanced Digital Marketing LTDA | GEO', 'Advanced Digital Marketing LTDA | GEO e visibilidade em IA'),
     description: L(
-      'GEO by Advanced Digital Marketing: entity mapping, answer-first content and citation tracking that get you quoted by ChatGPT, Perplexity and Google AI Overviews.',
-      'GEO pela Advanced Digital Marketing: mapeamento de entidades, conteúdo answer-first e rastreamento de citações para você ser citado pelo nome no ChatGPT, Perplexity e AI Overviews do Google.',
+      'GEO by Advanced Digital Marketing: entity mapping, answer-first content and citation tracking for ChatGPT, Perplexity and Google AI Overviews.',
+      'GEO pela Advanced Digital Marketing: mapeamento de entidades, conteúdo answer-first e rastreamento de citações para ChatGPT, Perplexity e AI Overviews do Google.',
     ),
   },
   'web-development': {
@@ -406,7 +406,7 @@ const GEO_SPRINT: CopySource<ServiceOption> = sprintOption(
     L('Everything in The Citation Audit', 'Tudo o que está na Auditoria de Citações'),
     L('Entity pages and schema deployed', 'Páginas de entidade e schema implantados'),
     L('Answer-first content written', 'Conteúdo answer-first escrito'),
-    L('llms.txt and machine-readable feeds', 'llms.txt e feeds legíveis por máquinas'),
+    L('llms.txt file published', 'Arquivo llms.txt publicado'),
     L('Before/after citation re-check', 'Re-verificação de citações antes/depois'),
   ],
   C('Citation sprint request'),
@@ -481,8 +481,8 @@ const WEB_SPRINT: CopySource<ServiceOption> = {
   ...sprintOption(
     L('Build Sprint', 'Sprint de Build'),
     L(
-      'Design and build of a focused marketing site, engineered to rank from launch.',
-      'Design e construção de um site de marketing focado, projetado para ranquear desde o lançamento.',
+      'Design and build of a focused marketing site, built with search foundations from launch.',
+      'Design e construção de um site de marketing focado, construído com fundamentos de busca desde o lançamento.',
     ),
     [
       L('Everything in The Build Audit', 'Tudo o que está na Auditoria de Build'),
@@ -526,8 +526,8 @@ const WEB_STEPS: CopySource<ServiceStep[]> = engagementSteps(
     'Um plano de build com orçamentos de performance, HTML semântico e dados estruturados travados antes de escrever uma linha.',
   ),
   L(
-    'Design, code and CMS in weekly releases. You can verify the site ranking before it launches.',
-    'Design, código e CMS em releases semanais. Você consegue ver o site ranqueando antes do lançamento.',
+    'Design, code and CMS in weekly releases. You review the staging build before it launches.',
+    'Design, código e CMS em releases semanais. Você revisa a versão de homologação antes do lançamento.',
   ),
   L(
     'Vitals, indexation and rankings tracked from launch, reported monthly in plain English.',
@@ -738,7 +738,7 @@ const TECHNICAL_SEO_ENTRY: CopySource<ServiceContent> = {
   navLabel: L('Technical SEO', 'SEO técnico e local'),
   navJp: C('技術'),
   kicker: L('Service · Technical SEO', 'Serviço · SEO técnico e local'),
-  promise: L('Rankings start at the code level', 'A classificação começa no código'),
+  promise: L('Technical search foundations, delivered in code', 'Fundamentos técnicos de busca, entregues no código'),
   hero: [L('Technical', 'SEO técnico'), L('SEO.', 'e local.')],
   sub: L(
     'Crawl architecture, Core Web Vitals, structured data and indexation control, fixed where the problem actually lives: in the code.',
@@ -769,7 +769,7 @@ const GEO_ENTRY: CopySource<ServiceContent> = {
   navLabel: C('GEO'),
   navJp: C('生成'),
   kicker: L('Service · GEO', 'Serviço · GEO'),
-  promise: L('Get cited by the answer engines', 'Seja citado pelos motores de resposta'),
+  promise: L('Structured content for answer engines', 'Conteúdo estruturado para motores de resposta'),
   hero: [L('Be the', 'Seja a'), L('answer.', 'resposta.')],
   sub: L(
     'Generative Engine Optimization. We structure your content, entities and authority signals so ChatGPT, Perplexity and Google AI Overviews quote you by name when your buyers ask.',
@@ -799,14 +799,14 @@ const WEB_DEVELOPMENT_ENTRY: CopySource<ServiceContent> = {
   navLabel: L('Web Development', 'Sites e landing pages'),
   navJp: C('開発'),
   kicker: L('Service · Web Development', 'Serviço · Sites e landing pages'),
-  promise: L('Sites built to rank from the first commit', 'Sites construídos para ranquear desde o primeiro commit'),
+  promise: L('Sites built with search foundations from the first commit', 'Sites construídos com fundamentos de busca desde o primeiro commit'),
   hero: [L('Built to', 'Construído'), L('rank.', 'para ranquear.')],
   sub: L(
     'Next.js and Astro builds where performance budgets, semantic HTML and structured data are requirements, not afterthoughts. Migrations planned around ranking risk — redirects, QA and monitoring built in.',
     'Construções em Next.js e Astro onde orçamentos de performance, HTML semântico e dados estruturados são requisitos, não reflexões tardias. Migrações planejadas em torno do risco de ranking — redirecionamentos, QA e monitoramento incluídos.',
   ),
   optionsLabel: SHARED.optionsLabel,
-  optionsHeading: L('Build it right, rank from day one.', 'Construa certo, ranqueie desde o dia um.'),
+  optionsHeading: L('Build it right, with search foundations from day one.', 'Construa certo, com fundamentos de busca desde o dia um.'),
   optionsLead: L(
     'Three ways to engage, one standard of work. Every build ships with performance budgets, semantic HTML and structured data included.',
     'Três formas de engajar, um padrão de trabalho. Toda construção entrega orçamentos de performance, HTML semântico e dados estruturados incluídos.',
@@ -850,7 +850,7 @@ const PAID_SEARCH_ENTRY: CopySource<ServiceContent> = {
   steps: ADS_STEPS,
   auditCta: L('Start with the account audit', 'Comece com a auditoria de conta'),
   contactLabel: SHARED.contactLabel,
-  contactHeading: L('Turn spend into rankings you own.', 'Transforme gasto em rankings que são seus.'),
+  contactHeading: L('Ad spend with measured results and stated limits.', 'Gasto em anúncios com resultados medidos e limites declarados.'),
   contactSub: SHARED.contactSub,
   bookCall: SHARED.bookCall,
   seeOptions: SHARED.seeOptions,
