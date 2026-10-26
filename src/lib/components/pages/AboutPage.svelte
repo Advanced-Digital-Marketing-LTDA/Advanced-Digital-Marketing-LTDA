@@ -3,7 +3,7 @@
   import Kanji from '$lib/components/chrome/Kanji.svelte'
   import MotionHeading from '$lib/components/chrome/MotionHeading.svelte'
   import { JP, PAGE_COPY } from '$lib/constants'
-  import { LOCALE_ROUTES, type Locale } from '$lib/locale'
+  import { LOCALE_ROUTES, SERVICES_INDEX_ROUTES, type Locale } from '$lib/locale'
 
   let { locale }: { locale: Locale } = $props()
 
@@ -11,7 +11,7 @@
   // Single contact channel: the opt-in contact form page.
   let ctaHref = $derived(LOCALE_ROUTES.contact[locale])
   let ctaLabel = $derived(content.bookCall)
-  let servicesHref = $derived(locale === 'pt-BR' ? '/pt-br/servicos/' : '/services/')
+  let servicesHref = $derived(SERVICES_INDEX_ROUTES[locale])
 </script>
 
 <section class="editorial-subhero">
@@ -55,6 +55,6 @@
   <div class="section-inner">
     <MotionHeading class="section-heading" text={content.contactHeading} />
     <a class="hanko-cta" href={ctaHref}><span class="hanko-cta__seal font-jp-serif">{JP.seal}</span><span>{ctaLabel} <span aria-hidden="true">→</span></span></a>
-    <p><a href={servicesHref}>{locale === 'pt-BR' ? 'Ver todos os serviços' : 'See all services'} <span aria-hidden="true">→</span></a></p>
+    <p><a href={servicesHref}>{content.servicesLink} <span aria-hidden="true">→</span></a></p>
   </div>
 </section>

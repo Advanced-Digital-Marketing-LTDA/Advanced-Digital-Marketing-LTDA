@@ -1,6 +1,6 @@
 import type { Locale } from './locale'
 import { C, L, resolveCopy, type CopySource } from './localized-copy'
-import { TECHNICAL_SEO_STEPS } from './services'
+import { TECHNICAL_SEO_STEPS, type ServiceId } from './services'
 
 /**
  * Browser-side bound for the `/api/checkout/subscription` round-trip.
@@ -58,7 +58,7 @@ export const JP = {
 
 /* ─── Page copy (centralized per repo guidelines) ─────────────────────── */
 
-export type HomeService = { jp: string; title: string; line: string; detail: string; tags: string[]; product: string }
+export type HomeService = { serviceId: ServiceId; jp: string; title: string; line: string; detail: string; tags: string[]; product: string }
 export type HomeStep = { jp: string; title: string; text: string }
 export type HomeReason = { mark: string; title: string; text: string }
 
@@ -76,6 +76,7 @@ export type HomeCopy = {
   servicesLabel: string
   servicesHeading: string
   serviceCta: string
+  serviceFullPage: string
   services: HomeService[]
   processLabel: string
   processHeading: string
@@ -117,6 +118,7 @@ export type AboutCopy = {
   facts: [string, string][]
   contactHeading: string
   bookCall: string
+  servicesLink: string
   whatsapp: string
 }
 
@@ -168,6 +170,7 @@ export type PageCopy = {
 
 const SEO_SERVICES_CARD: CopySource<HomeService> = {
   jp: C('技術'),
+  serviceId: C('technical-seo'),
   title: L('Technical SEO', 'SEO técnico e local'),
   line: L('The foundation everything else sits on.', 'Faça sua empresa aparecer nas buscas certas.'),
   detail: L(
@@ -180,6 +183,7 @@ const SEO_SERVICES_CARD: CopySource<HomeService> = {
 
 const GEO_SERVICES_CARD: CopySource<HomeService> = {
   jp: C('生成'),
+  serviceId: C('geo'),
   title: L('GEO', 'GEO / visibilidade em respostas de IA'),
   line: L('Get cited by the answer engines.', 'Seja lembrado quando alguém perguntar.'),
   detail: L(
@@ -192,6 +196,7 @@ const GEO_SERVICES_CARD: CopySource<HomeService> = {
 
 const WEB_DEVELOPMENT_SERVICES_CARD: CopySource<HomeService> = {
   jp: C('開発'),
+  serviceId: C('web-development'),
   title: L('Web Development', 'Sites e landing pages'),
   line: L('Sites built to rank from the first commit.', 'Caminhos claros para WhatsApp e orçamento.'),
   detail: L(
@@ -204,6 +209,7 @@ const WEB_DEVELOPMENT_SERVICES_CARD: CopySource<HomeService> = {
 
 const PAID_SEARCH_SERVICES_CARD: CopySource<HomeService> = {
   jp: C('広告'),
+  serviceId: C('paid-search'),
   title: L('Paid Search', 'Google Ads'),
   line: L('Buy the clicks you cannot win yet.', 'Acelere a demanda que ainda não é orgânica.'),
   detail: L(
@@ -216,6 +222,7 @@ const PAID_SEARCH_SERVICES_CARD: CopySource<HomeService> = {
 
 const META_ADS_SERVICES_CARD: CopySource<HomeService> = {
   jp: C('広告'),
+  serviceId: C('meta-ads'),
   title: C('Meta Ads'),
   line: L('Buy attention while the organic work compounds.', 'Compre atenção enquanto o orgânico compõe.'),
   detail: L(
@@ -292,6 +299,7 @@ const PAGE_COPY_SOURCE: CopySource<PageCopy> = {
     servicesLabel: L('Services', 'Serviços'),
     servicesHeading: L('What we do', 'O que fazemos'),
     serviceCta: L('Start with this service', 'Começar com este serviço'),
+    serviceFullPage: L('See the full page for', 'Veja a página completa de'),
     services: [SEO_SERVICES_CARD, GEO_SERVICES_CARD, WEB_DEVELOPMENT_SERVICES_CARD, PAID_SEARCH_SERVICES_CARD, META_ADS_SERVICES_CARD],
     processLabel: L('Process', 'Processo'),
     processHeading: L('How it runs', 'Do primeiro contato ao crescimento'),
@@ -423,6 +431,7 @@ const PAGE_COPY_SOURCE: CopySource<PageCopy> = {
     ],
     contactHeading: L('Work with the person who does the work.', 'Trabalhe com quem executa o trabalho.'),
     bookCall: L('Book a strategy call', 'Fale com a ADM'),
+    servicesLink: L('See all services', 'Ver todos os serviços'),
     whatsapp: L('Book via WhatsApp', 'Falar pelo WhatsApp'),
   },
   contact: {
