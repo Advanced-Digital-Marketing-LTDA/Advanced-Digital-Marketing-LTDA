@@ -10,10 +10,19 @@ vi.mock('$app/environment', () => ({ browser: false }))
 
 function serviceLinks(locale: Locale) {
   const { body } = render(HomePageFixture, { props: { locale } })
-  return [...body.matchAll(/<a class="svc-link" href="([^"]+)"[^>]*>(.*?)<span/gs)].map(([, href, text]) => ({
-    href,
-    text: text.replace(/<!--.*?-->/g, ''),
-  }))
+  return [...body.matchAll(/<a class="svc-link" href="([^"]+)"[^>]*>(.*?)<span/gs)].map(([, href, text]) => {
+    let sanitized = text
+    let previous: string
+    do {
+      previous = sanitized
+      sanitized = sanitized.replace(/<!--.*?-->/g, '')
+    } while (sanitized !== previous)
+
+    return {
+      href,
+      text: sanitized,
+    }
+  })
 }
 
 describe('homepage service card links', () => {
