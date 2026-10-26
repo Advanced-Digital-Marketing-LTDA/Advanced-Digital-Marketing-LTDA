@@ -1,7 +1,7 @@
 ---
 title: "ChatGPT Ads: The Complete Guide to OpenAI's Advertising Platform (August 21, 2026)"
 meta_title: "ChatGPT Ads Guide 2026: Pricing, Formats, Targeting & New Features"
-meta_description: "ChatGPT Ads guide for August 2026: pricing, ad formats, oCPC bidding, measurement pixel, markets, policies and setup steps. Claims checked against OpenAI sources."
+meta_description: "ChatGPT Ads guide for August 2026: pricing, ad formats, oCPC bidding, measurement pixel, markets, policies and setup steps."
 primary_entity: "ChatGPT Ads (OpenAI advertising platform)"
 supporting_entities: ["OpenAI", "ChatGPT", "Ads Manager", "OAIQ Measurement Pixel", "Conversions API", "ChatGPT Go"]
 published: "2026-08-21"
@@ -12,7 +12,7 @@ updated: "2026-10-26"
 
 **Author:** Andrew Philip Weilbacher, founder and lead engineer of ADM, with 14 years of experience in MarTech development, digital marketing and automation.
 
-> **Quick Answer:** ChatGPT Ads is OpenAI's advertising platform, launched February 9, 2026. It places clearly labeled "Sponsored" recommendations below ChatGPT responses. Advertisers buy placements through the self-serve Ads Manager at ads.openai.com using a relevance-weighted, second-price auction, priced at roughly $25–$60 CPM or $3–$5 CPC. Options include conversion-optimized (oCPC) bidding, product feed and carousel formats, a measurement pixel (OAIQ), and a Conversions API. As of August 21, 2026, ads run in nine markets (the US, Canada, UK, Australia, New Zealand, Japan, South Korea, Brazil and Mexico), and OpenAI projects approximately $2.5 billion in 2026 ad revenue.
+> **Quick Answer:** ChatGPT Ads is OpenAI's advertising platform, launched February 9, 2026. It places clearly labeled "Sponsored" recommendations below ChatGPT responses. Advertisers buy placements through the self-serve Ads Manager at ads.openai.com using a relevance-weighted, second-price auction, priced at roughly $25–$60 CPM or $3–$5 CPC. Options include conversion-optimized (oCPC) bidding, product feed and carousel formats, a measurement pixel (OAIQ), and a Conversions API. As of August 21, 2026, reports list ads in nine markets (the US, Canada, UK, Australia, New Zealand, Japan, South Korea, Brazil and Mexico), and reports say OpenAI projects approximately $2.5 billion in 2026 ad revenue.
 
 ## Key Takeaways
 
@@ -182,7 +182,7 @@ All formats share two constants: a visible "Sponsored" label, and physical separ
 
 **OpenAI's August 2026 update batch is almost entirely about performance marketing plumbing: conversion-optimized bidding, automatic attribution matching, third-party measurement integrations, and two new Latin American markets.**
 
-Nine updates were reported this month:
+Nine updates landed this month:
 
 1. **oCPC for product feed campaigns (beta).** Optimized cost-per-click lets advertisers optimize delivery toward a conversion event while still paying per click — a bridge between CPC and full CPA bidding. Existing CPC campaigns can be cloned into oCPC campaigns, or created in bulk; the conversion event preselects when exactly one eligible event exists and cannot be changed after creation.<sup class="blog-citation"><a href="https://almcorp.com/news/chatgpt-ads-conversion-bidding-carousel-ads-august-2026/" target="_blank" rel="noopener noreferrer" aria-label="Source 12: ALM Corp — &quot;ChatGPT Ads Update August 2026: oCPC Bidding, Carousel Ads &amp; New Measurement Tools&quot; (August 18, 2026)." title="ALM Corp — &quot;ChatGPT Ads Update August 2026: oCPC Bidding, Carousel Ads &amp; New Measurement Tools&quot; (August 18, 2026).">[12]</a></sup>
 2. **Dynamic URL parameters (macros).** Four macros — `{campaign_id}`, `{ad_group_id}`, `{ad_id}`, `{ad_account_id}` — auto-populate in destination URLs, ending manual UTM tagging per ad and simplifying GA4 joins.
@@ -223,7 +223,7 @@ Earlier July additions worth knowing: an Ads API for bulk changes, AppsFlyer and
 2. **Use dynamic URL macros or full UTM strings** on every destination URL so your analytics can separate ChatGPT traffic.
 3. **Choose attribution windows deliberately.** Conversational research cycles run long; 7-day click default fits most e-commerce/SaaS, and the 1-day view-through number is directional, not billable evidence.
 4. **Baseline branded search and direct traffic before launch.** Post-purchase surveys ("how did you hear about us?") capture the halo that aggregate reporting misses — research cited by practitioners found AI-platform referral traffic converting at 14.2% vs 2.8% for Google traffic.<sup class="blog-citation"><a href="https://topgrowthmarketing.com/how-to-measure-chatgpt-ads/" target="_blank" rel="noopener noreferrer" aria-label="Source 16: Top Growth Marketing — &quot;How to Measure ChatGPT Ads (And What You Can&#x27;t — Yet)&quot; (updated August 2026)." title="Top Growth Marketing — &quot;How to Measure ChatGPT Ads (And What You Can&#x27;t — Yet)&quot; (updated August 2026).">[16]</a></sup>
-5. **Check the consent mechanics.** The pixel exposes `oaiq("consent", false)` to suppress events before consent, and blocked events are not replayed. Reports say consent defaults to true unless explicitly denied. Get legal review wherever prior consent is required.
+5. **Mind the consent mechanics.** The pixel exposes `oaiq("consent", false)` to suppress events before consent, and blocked events are not replayed. Reports say consent defaults to true unless explicitly denied. Get legal review wherever prior consent is required.
 
 ---
 
@@ -233,7 +233,7 @@ Earlier July additions worth knowing: an Ads API for bulk changes, AppsFlyer and
 
 ### Placement rules (where ads may NOT appear)
 
-Ads are excluded from two context classes:<sup class="blog-citation"><a href="https://openai.com/policies/ad-policies/" target="_blank" rel="noopener noreferrer" aria-label="Source 8: OpenAI — &quot;Ad policies&quot; (last updated August 10, 2026)." title="OpenAI — &quot;Ad policies&quot; (last updated August 10, 2026).">[8]</a></sup>
+Ads are excluded from two context classes:<sup class="blog-citation"><a href="https://openai.com/policies/ad-policies/" target="_blank" rel="noopener noreferrer" aria-label="Source 8: OpenAI — &quot;Ad policies&quot; (last updated September 10, 2026)." title="OpenAI — &quot;Ad policies&quot; (last updated September 10, 2026).">[8]</a></sup>
 
 - **Brand-unsafe contexts:** child safety, cyber abuse, hate or harassment, misinformation, terrorism, weapons, suicide or self-harm, political content, and similar topics.
 - **Sensitive user contexts:** emotionally reliant interactions, mental and personal health conversations, sensitive user journeys.
@@ -274,7 +274,7 @@ The honest strategist's read: ChatGPT ads are not a replacement for Google or Me
 
 ## What Are the Current Limitations of ChatGPT Ads?
 
-Five structural constraints apply as of August 21, 2026:
+Five structural constraints persist as of August 21, 2026:
 
 1. **No demographic or audience-attribute targeting** — context hints and geo are the levers; that's it.
 2. **Aggregated reporting only.** No audience insight, no placement data, no visibility into which conversation types triggered an ad or what ChatGPT said before it appeared.
@@ -350,7 +350,7 @@ Reports say the pilot crossed a $100M annualized run rate in six weeks. OpenAI p
 ## Publishing Appendix: SEO/GEO Metadata for This Guide
 
 - **Title tag (≤60 chars):** ChatGPT Ads Guide 2026: Pricing, Formats & New Features
-- **Meta description (≤160 chars):** ChatGPT Ads guide for August 2026: pricing, ad formats, oCPC bidding, measurement pixel, markets, policies and setup steps. Claims checked against OpenAI sources.
+- **Meta description (≤160 chars):** ChatGPT Ads guide for August 2026: pricing, ad formats, oCPC bidding, measurement pixel, markets, policies and setup steps.
 - **Primary entity:** ChatGPT Ads · **Supporting entities:** OpenAI, Ads Manager, OAIQ pixel, Conversions API, ChatGPT Go, oCPC.
 - **Schema:** No JSON-LD exists in the repository yet. Add a shared Organization block that is identical on every page, plus a page-specific block for each guide with its own `name`, `url` and `dateModified` (2026-10-26).
 - **AI-crawler checklist:** robots.txt permits GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended; serve fresh sitemap; consider llms.txt.
