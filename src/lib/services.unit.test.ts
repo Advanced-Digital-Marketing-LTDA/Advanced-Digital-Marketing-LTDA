@@ -2,7 +2,7 @@
  * Guards the option-CTA anchor invariant: one-time and free options must never
  * default into the recurring subscription checkout (#subscribe) or inherit a
  * pricing section that does not contain them (#builds for the one-time web
- * audits/sprints) — they resolve to the contact form (with the option's
+ * audits) — they resolve to the contact form (with the option's
  * subject when it has one).
  *
  * The resolution uses the same `resolveOptionCtaHref` that `ServicePage.svelte`
@@ -53,7 +53,7 @@ describe('service option CTA anchors', () => {
       }
     }
     // Fails loudly if a `per` string is reworded and silently empties the guard.
-    expect(checked, 'no one-time option was classified — check the `per` copy match').toBe(20)
+    expect(checked, 'no one-time option was classified — check the `per` copy match').toBe(12)
   })
 
   it('never points any option at the recurring checkout anchor', () => {
@@ -73,7 +73,7 @@ describe('service option CTA anchors', () => {
         }
       }
     }
-    expect(checked, 'no one-time option was classified — check the `per` copy match').toBe(20)
+    expect(checked, 'no one-time option was classified — check the `per` copy match').toBe(12)
   })
 
   it('preselects only the clicked Technical SEO option in the configurator', () => {

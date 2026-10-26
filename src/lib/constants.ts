@@ -193,7 +193,7 @@ const GEO_SERVICES_CARD: CopySource<HomeService> = {
 const WEB_DEVELOPMENT_SERVICES_CARD: CopySource<HomeService> = {
   jp: C('開発'),
   title: L('Web Development', 'Sites e landing pages'),
-  line: L('Sites built to rank from the first commit.', 'Caminhos claros para WhatsApp e orçamento.'),
+  line: L('Sites built with search foundations from the first commit.', 'Caminhos claros para WhatsApp e orçamento.'),
   detail: L(
     'Next.js and Astro builds where performance budgets, semantic HTML and structured data are requirements, not afterthoughts. Migrations planned around ranking risk — redirects, QA and monitoring built in.',
     'Páginas rápidas, mobile-first e com mensagem clara, construídas para transformar busca em conversa e pedido de orçamento.',

@@ -199,15 +199,14 @@ describe('Portuguese GEO service refresh', () => {
     expect(body).toContain('href="/pt-br/contato/"')
   })
 
-  it('preserves the three GEO offers and renders no new GEO block on the English page', () => {
+  it('preserves the two GEO offers and renders no new GEO block on the English page', () => {
     const portuguese = geoDocument('pt-BR').body
     expect(portuguese).toContain('R$ 2.400')
-    expect(portuguese).toContain('R$ 6.800')
     expect(portuguese).toContain('R$ 2.900')
 
     const english = geoDocument('en-US').body
     expect(english).not.toContain('geo-detail')
-    for (const offer of ['The Citation Audit', 'Citation Sprint', 'Visibility Retainer']) {
+    for (const offer of ['The Citation Audit', 'Visibility Retainer']) {
       expect(english).toContain(offer)
     }
   })

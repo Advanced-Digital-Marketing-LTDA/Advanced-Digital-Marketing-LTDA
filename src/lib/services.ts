@@ -148,8 +148,8 @@ const SERVICE_META_SOURCE: CopySource<Record<ServiceId, ServiceMeta>> = {
   geo: {
     title: L('Advanced Digital Marketing LTDA | GEO', 'Advanced Digital Marketing LTDA | GEO e visibilidade em IA'),
     description: L(
-      'GEO by Advanced Digital Marketing: entity mapping, answer-first content and citation tracking that get you quoted by ChatGPT, Perplexity and Google AI Overviews.',
-      'GEO pela Advanced Digital Marketing: mapeamento de entidades, conteúdo answer-first e rastreamento de citações para você ser citado pelo nome no ChatGPT, Perplexity e AI Overviews do Google.',
+      'GEO by Advanced Digital Marketing: entity mapping, answer-first content and citation tracking for ChatGPT, Perplexity and Google AI Overviews.',
+      'GEO pela Advanced Digital Marketing: mapeamento de entidades, conteúdo answer-first e rastreamento de citações para ChatGPT, Perplexity e AI Overviews do Google.',
     ),
   },
   'web-development': {
@@ -187,7 +187,7 @@ export const SERVICE_META: Record<Locale, Record<ServiceId, ServiceMeta>> = {
   'pt-BR': resolveCopy<Record<ServiceId, ServiceMeta>>(SERVICE_META_SOURCE, 'pt-BR'),
 }
 
-/** Copy shared verbatim across the audit/sprint/retainer service pages. */
+/** Copy shared verbatim across the audit/retainer service pages. */
 const SHARED = {
   optionsLabel: L('Options', 'Opções'),
   optionsNote: L(
@@ -208,7 +208,6 @@ const SHARED = {
   perTwoWeeks: L('One time · 2 weeks', 'Pagamento único · 2 semanas'),
   perFourWeeks: L('One time · 4 weeks', 'Pagamento único · 4 semanas'),
   perMonth: L('Per month', 'Por mês'),
-  ctaBookSprint: L('Book the sprint', 'Agendar o sprint'),
   ctaTalkRetainers: L('Talk retainers', 'Falar sobre mensalidade'),
   itemRoadmap90: L('90-day roadmap, in writing', 'Roteiro de 90 dias, por escrito'),
   itemWastedSpend: L('Wasted spend analysis', 'Análise de gasto desperdiçado'),
@@ -237,29 +236,6 @@ function engagementSteps(
     { jp: C('実装'), title: SHARED.stepTitles.build, text: build },
     { jp: C('計測'), title: SHARED.stepTitles.measure, text: measure },
   ]
-}
-
-/** The four engagement services offer the same 4-week, R$6,800 sprint: a
- *  one-time engagement with no catalog entry. Services that HAVE a pricing
- *  section add `pricingAnchor: null` at the call site so the sprint CTA stays
- *  in the contact flow instead of scrolling to an unrelated checkout. */
-function sprintOption(
-  name: CopySource<string>,
-  desc: CopySource<string>,
-  items: CopySource<string>[],
-  subject: CopySource<string>,
-): CopySource<ServiceOption> {
-  return {
-    flag: SHARED.flagMostChosen,
-    jp: C('実装'),
-    name,
-    priceBRL: 6800,
-    per: SHARED.perFourWeeks,
-    desc,
-    items,
-    cta: SHARED.ctaBookSprint,
-    subject,
-  }
 }
 
 /** The four engagement services offer the same R$2,900/month retainer
@@ -396,22 +372,6 @@ const GEO_AUDIT: CopySource<ServiceOption> = {
   subject: C('Citation audit request'),
 }
 
-const GEO_SPRINT: CopySource<ServiceOption> = sprintOption(
-  L('Citation Sprint', 'Sprint de Citações'),
-  L(
-    'The audit plus the build: entity pages, answer-first content and llms.txt, shipped and re-checked.',
-    'A auditoria mais a construção: páginas de entidade, conteúdo answer-first e llms.txt, entregues e re-verificados.',
-  ),
-  [
-    L('Everything in The Citation Audit', 'Tudo o que está na Auditoria de Citações'),
-    L('Entity pages and schema deployed', 'Páginas de entidade e schema implantados'),
-    L('Answer-first content written', 'Conteúdo answer-first escrito'),
-    L('llms.txt and machine-readable feeds', 'llms.txt e feeds legíveis por máquinas'),
-    L('Before/after citation re-check', 'Re-verificação de citações antes/depois'),
-  ],
-  C('Citation sprint request'),
-)
-
 // GEO has no subscription configurator (SERVICE_SUBSCRIPTIONS is empty), so the
 // service default '#subscribe' anchor would scroll to nothing — the builder
 // correctly keeps this retainer CTA in the contact flow.
@@ -475,27 +435,6 @@ const WEB_AUDIT: CopySource<ServiceOption> = {
   pricingAnchor: null,
 }
 
-// One-time engagement — the #builds panel prices the website/ecommerce build
-// itself, not this sprint, so pricingAnchor: null keeps its CTA on the form.
-const WEB_SPRINT: CopySource<ServiceOption> = {
-  ...sprintOption(
-    L('Build Sprint', 'Sprint de Build'),
-    L(
-      'Design and build of a focused marketing site, engineered to rank from launch.',
-      'Design e construção de um site de marketing focado, projetado para ranquear desde o lançamento.',
-    ),
-    [
-      L('Everything in The Build Audit', 'Tudo o que está na Auditoria de Build'),
-      L('Design and front-end build', 'Design e construção de front-end'),
-      L('Performance budget enforced', 'Orçamento de performance cumprido'),
-      L('Semantic HTML and schema built in', 'HTML semântico e schema embutidos'),
-      L('Headless CMS setup', 'Configuração de CMS headless'),
-    ],
-    C('Build sprint request'),
-  ),
-  pricingAnchor: null,
-}
-
 // The R$2,900 build retainer has no catalog entry — the #subscribe
 // configurator only knows the R$300/mo hosting product, so sending this CTA
 // there would let the visitor buy hosting instead. The builder routes the
@@ -526,8 +465,8 @@ const WEB_STEPS: CopySource<ServiceStep[]> = engagementSteps(
     'Um plano de build com orçamentos de performance, HTML semântico e dados estruturados travados antes de escrever uma linha.',
   ),
   L(
-    'Design, code and CMS in weekly releases. You can verify the site ranking before it launches.',
-    'Design, código e CMS em releases semanais. Você consegue ver o site ranqueando antes do lançamento.',
+    'Design, code and CMS in weekly releases. You review the staging build before it launches.',
+    'Design, código e CMS em releases semanais. Você revisa a versão de homologação antes do lançamento.',
   ),
   L(
     'Vitals, indexation and rankings tracked from launch, reported monthly in plain English.',
@@ -555,25 +494,6 @@ const ADS_AUDIT: CopySource<ServiceOption> = {
   ],
   cta: L('Start with the account audit', 'Começar com a auditoria de conta'),
   subject: C('Account audit request'),
-  pricingAnchor: null,
-}
-
-const ADS_SPRINT: CopySource<ServiceOption> = {
-  ...sprintOption(
-    L('Launch Sprint', 'Sprint de Lançamento'),
-    L(
-      'The restructure shipped: new account architecture, campaigns, landing pages and tracking.',
-      'A reestruturação entregue: nova arquitetura de conta, campanhas, landing pages e rastreamento.',
-    ),
-    [
-      L('Everything in The Account Audit', 'Tudo o que está na Auditoria de Conta'),
-      L('Account restructure and build-out', 'Reestruturação e construção da conta'),
-      L('Landing pages written and built', 'Landing pages escritas e construídas'),
-      L('Feed and conversion tracking', 'Feeds e rastreamento de conversões'),
-      L('Launch with weekly reporting', 'Lançamento com relatórios semanais'),
-    ],
-    C('Launch sprint request'),
-  ),
   pricingAnchor: null,
 }
 
@@ -636,25 +556,6 @@ const META_AUDIT: CopySource<ServiceOption> = {
   ],
   cta: L('Start with the Meta audit', 'Começar com a auditoria Meta'),
   subject: C('Meta audit request'),
-  pricingAnchor: null,
-}
-
-const META_SPRINT: CopySource<ServiceOption> = {
-  ...sprintOption(
-    L('Meta Launch', 'Sprint Meta'),
-    L(
-      'The restructure shipped: new campaigns, audiences, creative and tracking, launched and reporting.',
-      'A reestruturação entregue: novas campanhas, públicos, criativos e rastreamento, lançados e reportando.',
-    ),
-    [
-      L('Everything in The Meta Audit', 'Tudo o que está na Auditoria Meta'),
-      L('Campaign restructure and build-out', 'Reestruturação e construção de campanhas'),
-      L('Audience and creative testing', 'Testes de públicos e criativos'),
-      L('Pixel and conversion tracking', 'Pixel e rastreamento de conversões'),
-      L('Launch with weekly reporting', 'Lançamento com relatórios semanais'),
-    ],
-    C('Meta launch request'),
-  ),
   pricingAnchor: null,
 }
 
@@ -738,7 +639,7 @@ const TECHNICAL_SEO_ENTRY: CopySource<ServiceContent> = {
   navLabel: L('Technical SEO', 'SEO técnico e local'),
   navJp: C('技術'),
   kicker: L('Service · Technical SEO', 'Serviço · SEO técnico e local'),
-  promise: L('Rankings start at the code level', 'A classificação começa no código'),
+  promise: L('Technical search foundations, delivered in code', 'Fundamentos técnicos de busca, entregues no código'),
   hero: [L('Technical', 'SEO técnico'), L('SEO.', 'e local.')],
   sub: L(
     'Crawl architecture, Core Web Vitals, structured data and indexation control, fixed where the problem actually lives: in the code.',
@@ -769,7 +670,7 @@ const GEO_ENTRY: CopySource<ServiceContent> = {
   navLabel: C('GEO'),
   navJp: C('生成'),
   kicker: L('Service · GEO', 'Serviço · GEO'),
-  promise: L('Get cited by the answer engines', 'Seja citado pelos motores de resposta'),
+  promise: L('Structured content for answer engines', 'Conteúdo estruturado para motores de resposta'),
   hero: [L('Be the', 'Seja a'), L('answer.', 'resposta.')],
   sub: L(
     'Generative Engine Optimization. We structure your content, entities and authority signals so ChatGPT, Perplexity and Google AI Overviews quote you by name when your buyers ask.',
@@ -778,10 +679,10 @@ const GEO_ENTRY: CopySource<ServiceContent> = {
   optionsLabel: SHARED.optionsLabel,
   optionsHeading: L('Get into the answer, not under it.', 'Entre na resposta, não fique embaixo dela.'),
   optionsLead: L(
-    'Three ways to start. Every option ends with citations you can search for and verify yourself, not a report of recommendations.',
-    'Três formas de começar. Toda opção termina com citações que você mesmo consegue buscar e verificar, não um relatório de recomendações.',
+    'Two ways to start. Every option ends with citations you can search for and verify yourself, not a report of recommendations.',
+    'Duas formas de começar. Toda opção termina com citações que você mesmo consegue buscar e verificar, não um relatório de recomendações.',
   ),
-  options: [GEO_AUDIT, GEO_SPRINT, GEO_RETAINER],
+  options: [GEO_AUDIT, GEO_RETAINER],
   optionsNote: SHARED.optionsNote,
   optionsNoteStrong: SHARED.optionsNoteStrong,
   processLabel: SHARED.processLabel,
@@ -799,19 +700,19 @@ const WEB_DEVELOPMENT_ENTRY: CopySource<ServiceContent> = {
   navLabel: L('Web Development', 'Sites e landing pages'),
   navJp: C('開発'),
   kicker: L('Service · Web Development', 'Serviço · Sites e landing pages'),
-  promise: L('Sites built to rank from the first commit', 'Sites construídos para ranquear desde o primeiro commit'),
+  promise: L('Sites built with search foundations from the first commit', 'Sites construídos com fundamentos de busca desde o primeiro commit'),
   hero: [L('Built to', 'Construído'), L('rank.', 'para ranquear.')],
   sub: L(
     'Next.js and Astro builds where performance budgets, semantic HTML and structured data are requirements, not afterthoughts. Migrations planned around ranking risk — redirects, QA and monitoring built in.',
     'Construções em Next.js e Astro onde orçamentos de performance, HTML semântico e dados estruturados são requisitos, não reflexões tardias. Migrações planejadas em torno do risco de ranking — redirecionamentos, QA e monitoramento incluídos.',
   ),
   optionsLabel: SHARED.optionsLabel,
-  optionsHeading: L('Build it right, rank from day one.', 'Construa certo, ranqueie desde o dia um.'),
+  optionsHeading: L('Build it right, with search foundations from day one.', 'Construa certo, com fundamentos de busca desde o dia um.'),
   optionsLead: L(
-    'Three ways to engage, one standard of work. Every build ships with performance budgets, semantic HTML and structured data included.',
-    'Três formas de engajar, um padrão de trabalho. Toda construção entrega orçamentos de performance, HTML semântico e dados estruturados incluídos.',
+    'Two ways to engage, one standard of work. Every build ships with performance budgets, semantic HTML and structured data included.',
+    'Duas formas de engajar, um padrão de trabalho. Toda construção entrega orçamentos de performance, HTML semântico e dados estruturados incluídos.',
   ),
-  options: [WEB_AUDIT, WEB_SPRINT, WEB_RETAINER],
+  options: [WEB_AUDIT, WEB_RETAINER],
   optionsNote: SHARED.optionsNote,
   optionsNoteStrong: SHARED.optionsNoteStrong,
   processLabel: SHARED.processLabel,
@@ -819,7 +720,7 @@ const WEB_DEVELOPMENT_ENTRY: CopySource<ServiceContent> = {
   steps: WEB_STEPS,
   auditCta: L('Start with the build audit', 'Comece com a auditoria de build'),
   contactLabel: SHARED.contactLabel,
-  contactHeading: L('Sites that rank from the first commit.', 'Sites que ranqueiam desde o primeiro commit.'),
+  contactHeading: L('Sites built with search foundations from the first commit.', 'Sites construídos com fundamentos de busca desde o primeiro commit.'),
   contactSub: SHARED.contactSub,
   bookCall: SHARED.bookCall,
   seeOptions: SHARED.seeOptions,
@@ -839,10 +740,10 @@ const PAID_SEARCH_ENTRY: CopySource<ServiceContent> = {
   optionsLabel: SHARED.optionsLabel,
   optionsHeading: L('Spend that compounds, not burns.', 'Gasto que compõe, não queima.'),
   optionsLead: L(
-    'Three ways to start. Every option runs on the same keyword map as your organic strategy, so the channels reinforce each other.',
-    'Três formas de começar. Toda opção roda no mesmo mapa de palavras-chave da sua estratégia orgânica, para os canais se reforçarem.',
+    'Two ways to start. Every option runs on the same keyword map as your organic strategy, so the channels reinforce each other.',
+    'Duas formas de começar. Toda opção roda no mesmo mapa de palavras-chave da sua estratégia orgânica, para os canais se reforçarem.',
   ),
-  options: [ADS_AUDIT, ADS_SPRINT, ADS_RETAINER],
+  options: [ADS_AUDIT, ADS_RETAINER],
   optionsNote: SHARED.optionsNote,
   optionsNoteStrong: SHARED.optionsNoteStrong,
   processLabel: SHARED.processLabel,
@@ -850,7 +751,7 @@ const PAID_SEARCH_ENTRY: CopySource<ServiceContent> = {
   steps: ADS_STEPS,
   auditCta: L('Start with the account audit', 'Comece com a auditoria de conta'),
   contactLabel: SHARED.contactLabel,
-  contactHeading: L('Turn spend into rankings you own.', 'Transforme gasto em rankings que são seus.'),
+  contactHeading: L('Ad spend with measured results and stated limits.', 'Gasto em anúncios com resultados medidos e limites declarados.'),
   contactSub: SHARED.contactSub,
   bookCall: SHARED.bookCall,
   seeOptions: SHARED.seeOptions,
@@ -870,10 +771,10 @@ const META_ADS_ENTRY: CopySource<ServiceContent> = {
   optionsLabel: SHARED.optionsLabel,
   optionsHeading: L('Spend where the eyes are.', 'Gaste onde estão os olhos.'),
   optionsLead: L(
-    'Three ways to start. Every option runs on the same conversion and audience data as the rest of your strategy, so the channels reinforce each other.',
-    'Três formas de começar. Toda opção roda nos mesmos dados de conversão e público do restante da sua estratégia, para os canais se reforçarem.',
+    'Two ways to start. Every option runs on the same conversion and audience data as the rest of your strategy, so the channels reinforce each other.',
+    'Duas formas de começar. Toda opção roda nos mesmos dados de conversão e público do restante da sua estratégia, para os canais se reforçarem.',
   ),
-  options: [META_AUDIT, META_SPRINT, META_RETAINER],
+  options: [META_AUDIT, META_RETAINER],
   optionsNote: SHARED.optionsNote,
   optionsNoteStrong: SHARED.optionsNoteStrong,
   processLabel: SHARED.processLabel,
