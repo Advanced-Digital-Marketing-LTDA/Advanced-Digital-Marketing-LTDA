@@ -223,7 +223,7 @@ Earlier July additions worth knowing: an Ads API for bulk changes, AppsFlyer and
 2. **Use dynamic URL macros or full UTM strings** on every destination URL so your analytics can separate ChatGPT traffic.
 3. **Choose attribution windows deliberately.** Conversational research cycles run long; 7-day click default fits most e-commerce/SaaS, and the 1-day view-through number is directional, not billable evidence.
 4. **Baseline branded search and direct traffic before launch.** Post-purchase surveys ("how did you hear about us?") capture the halo that aggregate reporting misses — research cited by practitioners found AI-platform referral traffic converting at 14.2% vs 2.8% for Google traffic.<sup class="blog-citation"><a href="https://topgrowthmarketing.com/how-to-measure-chatgpt-ads/" target="_blank" rel="noopener noreferrer" aria-label="Source 16: Top Growth Marketing — &quot;How to Measure ChatGPT Ads (And What You Can&#x27;t — Yet)&quot; (updated August 2026)." title="Top Growth Marketing — &quot;How to Measure ChatGPT Ads (And What You Can&#x27;t — Yet)&quot; (updated August 2026).">[16]</a></sup>
-5. **Mind the consent mechanics.** The pixel exposes `oaiq("consent", false)` to suppress events before consent, and blocked events are not replayed. Reports say consent defaults to true unless explicitly denied. Get legal review wherever prior consent is required.
+5. **Mind the consent mechanics.** The pixel exposes `oaiq("consent", false)` to suppress events pre-consent; blocked events are not replayed. Consent defaults to true unless explicitly denied — a legal review point anywhere prior consent is required.
 
 ---
 

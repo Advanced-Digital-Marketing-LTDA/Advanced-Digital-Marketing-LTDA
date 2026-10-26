@@ -5,6 +5,9 @@ describe('blog content', () => {
   it('publishes the ChatGPT Ads guide with linked inline citations', () => {
     expect(BLOG_ARTICLES).toHaveLength(1)
     expect((CHATGPT_ADS_ARTICLE.html.match(/class="blog-citation"/g) ?? [])).toHaveLength(23)
+    const citationHrefs = [...CHATGPT_ADS_ARTICLE.html.matchAll(/<sup class="blog-citation"><a href="([^"]+)"/g)].map((match) => match[1])
+    expect(citationHrefs).toHaveLength(23)
+    expect(citationHrefs.every((href) => href.startsWith('https://'))).toBe(true)
     expect(CHATGPT_ADS_ARTICLE.html).toContain('https://openai.com/policies/ad-policies/')
   })
 
