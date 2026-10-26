@@ -11,6 +11,7 @@
   // Single contact channel: the opt-in contact form page.
   let ctaHref = $derived(LOCALE_ROUTES.contact[locale])
   let ctaLabel = $derived(content.bookCall)
+  let servicesHref = $derived(locale === 'pt-BR' ? '/pt-br/servicos/' : '/services/')
 </script>
 
 <section class="editorial-subhero">
@@ -54,5 +55,6 @@
   <div class="section-inner">
     <MotionHeading class="section-heading" text={content.contactHeading} />
     <a class="hanko-cta" href={ctaHref}><span class="hanko-cta__seal font-jp-serif">{JP.seal}</span><span>{ctaLabel} <span aria-hidden="true">→</span></span></a>
+    <p><a href={servicesHref}>{locale === 'pt-BR' ? 'Ver todos os serviços' : 'See all services'} <span aria-hidden="true">→</span></a></p>
   </div>
 </section>

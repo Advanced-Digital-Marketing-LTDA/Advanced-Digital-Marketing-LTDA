@@ -5,7 +5,7 @@
   import { PAGE_COPY } from '$lib/constants'
   import { SITE_MOTION, type SiteMotion } from '$lib/client/site-motion'
   import { setupReveals } from '$lib/client/reveal'
-  import { contactHref } from '$lib/services'
+  import { contactHref, SERVICE_ROUTES, type ServiceId } from '$lib/services'
   import { LOCALE_ROUTES, type Locale } from '$lib/locale'
   import { words } from '$lib/text'
 
@@ -15,6 +15,8 @@
   // Every contact/quote CTA on the site funnels into the opt-in contact form
   // page (single channel, verified opt-in).
   let contactRoute = $derived(LOCALE_ROUTES.contact[locale])
+  // Same order as the service cards in the home copy.
+  const serviceIds: ServiceId[] = ['technical-seo', 'geo', 'web-development', 'paid-search', 'meta-ads']
   let openService = $state(-1)
   const motion = getContext<SiteMotion>(SITE_MOTION)
   // Heading word lists computed once per heading (not per loop iteration).
@@ -65,7 +67,7 @@
     </div>
   </section>
 
-  <section class="paper-sec" id="services"><div class="kanji ink-stroke" style="left:-6vw;bottom:-10%" aria-hidden="true">検索</div><div class="sec-inner"><span class="sec-jp rise">{content.servicesLabel}<span class="font-jp">サービス</span></span><h2 class="shear">{#each servicesWords as word, i}<span class="w">{word}{i < servicesWords.length - 1 ? ' ' : ''}</span>{/each}</h2><div class="svc-list">{#each content.services as service, i (service.title)}<div class="svc"><button class="svc-head" type="button" aria-label={service.title + ' ' + content.detailsSuffix} aria-expanded={openService === i} aria-controls={'service-' + i} onclick={() => (openService = openService === i ? -1 : i)}><span class="svc-jp font-jp">{service.jp}</span><span class="svc-en"><b>{service.title}</b><i>{service.line}</i></span><span class="svc-arrow" aria-hidden="true">→</span></button><div id={'service-' + i} class="svc-body"><div class="svc-body-in"><div class="svc-body-grid"><p>{service.detail}</p><div class="svc-tags">{#each service.tags as tag (tag)}<span>{tag}</span>{/each}</div></div><a class="svc-cta" href={contactHref(contactRoute, service.title)}>{content.serviceCta}<span aria-hidden="true"> →</span></a></div></div></div>{/each}</div></div></section>
+  <section class="paper-sec" id="services"><div class="kanji ink-stroke" style="left:-6vw;bottom:-10%" aria-hidden="true">検索</div><div class="sec-inner"><span class="sec-jp rise">{content.servicesLabel}<span class="font-jp">サービス</span></span><h2 class="shear">{#each servicesWords as word, i}<span class="w">{word}{i < servicesWords.length - 1 ? ' ' : ''}</span>{/each}</h2><div class="svc-list">{#each content.services as service, i (service.title)}<div class="svc"><button class="svc-head" type="button" aria-label={service.title + ' ' + content.detailsSuffix} aria-expanded={openService === i} aria-controls={'service-' + i} onclick={() => (openService = openService === i ? -1 : i)}><span class="svc-jp font-jp">{service.jp}</span><span class="svc-en"><b>{service.title}</b><i>{service.line}</i></span><span class="svc-arrow" aria-hidden="true">→</span></button><div id={'service-' + i} class="svc-body"><div class="svc-body-in"><div class="svc-body-grid"><p>{service.detail}</p><div class="svc-tags">{#each service.tags as tag (tag)}<span>{tag}</span>{/each}</div></div><a class="svc-link" href={SERVICE_ROUTES[serviceIds[i]][locale]}>{locale === 'pt-BR' ? 'Veja a página completa de' : 'See the full page for'} {service.title}<span aria-hidden="true"> →</span></a><a class="svc-cta" href={contactHref(contactRoute, service.title)}>{content.serviceCta}<span aria-hidden="true"> →</span></a></div></div></div>{/each}</div></div></section>
 
   <section id="process"><div class="kanji" style="right:-5vw;bottom:-14%" aria-hidden="true">工程</div><div class="sec-inner"><span class="sec-jp rise">{content.processLabel}<span class="font-jp">プロセス</span></span><h2 class="shear">{#each processWords as word, i}<span class="w">{word}{i < processWords.length - 1 ? ' ' : ''}</span>{/each}</h2><div class="steps">{#each processSteps as step (step.title)}<div class="step rise"><div class="step-in"><span class="step-jp font-jp">{step.jp}</span><span class="step-en">{step.title}</span><p>{step.text}</p></div></div>{/each}</div>{#if locale === 'pt-BR'}<p class="process-closing rise">{content.processClosing}</p>{/if}<div class="proc-cta rise"><a class="btn btn-solid" href={contactRoute}>{content.processCta}</a></div></div></section>
 
