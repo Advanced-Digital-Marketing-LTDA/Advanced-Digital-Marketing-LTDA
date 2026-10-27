@@ -18,6 +18,21 @@ I deployed it on Coolify, connected my Codex subscription, and started configuri
 
 Paperclip gave me useful ways to organize agents, but I spent too much time troubleshooting to rely on it for my business during this setup. I would treat it as an experiment until I can run and recover tasks reliably.
 
+## What is Paperclip?
+
+[Paperclip](https://github.com/paperclipai/paperclip) is a platform for organizing AI agents around company work. In my installation, it provided agents, tasks, routines, budgets, permissions, and run histories.
+
+## Key takeaways
+
+- Paperclip gives agents a shared structure for tasks and oversight.
+- My Coolify deployment required an external PostgreSQL database and additional setup for subscription sign-in.
+- Missing usage receipts and a built-in routine's invalid user identity blocked work in my installation.
+- Detailed run and accounting information helped me investigate, but recovery remained difficult.
+
+## Summary
+
+Paperclip offers useful controls for managing an AI team. My self-hosted setup required enough troubleshooting that I could not yet depend on it for business work.
+
 ## What I liked about Paperclip
 
 The biggest attraction was having a place to organize agents around actual business work.
