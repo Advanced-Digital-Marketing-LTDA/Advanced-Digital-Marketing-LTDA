@@ -43,6 +43,8 @@ describe('blog language switching', () => {
 
   it('links Portuguese navigation to the localized blog index', () => {
     state.url = new URL('/pt-br/', 'https://example.test')
-    expect(render(Nav).body).toContain('href="/pt-br/blog/">Blog</a>')
+    const header = render(Nav).body.match(/<header\b[\s\S]*?<\/header>/)?.[0]
+    expect(header).toBeDefined()
+    expect(header).toContain('href="/pt-br/blog/">Blog</a>')
   })
 })

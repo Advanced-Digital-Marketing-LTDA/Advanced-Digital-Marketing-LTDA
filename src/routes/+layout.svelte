@@ -34,7 +34,7 @@
   <Nav />
   <Rail />
   <LanguageSuggestion />
-  <main class="page-shell">
+  <main id="main-content" class="page-shell" tabindex="-1">
     {@render children()}
   </main>
   <Footer />

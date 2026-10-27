@@ -2,6 +2,7 @@ import type { Locale } from '$lib/locale'
 import { normalizePath } from './path.ts'
 import { isServiceId, type CatalogServiceId } from './catalog'
 import { C, L, resolveCopy, type CopySource } from './localized-copy'
+import { INQUIRY_CTA } from './common-copy'
 
 export const SERVICE_IDS = ['technical-seo', 'geo', 'web-development', 'paid-search', 'meta-ads', 'ai-automation'] as const
 export type ServiceId = (typeof SERVICE_IDS)[number]
@@ -202,7 +203,7 @@ const SHARED = {
     'One email starts it. We reply within one business day with next steps and a straight answer on whether we can help.',
     'Um e-mail começa tudo. Respondemos em até um dia útil com os próximos passos e uma resposta direta sobre se podemos ajudar.',
   ),
-  bookCall: L('Book a strategy call', 'Agendar uma conversa'),
+  bookCall: INQUIRY_CTA,
   seeOptions: L('See the options', 'Ver as opções'),
   flagMostChosen: L('Most chosen', 'Mais escolhido'),
   perTwoWeeks: L('One time · 2 weeks', 'Pagamento único · 2 semanas'),
