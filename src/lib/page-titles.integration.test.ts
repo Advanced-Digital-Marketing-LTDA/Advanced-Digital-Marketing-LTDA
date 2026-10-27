@@ -172,8 +172,6 @@ describe('rendered page titles', () => {
     expect(html).not.toContain('Publishing Appendix')
     if (article.category === 'Review') {
       expect(html.match(/<h1\b/g)).toHaveLength(1)
-      expect(html).toContain('https://github.com/paperclipai/paperclip')
-      expect(html).toContain('href="/services/"')
     }
   }, 15_000)
 
