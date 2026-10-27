@@ -4,7 +4,8 @@
   import { resolveCopy } from '$lib/localized-copy'
   import type { BlogArticle } from '$lib/server/blog'
 
-  let { article, locale }: { article: BlogArticle; locale: Locale } = $props()
+  let { article }: { article: BlogArticle } = $props()
+  let locale: Locale = $derived(article.locale)
   let copy = $derived(resolveCopy<{review:string;reading:string;contents:string;onPage:string;author:string;bio:string;about:string}>(BLOG_ARTICLE_COPY, locale))
   let pt = $derived(locale === 'pt-BR')
   let titleSuffix = $derived(article.category === 'Review' ? 'ADM' : 'Advanced Digital Marketing LTDA')
