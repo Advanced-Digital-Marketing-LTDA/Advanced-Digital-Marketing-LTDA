@@ -78,7 +78,7 @@ function createArticle(
   renderer.heading = function ({ tokens, depth }) {
     const html = this.parser.parseInline(tokens)
     if (depth !== 2) return `<h${depth}>${html}</h${depth}>\n`
-    const text = html.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&')
+    const text = this.parser.parseInline(tokens, new marked.TextRenderer()).replaceAll('<', '').replaceAll('>', '').replaceAll('&amp;', '&')
     const base = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section'
     const count = usedIds.get(base) ?? 0
     usedIds.set(base, count + 1)
