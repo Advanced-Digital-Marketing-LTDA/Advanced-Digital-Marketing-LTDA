@@ -13,6 +13,8 @@
 
 <svelte:head>
   <title>Blog | Advanced Digital Marketing LTDA</title>
+  <link rel="alternate" hreflang="en-US" href="https://advanceddigitalmarketingltda.com/blog/" />
+  <link rel="alternate" hreflang="pt-BR" href="https://advanceddigitalmarketingltda.com/pt-br/blog/" />
   <meta name="description" content="Practical guides on search, AI visibility, paid media, and web engineering from Advanced Digital Marketing LTDA." />
 </svelte:head>
 
