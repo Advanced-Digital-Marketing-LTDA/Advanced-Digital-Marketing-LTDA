@@ -5,4 +5,4 @@
   let { data }: { data: PageServerData } = $props()
 </script>
 
-<BlogArticlePage article={data.article} />
+<BlogArticlePage article={data.article} locale="en-US" />
