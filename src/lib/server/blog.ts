@@ -5,16 +5,23 @@
  * receive the rendered result through their `+page.server.ts` loaders.
  */
 import { marked } from 'marked'
+import type { Locale } from '$lib/locale'
 import articleMarkdown from '../../../docs/ChatGPT-Ads-Complete-Guide-August-2026.md?raw'
+import paperclipMarkdown from '../../../docs/Paperclip-Review-Coolify-Codex-2026.md?raw'
+import paperclipPortuguese from '$lib/content/paperclip-review-pt-br.md?raw'
 
 export type BlogArticle = {
   slug: string
+  locale: Locale
   title: string
+  category: 'Guide' | 'Review'
   metaTitle: string
   description: string
   published: string
   updated: string
   html: string
+  readingMinutes: number
+  headings: { id: string; text: string }[]
 }
 
 /** Splits the YAML frontmatter block off the article body, parsing `key: value`
@@ -59,20 +66,65 @@ function publicArticleMarkdown(markdown: string): string {
   return `${body}\n`
 }
 
-const { fields: frontmatter, body } = splitFrontmatter(articleMarkdown)
-const renderedArticle = marked.parse(publicArticleMarkdown(body), { async: false, gfm: true })
-
-if (typeof renderedArticle !== 'string') throw new Error('Blog article rendering must be synchronous')
-
-export const CHATGPT_ADS_ARTICLE: BlogArticle = {
-  // The slug is the route directory name — src/routes/blog/<slug>/.
-  slug: 'chatgpt-ads-complete-guide-august-2026',
-  title: requiredField(frontmatter, 'title'),
-  metaTitle: requiredField(frontmatter, 'meta_title'),
-  description: requiredField(frontmatter, 'meta_description'),
-  published: requiredDate(frontmatter, 'published'),
-  updated: requiredDate(frontmatter, 'updated'),
-  html: renderedArticle,
+export function uniqueHeadingId(text: string, used: Set<string>): string {
+  const base = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  if (!base) throw new Error(`Heading cannot produce an anchor ID: ${text}`)
+  let id = base
+  let suffix = 2
+  while (used.has(id)) id = `${base}-${suffix++}`
+  used.add(id)
+  return id
 }
 
-export const BLOG_ARTICLES: readonly BlogArticle[] = [CHATGPT_ADS_ARTICLE]
+function createArticle(
+  markdown: string,
+  slug: string,
+  category: BlogArticle['category'],
+  hasPublishingAppendix: boolean,
+  locale: Locale,
+): BlogArticle {
+  const { fields, body } = splitFrontmatter(markdown)
+  const content = hasPublishingAppendix ? publicArticleMarkdown(body) : body
+  const headings: { id: string; text: string }[] = []
+  const usedIds = new Set<string>()
+  const renderer = new marked.Renderer()
+  renderer.heading = function ({ tokens, depth }) {
+    const html = this.parser.parseInline(tokens)
+    if (depth !== 2) return `<h${depth}>${html}</h${depth}>\n`
+    const text = this.parser.parseInline(tokens, new marked.TextRenderer()).replaceAll('<', '').replaceAll('>', '').replaceAll('&amp;', '&')
+    const id = uniqueHeadingId(text, usedIds)
+    headings.push({ id, text })
+    return `<h2 id="${id}">${html}</h2>\n`
+  }
+  const readingMinutes = Math.max(1, Math.ceil(content.trim().split(/\s+/).length / 200))
+  const renderedArticle = marked.parse(content, { async: false, gfm: true, renderer })
+  if (typeof renderedArticle !== 'string') throw new Error('Blog article rendering must be synchronous')
+
+  return {
+    slug,
+    locale,
+    category,
+    title: requiredField(fields, 'title'),
+    metaTitle: requiredField(fields, 'meta_title'),
+    description: requiredField(fields, 'meta_description'),
+    published: requiredDate(fields, 'published'),
+    updated: requiredDate(fields, 'updated'),
+    html: renderedArticle,
+    readingMinutes,
+    headings,
+  }
+}
+
+export const CHATGPT_ADS_ARTICLE = createArticle(
+  articleMarkdown, 'chatgpt-ads-complete-guide-august-2026', 'Guide', true, 'en-US',
+)
+
+export const PAPERCLIP_REVIEW_ARTICLE = createArticle(
+  paperclipMarkdown, 'paperclip-review-coolify-codex', 'Review', false, 'en-US',
+)
+
+export const BLOG_ARTICLES: readonly BlogArticle[] = [PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]
+
+export const PAPERCLIP_REVIEW_PT = createArticle(
+  paperclipPortuguese, 'paperclip-review-coolify-codex', 'Review', false, 'pt-BR',
+)

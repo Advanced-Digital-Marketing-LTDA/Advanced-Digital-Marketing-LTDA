@@ -7,6 +7,7 @@ export function load() {
     articles: BLOG_ARTICLES.map((article) => ({
       slug: article.slug,
       title: article.title,
+      category: article.category,
       description: article.description,
       published: article.published,
     })),

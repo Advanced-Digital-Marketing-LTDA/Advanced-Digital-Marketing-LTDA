@@ -3,7 +3,7 @@ import { createServer } from 'node:net'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { PAGE_META, LOCALE_ROUTES, SERVICES_INDEX_META, SERVICES_INDEX_ROUTES, SITE_ORIGIN, CHROME_COPY } from './locale'
 import { SERVICE_META, SERVICE_ROUTES } from './services'
-import { CHATGPT_ADS_ARTICLE } from './server/blog'
+import { BLOG_ARTICLES } from './server/blog'
 
 const host = '127.0.0.1'
 let origin: string = process.env.PAGE_TITLES_BASE_URL ?? ''
@@ -25,10 +25,10 @@ const routes = [
     })),
   ),
   { path: '/blog/', title: 'Blog | Advanced Digital Marketing LTDA' },
-  {
-    path: '/blog/chatgpt-ads-complete-guide-august-2026/',
-    title: `${CHATGPT_ADS_ARTICLE.metaTitle} | Advanced Digital Marketing LTDA`,
-  },
+  ...BLOG_ARTICLES.map((article) => ({
+    path: `/blog/${article.slug}/`,
+    title: `${article.metaTitle} | ${article.category === 'Review' ? 'ADM' : 'Advanced Digital Marketing LTDA'}`,
+  })),
   { path: '/contact/verify/', title: PAGE_META['en-US'].contact.title },
   { path: '/pt-br/contato/verificar/', title: PAGE_META['pt-BR'].contact.title },
   { path: '/checkout/complete/', title: 'Payment result | Advanced Digital Marketing LTDA' },
@@ -117,7 +117,7 @@ function canonicalHref(head: string): string {
 }
 
 describe('rendered page titles', () => {
-  it.each(['/blog/', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+  it.each(BLOG_ARTICLES.filter((article) => article.slug !== 'paperclip-review-coolify-codex').map((article) => `/blog/${article.slug}/`))(
     'keeps %s in English with its original canonical and no false alternate', async (path) => {
       const { response, html } = await page(`${path}?utm_source=synthetic`)
       const head = documentHead(html)
@@ -132,6 +132,18 @@ describe('rendered page titles', () => {
     }, 15_000,
   )
 
+  it.each(['/blog/', '/blog/paperclip-review-coolify-codex/'])('renders matching Portuguese alternate for %s', async (path) => {
+    for (const localized of [path, `/pt-br${path}`]) {
+      const { response, html } = await page(localized)
+      const head = documentHead(html)
+      expect(response.status).toBe(200)
+      expect(canonicalHref(head)).toBe(`${SITE_ORIGIN}${localized}`)
+      expect(head).toContain(`hreflang="en-US" href="${SITE_ORIGIN}${path}"`)
+      expect(head).toContain(`hreflang="pt-BR" href="${SITE_ORIGIN}/pt-br${path}"`)
+      expect(html).toContain(`href="/pt-br${path}" hreflang="pt-BR"`)
+    }
+  }, 15_000)
+
   it.each(routes)('renders one appropriate title and preserves the canonical for $path', async ({ path, title }) => {
     const { response, html } = await page(path)
     const head = documentHead(html)
@@ -139,6 +151,30 @@ describe('rendered page titles', () => {
     expect(titles(head)).toEqual([title])
     expect(head.match(/rel="canonical"/g)).toHaveLength(1)
     expect(canonicalHref(head)).toBe(`${SITE_ORIGIN}${path}`)
+  }, 15_000)
+
+  it.each(BLOG_ARTICLES)('renders article metadata and body for $slug', async (article) => {
+    const { response, html } = await page(`/blog/${article.slug}/`)
+    const head = documentHead(html)
+    expect(response.status).toBe(200)
+    const json = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(head)
+    expect(json).not.toBeNull()
+    const schema = JSON.parse(json![1])
+    expect(schema['@type']).toBe('BlogPosting')
+    expect(schema.headline).toBe(article.title)
+    expect(schema.author).toMatchObject({ '@type': 'Person', name: 'Andrew Philip Weilbacher' })
+    expect(schema.publisher.name).toBe('Advanced Digital Marketing LTDA')
+    expect(schema.datePublished).toBe(article.published)
+    expect(schema.dateModified).toBe(article.updated)
+    expect(schema).not.toHaveProperty('reviewRating')
+    expect(head).toContain(`property="og:image" content="${SITE_ORIGIN}/favicon.png"`)
+    expect(html).toContain(article.category)
+    expect(html).not.toContain('Publishing Appendix')
+    if (article.category === 'Review') {
+      expect(html.match(/<h1\b/g)).toHaveLength(1)
+      expect(html).toContain('https://github.com/paperclipai/paperclip')
+      expect(html).toContain('href="/services/"')
+    }
   }, 15_000)
 
   it('renders one error title without a canonical for an unknown route', async () => {
