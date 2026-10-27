@@ -78,7 +78,7 @@
   </nav>
   <div class="blog-article__body">
     {@html article.html}
-    <section class="article-author" aria-label="About the author">
+    <section class="article-author" aria-label={pt ? "Sobre o autor" : "About the author"}>
       <h2>{pt ? 'Sobre o autor' : 'About the author'}</h2>
       <p>{pt ? 'Andrew Philip Weilbacher é fundador da Advanced Digital Marketing LTDA. Trabalha com marketing digital, análise de dados, software e automação.' : 'Andrew Philip Weilbacher is the founder of Advanced Digital Marketing LTDA. He works in digital marketing, analytics, software, and automation.'}</p>
       <a href={pt ? '/pt-br/sobre/' : '/about/'}>{pt ? 'Mais sobre Andrew' : 'More about Andrew'}</a>
@@ -98,7 +98,8 @@
 </article>
 
 <style>
-  .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: auto; padding: 0 1.5rem; }
+  .blog-article__body :global(h2[id]) { scroll-margin-top: 6rem; }
+  .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: auto; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
   .article-toc { position: sticky; align-self: start; top: 6rem; display: flex; flex-direction: column; gap: .6rem; max-height: 65vh; overflow: auto; font-size: .85rem; }
   .article-toc a, .mobile-toc a { display: block; color: inherit; }
   .article-author { margin-top: 4rem; border-top: 1px solid currentColor; }
