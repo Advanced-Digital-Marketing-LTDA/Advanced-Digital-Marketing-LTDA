@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { BLOG_ARTICLES, CHATGPT_ADS_ARTICLE, PAPERCLIP_REVIEW_ARTICLE, PAPERCLIP_REVIEW_PT } from './blog'
+import { BLOG_ARTICLES, CHATGPT_ADS_ARTICLE, PAPERCLIP_REVIEW_ARTICLE, PAPERCLIP_REVIEW_PT, uniqueHeadingId } from './blog'
 
 describe('blog content', () => {
+  it('does not collide with headings whose base already includes a suffix', () => {
+    const used = new Set<string>()
+    expect(['A', 'A', 'A-2'].map((heading) => uniqueHeadingId(heading, used))).toEqual(['a', 'a-2', 'a-2-2'])
+  })
+
   it('publishes the Paperclip review with its evidence and without internal metadata', () => {
     expect(BLOG_ARTICLES[0]).toBe(PAPERCLIP_REVIEW_ARTICLE)
     expect(PAPERCLIP_REVIEW_ARTICLE.category).toBe('Review')
