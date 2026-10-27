@@ -154,6 +154,14 @@ import { normalizePath } from './path.ts'
 
 export { normalizePath }
 
+export const BLOG_ARTICLE_COPY = {
+  review: L('Review', 'Avaliação'), reading: L('min read', 'min de leitura'),
+  contents: L('Table of contents', 'Sumário'), onPage: L('On this page', 'Nesta página'),
+  author: L('About the author', 'Sobre o autor'),
+  bio: L('Andrew Philip Weilbacher is the founder of Advanced Digital Marketing LTDA. He works in digital marketing, analytics, software, and automation.', 'Andrew Philip Weilbacher é fundador da Advanced Digital Marketing LTDA. Trabalha com marketing digital, análise de dados, software e automação.'),
+  about: L('More about Andrew', 'Mais sobre Andrew'),
+}
+
 export const TRANSLATED_BLOG_SLUGS: readonly string[] = ['paperclip-review-coolify-codex']
 
 export function localizedPath(pathname: string, locale: Locale) {
