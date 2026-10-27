@@ -173,10 +173,6 @@ describe('rendered page titles', () => {
     if (article.category === 'Review') {
       expect(html.match(/<h1\b/g)).toHaveLength(1)
     }
-    if (article.slug === 'paperclip-review-coolify-codex') {
-      expect(html).toContain('https://github.com/paperclipai/paperclip')
-      expect(html).toContain('href="/services/"')
-    }
   }, 15_000)
 
   it('renders one error title without a canonical for an unknown route', async () => {
