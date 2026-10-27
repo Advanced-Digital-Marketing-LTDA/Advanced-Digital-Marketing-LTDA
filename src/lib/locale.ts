@@ -154,6 +154,14 @@ import { normalizePath } from './path.ts'
 
 export { normalizePath }
 
+export const BLOG_INDEX_COPY = {
+    description: L('Practical guides on search, AI visibility, paid media, and web engineering from Advanced Digital Marketing LTDA.', 'Experiências e guias sobre busca, visibilidade em IA, mídia paga e desenvolvimento web.'),
+    title: L('Ideas for the answer engines.', 'Ideias para os mecanismos de resposta.'),
+    intro: L('Working notes on search, AI visibility, paid media, and the systems that turn attention into demand.', 'Notas sobre busca, visibilidade em IA, mídia paga e sistemas digitais.'),
+    review: L('Review', 'Avaliação'), read: L('Read the review', 'Leia a avaliação'), guide: L('Read the guide', 'Leia o guia'),
+    more: L('', 'Mais artigos estão disponíveis em inglês no blog.'),
+  }
+
 export const BLOG_ARTICLE_COPY = {
   review: L('Review', 'Avaliação'), reading: L('min read', 'min de leitura'),
   contents: L('Table of contents', 'Sumário'), onPage: L('On this page', 'Nesta página'),
