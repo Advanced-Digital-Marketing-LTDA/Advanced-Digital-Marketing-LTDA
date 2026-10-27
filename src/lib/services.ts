@@ -202,7 +202,7 @@ const SHARED = {
     'One email starts it. We reply within one business day with next steps and a straight answer on whether we can help.',
     'Um e-mail começa tudo. Respondemos em até um dia útil com os próximos passos e uma resposta direta sobre se podemos ajudar.',
   ),
-  bookCall: L('Book a strategy call', 'Agendar uma conversa'),
+  bookCall: L('Start an inquiry', 'Solicitar contato'),
   seeOptions: L('See the options', 'Ver as opções'),
   flagMostChosen: L('Most chosen', 'Mais escolhido'),
   perTwoWeeks: L('One time · 2 weeks', 'Pagamento único · 2 semanas'),

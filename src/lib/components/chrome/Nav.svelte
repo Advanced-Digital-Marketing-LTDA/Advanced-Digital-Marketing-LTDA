@@ -91,6 +91,7 @@
   })
 
   onMount(() => {
+    document.documentElement.classList.add('nav-enhanced')
     let lastY = window.scrollY
     let frame = 0
     const onScroll = () => {
@@ -116,9 +117,12 @@
       if (desktop.removeEventListener) desktop.removeEventListener('change', onDesktop)
       if (frame) cancelAnimationFrame(frame)
       document.body.classList.remove('menu-lock')
+      document.documentElement.classList.remove('nav-enhanced')
     }
   })
 </script>
+
+<a class="skip-link" href="#main-content">{copy.skipToContent}</a>
 
 <header class="editorial-nav" class:editorial-nav--hidden={hidden && !open}>
   <div class="editorial-nav__inner">
@@ -149,6 +153,20 @@
     </button>
   </div>
 </header>
+
+<noscript>
+  <div class="editorial-mobile-noscript">
+    <nav aria-label={copy.navigationLabel}>
+      {#each links as link (link.to)}
+        <a href={link.to}>{link.label}</a>
+      {/each}
+      {#each serviceNav as service (service.to)}
+        <a href={service.to}>{service.label}</a>
+      {/each}
+      <a href={LOCALE_ROUTES.contact[locale]}>{copy.bookCall}</a>
+    </nav>
+  </div>
+</noscript>
 
 <svelte:window
   onclick={(e) => {
