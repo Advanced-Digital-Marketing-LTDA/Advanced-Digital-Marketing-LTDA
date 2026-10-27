@@ -164,8 +164,8 @@ export function localizedPath(pathname: string, locale: Locale) {
   const blogPath = blogPathForPath(pathname)
   if (blogPath) {
     const english = blogPath.replace(/^\/pt-br/, '')
-    if (locale === 'en-US') return english
     const slug = english.slice('/blog/'.length).replace(/\/$/, '')
+    if (locale === 'en-US') return blogPath.startsWith('/pt-br/') && slug && !TRANSLATED_BLOG_SLUGS.includes(slug) ? undefined : english
     return !slug || TRANSLATED_BLOG_SLUGS.includes(slug) ? `/pt-br${english}` : undefined
   }
   const service = serviceForPath(pathname)
@@ -193,7 +193,7 @@ export function blogPathForPath(pathname: string): string | undefined {
 }
 
 /** Preserve the English blog URL until reviewed Portuguese equivalents exist. */
-const BLOG_NAV_ITEM = { to: '/blog/', label: L('Blog', 'Blog (em inglês)'), jp: '記事' } as const
+const BLOG_NAV_ITEM = { to: '/blog/', label: L('Blog', 'Blog'), jp: '記事' } as const
 
 export function navigationForLocale(locale: Locale) {
   return [
@@ -202,7 +202,7 @@ export function navigationForLocale(locale: Locale) {
       label: CHROME_COPY[locale].navigation[page],
       jp: PAGE_JP[page],
     })),
-    { ...BLOG_NAV_ITEM, to: locale === 'pt-BR' ? '/pt-br/blog/' : '/blog/', label: 'Blog' },
+    { ...BLOG_NAV_ITEM, to: locale === 'pt-BR' ? '/pt-br/blog/' : '/blog/', label: resolveCopy<string>(BLOG_NAV_ITEM.label, locale) },
   ]
 }
 
