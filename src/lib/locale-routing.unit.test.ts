@@ -39,13 +39,14 @@ describe('locale routes', () => {
     },
   )
 
-  it('labels the English blog destination in Portuguese navigation', () => {
+  it('links Portuguese navigation to its localized blog index', () => {
     expect(navigationForLocale('pt-BR').find(({ to }) => to === '/pt-br/blog/')?.label).toBe('Blog')
     expect(navigationForLocale('en-US').find(({ to }) => to === '/blog/')?.label).toBe('Blog')
   })
 
   it('maps the blog index and translated review between languages', () => {
-    expect(localizedPath('/blog/', 'pt-BR')).toBe('/pt-br/blog/')
+    for (const path of ['/blog', '/blog/']) expect(localizedPath(path, 'pt-BR')).toBe('/pt-br/blog/')
+    expect(localizedPath('/blog/paperclip-review-coolify-codex/', 'pt-BR')).toBe('/pt-br/blog/paperclip-review-coolify-codex/')
     expect(localizedPath('/pt-br/blog/paperclip-review-coolify-codex/', 'en-US')).toBe('/blog/paperclip-review-coolify-codex/')
   })
 
