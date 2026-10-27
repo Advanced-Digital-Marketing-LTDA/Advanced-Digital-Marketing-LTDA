@@ -1,9 +1,11 @@
 <script lang="ts">
   import { browser } from '$app/environment'
-  import { SITE_ORIGIN, TRANSLATED_BLOG_SLUGS } from '$lib/locale'
+  import { SITE_ORIGIN, TRANSLATED_BLOG_SLUGS, BLOG_ARTICLE_COPY, LOCALE_ROUTES, type Locale } from '$lib/locale'
+  import { resolveCopy } from '$lib/localized-copy'
   import type { BlogArticle } from '$lib/server/blog'
 
-  let { article, locale = 'en-US' }: { article: BlogArticle; locale?: 'en-US' | 'pt-BR' } = $props()
+  let { article, locale }: { article: BlogArticle; locale: Locale } = $props()
+  let copy = $derived(resolveCopy<{review:string;reading:string;contents:string;onPage:string;author:string;bio:string;about:string}>(BLOG_ARTICLE_COPY, locale))
   let pt = $derived(locale === 'pt-BR')
   let titleSuffix = $derived(article.category === 'Review' ? 'ADM' : 'Advanced Digital Marketing LTDA')
   let articleUrl = $derived(`${SITE_ORIGIN}${pt ? '/pt-br' : ''}/blog/${article.slug}/`)
@@ -64,31 +66,31 @@
 <article class="blog-article">
   <header class="blog-article__header">
     <a class="blog-article__back" href={pt ? "/pt-br/blog/" : "/blog/"}>← Blog</a>
-    <p class="section-label"><span class="font-jp">記事</span> {pt ? 'Avaliação' : article.category} · {article.published} · {article.readingMinutes} {pt ? 'min de leitura' : 'min read'}</p>
+    <p class="section-label"><span class="font-jp">記事</span> {article.category === 'Review' ? copy.review : article.category} · {article.published} · {article.readingMinutes} {copy.reading}</p>
     <h1>{article.title}</h1>
     <p class="blog-article__dek">{article.description}</p>
   </header>
 
   <div class="article-layout">
-  <nav class="article-toc" aria-label={pt ? "Sumário" : "Table of contents"}>
-    <strong>{pt ? "Nesta página" : "On this page"}</strong>
+  <nav class="article-toc" aria-label={copy.contents}>
+    <strong>{copy.onPage}</strong>
     {#each article.headings as heading}
       <a href={`#${heading.id}`}>{heading.text}</a>
     {/each}
   </nav>
   <div class="blog-article__body">
     {@html article.html}
-    <section class="article-author" aria-label={pt ? "Sobre o autor" : "About the author"}>
-      <h2>{pt ? 'Sobre o autor' : 'About the author'}</h2>
-      <p>{pt ? 'Andrew Philip Weilbacher é fundador da Advanced Digital Marketing LTDA. Trabalha com marketing digital, análise de dados, software e automação.' : 'Andrew Philip Weilbacher is the founder of Advanced Digital Marketing LTDA. He works in digital marketing, analytics, software, and automation.'}</p>
-      <a href={pt ? '/pt-br/sobre/' : '/about/'}>{pt ? 'Mais sobre Andrew' : 'More about Andrew'}</a>
+    <section class="article-author" aria-label={copy.author}>
+      <h2>{copy.author}</h2>
+      <p>{copy.bio}</p>
+      <a href={LOCALE_ROUTES.about[locale]}>{copy.about}</a>
     </section>
   </div>
   </div>
   <div class="mobile-toc">
-    <button type="button" aria-expanded={tocOpen} onclick={() => tocOpen = !tocOpen}>{pt ? "Sumário" : "Table of contents"} {tocOpen ? '×' : '↑'}</button>
+    <button type="button" aria-expanded={tocOpen} onclick={() => tocOpen = !tocOpen}>{copy.contents} {tocOpen ? '×' : '↑'}</button>
     {#if tocOpen}
-      <nav aria-label={pt ? "Sumário" : "Table of contents"}>
+      <nav aria-label={copy.contents}>
         {#each article.headings as heading}
           <a href={`#${heading.id}`} onclick={() => tocOpen = false}>{heading.text}</a>
         {/each}
