@@ -6,10 +6,12 @@
  */
 import { marked } from 'marked'
 import articleMarkdown from '../../../docs/ChatGPT-Ads-Complete-Guide-August-2026.md?raw'
+import paperclipMarkdown from '../../../docs/Paperclip-Review-Coolify-Codex-2026.md?raw'
 
 export type BlogArticle = {
   slug: string
   title: string
+  category: 'Guide' | 'Review'
   metaTitle: string
   description: string
   published: string
@@ -59,20 +61,34 @@ function publicArticleMarkdown(markdown: string): string {
   return `${body}\n`
 }
 
-const { fields: frontmatter, body } = splitFrontmatter(articleMarkdown)
-const renderedArticle = marked.parse(publicArticleMarkdown(body), { async: false, gfm: true })
+function createArticle(
+  markdown: string,
+  slug: string,
+  category: BlogArticle['category'],
+  hasPublishingAppendix: boolean,
+): BlogArticle {
+  const { fields, body } = splitFrontmatter(markdown)
+  const renderedArticle = marked.parse(hasPublishingAppendix ? publicArticleMarkdown(body) : body, { async: false, gfm: true })
+  if (typeof renderedArticle !== 'string') throw new Error('Blog article rendering must be synchronous')
 
-if (typeof renderedArticle !== 'string') throw new Error('Blog article rendering must be synchronous')
-
-export const CHATGPT_ADS_ARTICLE: BlogArticle = {
-  // The slug is the route directory name — src/routes/blog/<slug>/.
-  slug: 'chatgpt-ads-complete-guide-august-2026',
-  title: requiredField(frontmatter, 'title'),
-  metaTitle: requiredField(frontmatter, 'meta_title'),
-  description: requiredField(frontmatter, 'meta_description'),
-  published: requiredDate(frontmatter, 'published'),
-  updated: requiredDate(frontmatter, 'updated'),
-  html: renderedArticle,
+  return {
+    slug,
+    category,
+    title: requiredField(fields, 'title'),
+    metaTitle: requiredField(fields, 'meta_title'),
+    description: requiredField(fields, 'meta_description'),
+    published: requiredDate(fields, 'published'),
+    updated: requiredDate(fields, 'updated'),
+    html: renderedArticle,
+  }
 }
 
-export const BLOG_ARTICLES: readonly BlogArticle[] = [CHATGPT_ADS_ARTICLE]
+export const CHATGPT_ADS_ARTICLE = createArticle(
+  articleMarkdown, 'chatgpt-ads-complete-guide-august-2026', 'Guide', true,
+)
+
+export const PAPERCLIP_REVIEW_ARTICLE = createArticle(
+  paperclipMarkdown, 'paperclip-review-coolify-codex', 'Review', false,
+)
+
+export const BLOG_ARTICLES: readonly BlogArticle[] = [PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]

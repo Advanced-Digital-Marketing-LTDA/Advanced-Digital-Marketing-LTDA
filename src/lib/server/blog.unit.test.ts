@@ -1,9 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { BLOG_ARTICLES, CHATGPT_ADS_ARTICLE } from './blog'
+import { BLOG_ARTICLES, CHATGPT_ADS_ARTICLE, PAPERCLIP_REVIEW_ARTICLE } from './blog'
 
 describe('blog content', () => {
+  it('publishes the Paperclip review with its evidence and without internal metadata', () => {
+    expect(BLOG_ARTICLES[0]).toBe(PAPERCLIP_REVIEW_ARTICLE)
+    expect(PAPERCLIP_REVIEW_ARTICLE.category).toBe('Review')
+    expect(PAPERCLIP_REVIEW_ARTICLE.published).toBe('2026-10-27')
+    expect(PAPERCLIP_REVIEW_ARTICLE.html).toContain('waiting_for_receipt')
+    expect(PAPERCLIP_REVIEW_ARTICLE.html).toContain('built-in-bundles')
+    expect(PAPERCLIP_REVIEW_ARTICLE.html).toContain('https://github.com/paperclipai/paperclip/issues/15649')
+    expect(PAPERCLIP_REVIEW_ARTICLE.html).not.toContain('meta_description')
+    expect(PAPERCLIP_REVIEW_ARTICLE.html).not.toContain('ad0ac868')
+  })
+
   it('publishes the ChatGPT Ads guide with linked inline citations', () => {
-    expect(BLOG_ARTICLES).toHaveLength(1)
+    expect(BLOG_ARTICLES).toHaveLength(2)
     expect((CHATGPT_ADS_ARTICLE.html.match(/class="blog-citation"/g) ?? [])).toHaveLength(23)
     const citationHrefs = [...CHATGPT_ADS_ARTICLE.html.matchAll(/<sup class="blog-citation"><a href="([^"]+)"/g)].map((match) => match[1])
     expect(citationHrefs).toHaveLength(23)
