@@ -20,17 +20,6 @@ O Paperclip ofereceu formas úteis de organizar agentes, mas gastei tempo demais
 
 O Paperclip é uma plataforma para organizar agentes de IA em torno do trabalho de uma empresa. Na minha instalação, ele oferecia agentes, tarefas, rotinas, orçamentos, permissões e histórico de execuções.
 
-## Principais conclusões
-
-- O Paperclip oferece uma estrutura compartilhada para tarefas e supervisão dos agentes.
-- Minha implantação no Coolify exigiu um banco PostgreSQL externo e configuração adicional para entrar com a assinatura.
-- Registros de uso ausentes e a identidade inválida de uma rotina interna bloquearam o trabalho.
-- Os detalhes de execução e contabilização ajudaram na investigação, mas a recuperação continuou difícil.
-
-## Resumo
-
-O Paperclip oferece controles úteis para gerenciar uma equipe de IA. Minha instalação em servidor próprio exigiu tanta investigação que ainda não consegui depender dela para o trabalho da empresa.
-
 ## O que gostei no Paperclip
 
 O principal atrativo foi ter um lugar para organizar agentes em torno de trabalho real.
@@ -150,5 +139,16 @@ Mas os bloqueios por registros ausentes e a identidade inválida da rotina inter
 Continuo querendo tarefas compartilhadas, supervisão e um histórico visível para meus agentes. O Paperclip reuniu esses controles, mas eu ainda não podia depender dos fluxos de execução e recuperação.
 
 Antes de confiar nele, preciso de execução confiável e de uma maneira clara de recuperar o trabalho quando algo falhar. Minha experiência mostrou potencial na organização, mas dificuldades operacionais demais sem solução.
+
+## Principais conclusões
+
+- O Paperclip oferece uma estrutura compartilhada para tarefas e supervisão dos agentes.
+- Minha implantação no Coolify exigiu um banco PostgreSQL externo e configuração adicional para entrar com a assinatura.
+- Registros de uso ausentes e a identidade inválida de uma rotina interna bloquearam o trabalho.
+- Os detalhes de execução e contabilização ajudaram na investigação, mas a recuperação continuou difícil.
+
+## Resumo
+
+O Paperclip oferece controles úteis para gerenciar uma equipe de IA. Minha instalação em servidor próprio exigiu tanta investigação que ainda não consegui depender dela para o trabalho da empresa.
 
 *Esta avaliação descreve minha experiência com uma instalação própria em 26 e 27 de outubro de 2026. Não é uma avaliação de longo prazo de todos os recursos do Paperclip.*
