@@ -8,6 +8,7 @@ import { marked } from 'marked'
 import type { Locale } from '$lib/locale'
 import articleMarkdown from '../../../docs/ChatGPT-Ads-Complete-Guide-August-2026.md?raw'
 import paperclipMarkdown from '../../../docs/Paperclip-Review-Coolify-Codex-2026.md?raw'
+import openclawMarkdown from '../../../docs/OpenClaw-Review-Coolify-Codex-2026.md?raw'
 import paperclipPortuguese from '$lib/content/paperclip-review-pt-br.md?raw'
 
 export type BlogArticle = {
@@ -123,7 +124,11 @@ export const PAPERCLIP_REVIEW_ARTICLE = createArticle(
   paperclipMarkdown, 'paperclip-review-coolify-codex', 'Review', false, 'en-US',
 )
 
-export const BLOG_ARTICLES: readonly BlogArticle[] = [PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]
+export const OPENCLAW_REVIEW_ARTICLE = createArticle(
+  openclawMarkdown, 'openclaw-review-coolify-codex', 'Review', false, 'en-US',
+)
+
+export const BLOG_ARTICLES: readonly BlogArticle[] = [OPENCLAW_REVIEW_ARTICLE, PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]
 
 export const PAPERCLIP_REVIEW_PT = createArticle(
   paperclipPortuguese, 'paperclip-review-coolify-codex', 'Review', false, 'pt-BR',

@@ -172,6 +172,8 @@ describe('rendered page titles', () => {
     expect(html).not.toContain('Publishing Appendix')
     if (article.category === 'Review') {
       expect(html.match(/<h1\b/g)).toHaveLength(1)
+    }
+    if (article.slug === 'paperclip-review-coolify-codex') {
       expect(html).toContain('https://github.com/paperclipai/paperclip')
       expect(html).toContain('href="/services/"')
     }

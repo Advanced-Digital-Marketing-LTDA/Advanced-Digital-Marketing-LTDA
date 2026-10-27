@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BLOG_ARTICLES, CHATGPT_ADS_ARTICLE, PAPERCLIP_REVIEW_ARTICLE, PAPERCLIP_REVIEW_PT, uniqueHeadingId } from './blog'
+import { BLOG_ARTICLES, CHATGPT_ADS_ARTICLE, OPENCLAW_REVIEW_ARTICLE, PAPERCLIP_REVIEW_ARTICLE, PAPERCLIP_REVIEW_PT, uniqueHeadingId } from './blog'
 
 describe('blog content', () => {
   it('does not collide with headings whose base already includes a suffix', () => {
@@ -8,7 +8,7 @@ describe('blog content', () => {
   })
 
   it('publishes the Paperclip review with its evidence and without internal metadata', () => {
-    expect(BLOG_ARTICLES[0]).toBe(PAPERCLIP_REVIEW_ARTICLE)
+    expect(BLOG_ARTICLES).toContain(PAPERCLIP_REVIEW_ARTICLE)
     expect(PAPERCLIP_REVIEW_ARTICLE.category).toBe('Review')
     expect(PAPERCLIP_REVIEW_ARTICLE.published).toBe('2026-10-27')
     expect(PAPERCLIP_REVIEW_ARTICLE.html).toContain('waiting_for_receipt')
@@ -23,7 +23,7 @@ describe('blog content', () => {
     expect(PAPERCLIP_REVIEW_PT.html).toContain('waiting_for_receipt')
     expect(PAPERCLIP_REVIEW_PT.headings.map((heading) => heading.text)).toContain('Principais conclusões')
     expect(PAPERCLIP_REVIEW_PT.readingMinutes).toBeGreaterThan(0)
-    for (const article of [PAPERCLIP_REVIEW_PT, PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]) {
+    for (const article of [PAPERCLIP_REVIEW_PT, ...BLOG_ARTICLES]) {
       expect(article.headings.length).toBeGreaterThan(0)
       for (const heading of article.headings) expect(article.html).toContain(`id="${heading.id}"`)
       expect(new Set(article.headings.map((heading) => heading.id)).size).toBe(article.headings.length)
@@ -31,12 +31,20 @@ describe('blog content', () => {
   })
 
   it('publishes the ChatGPT Ads guide with linked inline citations', () => {
-    expect(BLOG_ARTICLES).toHaveLength(2)
+    expect(BLOG_ARTICLES).toHaveLength(3)
     expect((CHATGPT_ADS_ARTICLE.html.match(/class="blog-citation"/g) ?? [])).toHaveLength(23)
     const citationHrefs = [...CHATGPT_ADS_ARTICLE.html.matchAll(/<sup class="blog-citation"><a href="([^"]+)"/g)].map((match) => match[1])
     expect(citationHrefs).toHaveLength(23)
     expect(citationHrefs.every((href) => href.startsWith('https://'))).toBe(true)
     expect(CHATGPT_ADS_ARTICLE.html).toContain('https://openai.com/policies/ad-policies/')
+  })
+
+  it('publishes the OpenClaw review without exposing frontmatter', () => {
+    expect(BLOG_ARTICLES).toContain(OPENCLAW_REVIEW_ARTICLE)
+    expect(OPENCLAW_REVIEW_ARTICLE.slug).toBe('openclaw-review-coolify-codex')
+    expect(OPENCLAW_REVIEW_ARTICLE.html).toContain('503 Service Unavailable')
+    expect(OPENCLAW_REVIEW_ARTICLE.html).toContain('Destructive commands should be based on verified resources')
+    expect(OPENCLAW_REVIEW_ARTICLE.html).not.toContain('meta_description')
   })
 
   it('derives article metadata from the Markdown frontmatter', () => {
