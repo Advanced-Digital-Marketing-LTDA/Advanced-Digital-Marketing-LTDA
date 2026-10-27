@@ -62,16 +62,6 @@ That advice turned out to be wrong for this installation. The newer version foun
 
 That distinction matters: this wasn't solely an OpenClaw failure. The upgrade guidance I received was also incomplete. The version-specific migration requirements should have been checked before I was told to make the jump.
 
-## Then the troubleshooting itself became a problem
-
-At that point, I wanted to wipe the installation and start over.
-
-The assistant gave me commands to remove containers and volumes without first verifying the actual container names on the server. Docker reported that it couldn't find the named OpenClaw container. A later startup log showed that persisted configuration was still being loaded, but we never established exactly what remained or which deletion commands had completed.
-
-The assistant then gave me another command to wipe the data directory before telling me not to run it. That was unacceptable troubleshooting. Destructive commands should be based on verified resources and clear evidence, especially on a server running other applications.
-
-I'm including this because it's part of the experience: using an AI assistant to troubleshoot an AI assistant doesn't remove the need to verify what it tells you to do.
-
 ## What I liked
 
 The idea behind OpenClaw is compelling. I like the prospect of running an assistant on my own infrastructure, choosing a model provider, connecting messaging platforms, and giving an agent access to useful tools.
