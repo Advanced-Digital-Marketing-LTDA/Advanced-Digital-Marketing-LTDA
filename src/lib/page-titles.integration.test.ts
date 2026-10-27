@@ -175,6 +175,15 @@ describe('rendered accessibility navigation', () => {
     expect(fallbackHrefs.length).toBeGreaterThan(0)
     expect(fallbackHrefs).toContain(contact)
     expect(fallbackHrefs).toContain(service)
-    expect(fallbackHrefs.every((href) => !href.startsWith('javascript:'))).toBe(true)
+    expect(
+      fallbackHrefs.every((href) => {
+        const normalized = href.trim().toLowerCase()
+        return !(
+          normalized.startsWith('javascript:') ||
+          normalized.startsWith('data:') ||
+          normalized.startsWith('vbscript:')
+        )
+      }),
+    ).toBe(true)
   }, 15_000)
 })
