@@ -8,7 +8,7 @@ describe('blog content', () => {
   })
 
   it('publishes the Paperclip review with its evidence and without internal metadata', () => {
-    expect(BLOG_ARTICLES).toContain(PAPERCLIP_REVIEW_ARTICLE)
+    expect(BLOG_ARTICLES[1]).toBe(PAPERCLIP_REVIEW_ARTICLE)
     expect(PAPERCLIP_REVIEW_ARTICLE.category).toBe('Review')
     expect(PAPERCLIP_REVIEW_ARTICLE.published).toBe('2026-10-27')
     expect(PAPERCLIP_REVIEW_ARTICLE.html).toContain('waiting_for_receipt')
