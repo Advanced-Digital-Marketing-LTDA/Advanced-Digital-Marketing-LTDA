@@ -167,6 +167,7 @@ export const BLOG_INDEX_COPY = {
   }
 
 export const BLOG_ARTICLE_COPY = {
+  readingEstimate: L('Estimated reading time', 'Tempo estimado de leitura'),
   review: L('Review', 'Avaliação'), reading: L('min read', 'min de leitura'),
   contents: L('Table of contents', 'Sumário'), onPage: L('On this page', 'Nesta página'),
   author: L('About the author', 'Sobre o autor'),

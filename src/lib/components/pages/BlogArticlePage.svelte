@@ -4,9 +4,9 @@
   import { resolveCopy } from '$lib/localized-copy'
   import type { BlogArticle } from '$lib/server/blog'
 
-  let { article, readingTimeLabel }: { article: BlogArticle; readingTimeLabel?: string } = $props()
+  let { article, showReadingEstimate = false }: { article: BlogArticle; showReadingEstimate?: boolean } = $props()
   let locale: Locale = $derived(article.locale)
-  let copy = $derived(resolveCopy<{review:string;reading:string;contents:string;onPage:string;author:string;bio:string;about:string}>(BLOG_ARTICLE_COPY, locale))
+  let copy = $derived(resolveCopy<{review:string;reading:string;readingEstimate:string;contents:string;onPage:string;author:string;bio:string;about:string}>(BLOG_ARTICLE_COPY, locale))
   let pt = $derived(locale === 'pt-BR')
   let titleSuffix = $derived(article.category === 'Review' ? 'ADM' : 'Advanced Digital Marketing LTDA')
   let articleUrl = $derived(`${SITE_ORIGIN}${pt ? '/pt-br' : ''}/blog/${article.slug}/`)
@@ -67,11 +67,11 @@
 <article class="blog-article">
   <header class="blog-article__header">
     <a class="blog-article__back" href={pt ? "/pt-br/blog/" : "/blog/"}>← Blog</a>
-    <p class="section-label"><span class="font-jp">記事</span> {article.category === 'Review' ? copy.review : article.category} · {article.published}{#if !readingTimeLabel} · {article.readingMinutes} {copy.reading}{/if}</p>
+    <p class="section-label"><span class="font-jp">記事</span> {article.category === 'Review' ? copy.review : article.category} · {article.published}{#if !showReadingEstimate} · {article.readingMinutes} {copy.reading}{/if}</p>
     <h1>{article.title}</h1>
     <p class="blog-article__dek">{article.description}</p>
-    {#if readingTimeLabel}
-      <p class="blog-article__reading-time">{readingTimeLabel}: {article.readingMinutes} {copy.reading}</p>
+    {#if showReadingEstimate}
+      <p class="blog-article__reading-time">{copy.readingEstimate}: {article.readingMinutes} {copy.reading}</p>
     {/if}
   </header>
 
