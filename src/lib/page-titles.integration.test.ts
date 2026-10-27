@@ -3,7 +3,7 @@ import { createServer } from 'node:net'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { PAGE_META, LOCALE_ROUTES, SERVICES_INDEX_META, SERVICES_INDEX_ROUTES, SITE_ORIGIN } from './locale'
 import { SERVICE_META, SERVICE_ROUTES } from './services'
-import { CHATGPT_ADS_ARTICLE } from './server/blog'
+import { BLOG_ARTICLES } from './server/blog'
 
 const host = '127.0.0.1'
 let origin: string = process.env.PAGE_TITLES_BASE_URL ?? ''
@@ -25,10 +25,10 @@ const routes = [
     })),
   ),
   { path: '/blog/', title: 'Blog | Advanced Digital Marketing LTDA' },
-  {
-    path: '/blog/chatgpt-ads-complete-guide-august-2026/',
-    title: `${CHATGPT_ADS_ARTICLE.metaTitle} | Advanced Digital Marketing LTDA`,
-  },
+  ...BLOG_ARTICLES.map((article) => ({
+    path: `/blog/${article.slug}/`,
+    title: `${article.metaTitle} | Advanced Digital Marketing LTDA`,
+  })),
   { path: '/contact/verify/', title: PAGE_META['en-US'].contact.title },
   { path: '/pt-br/contato/verificar/', title: PAGE_META['pt-BR'].contact.title },
   { path: '/checkout/complete/', title: 'Payment result | Advanced Digital Marketing LTDA' },
@@ -117,7 +117,7 @@ function canonicalHref(head: string): string {
 }
 
 describe('rendered page titles', () => {
-  it.each(['/blog/', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+  it.each(['/blog/', ...BLOG_ARTICLES.map((article) => `/blog/${article.slug}/`)])(
     'keeps %s in English with its original canonical and no false alternate', async (path) => {
       const { response, html } = await page(`${path}?utm_source=synthetic`)
       const head = documentHead(html)
