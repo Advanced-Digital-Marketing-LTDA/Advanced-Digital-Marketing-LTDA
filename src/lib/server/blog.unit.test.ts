@@ -24,6 +24,7 @@ describe('blog content', () => {
     expect(PAPERCLIP_REVIEW_PT.headings.map((heading) => heading.text)).toContain('Principais conclusões')
     expect(PAPERCLIP_REVIEW_PT.readingMinutes).toBeGreaterThan(0)
     for (const article of [PAPERCLIP_REVIEW_PT, PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]) {
+      expect(article.headings.length).toBeGreaterThan(0)
       for (const heading of article.headings) expect(article.html).toContain(`id="${heading.id}"`)
       expect(new Set(article.headings.map((heading) => heading.id)).size).toBe(article.headings.length)
     }
