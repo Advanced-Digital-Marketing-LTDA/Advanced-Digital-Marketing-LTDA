@@ -7,8 +7,8 @@ const state = vi.hoisted(() => ({ url: new URL('https://example.test/blog/') }))
 vi.mock('$app/state', () => ({ page: state }))
 vi.mock('$app/environment', () => ({ browser: false }))
 
-describe('English-only blog language switching', () => {
-  it.each(['/blog/', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+describe('blog language switching', () => {
+  it.each(['/blog/chatgpt-ads-complete-guide-august-2026/'])(
     'offers only the available English destination on %s', (path) => {
       state.url = new URL(`${path}?utm_source=synthetic`, 'https://example.test')
       const { body } = render(LanguageSwitcher)
@@ -19,6 +19,8 @@ describe('English-only blog language switching', () => {
   )
 
   it.each([
+    ['/blog/', '/blog/', '/pt-br/blog/'],
+    ['/pt-br/blog/paperclip-review-coolify-codex/', '/blog/paperclip-review-coolify-codex/', '/pt-br/blog/paperclip-review-coolify-codex/'],
     ['/about/', '/about/', '/pt-br/sobre/'],
     ['/pt-br/contato/', '/contact/', '/pt-br/contato/'],
     ['/services/', '/services/', '/pt-br/servicos/'],
@@ -39,8 +41,8 @@ describe('English-only blog language switching', () => {
     expect(body).toContain('href="/pt-br/" hreflang="pt-BR"')
   })
 
-  it('renders an honest English-content label in Portuguese navigation', () => {
+  it('links Portuguese navigation to the localized blog index', () => {
     state.url = new URL('/pt-br/', 'https://example.test')
-    expect(render(Nav).body).toContain('href="/blog/">Blog (em inglês)</a>')
+    expect(render(Nav).body).toContain('href="/pt-br/blog/">Blog</a>')
   })
 })

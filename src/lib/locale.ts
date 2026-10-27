@@ -154,13 +154,36 @@ import { normalizePath } from './path.ts'
 
 export { normalizePath }
 
+export const BLOG_INDEX_COPY = {
+    description: L('Practical guides on search, AI visibility, paid media, and web engineering from Advanced Digital Marketing LTDA.', 'Experiências e guias sobre busca, visibilidade em IA, mídia paga e desenvolvimento web.'),
+    title: L('Ideas for the answer engines.', 'Ideias para os mecanismos de resposta.'),
+    intro: L('Working notes on search, AI visibility, paid media, and the systems that turn attention into demand.', 'Notas sobre busca, visibilidade em IA, mídia paga e sistemas digitais.'),
+    review: L('Review', 'Avaliação'), read: L('Read the review', 'Leia a avaliação'), guide: L('Read the guide', 'Leia o guia'),
+    more: L('', 'Mais artigos estão disponíveis em inglês no blog.'),
+  }
+
+export const BLOG_ARTICLE_COPY = {
+  review: L('Review', 'Avaliação'), reading: L('min read', 'min de leitura'),
+  contents: L('Table of contents', 'Sumário'), onPage: L('On this page', 'Nesta página'),
+  author: L('About the author', 'Sobre o autor'),
+  bio: L('Andrew Philip Weilbacher is the founder of Advanced Digital Marketing LTDA. He works in digital marketing, analytics, software, and automation.', 'Andrew Philip Weilbacher é fundador da Advanced Digital Marketing LTDA. Trabalha com marketing digital, análise de dados, software e automação.'),
+  about: L('More about Andrew', 'Mais sobre Andrew'),
+}
+
+export const TRANSLATED_BLOG_SLUGS: readonly string[] = ['paperclip-review-coolify-codex']
+
 export function localizedPath(pathname: string, locale: Locale) {
   const page = pageForPath(pathname)
   if (page) return LOCALE_ROUTES[page][locale]
   const servicesLocale = servicesIndexForPath(pathname)
   if (servicesLocale) return SERVICES_INDEX_ROUTES[locale]
   const blogPath = blogPathForPath(pathname)
-  if (blogPath) return locale === 'en-US' ? blogPath : undefined
+  if (blogPath) {
+    const english = blogPath.replace(/^\/pt-br/, '')
+    const slug = english.slice('/blog/'.length).replace(/\/$/, '')
+    if (locale === 'en-US') return blogPath.startsWith('/pt-br/') && slug && !TRANSLATED_BLOG_SLUGS.includes(slug) ? undefined : english
+    return !slug || TRANSLATED_BLOG_SLUGS.includes(slug) ? `/pt-br${english}` : undefined
+  }
   const service = serviceForPath(pathname)
   return service ? SERVICE_ROUTES[service][locale] : undefined
 }
@@ -182,11 +205,11 @@ export function absoluteUrl(pathname: string) {
  */
 export function blogPathForPath(pathname: string): string | undefined {
   const normalized = normalizePath(pathname)
-  return normalized === '/blog' || normalized.startsWith('/blog/') ? `${normalized}/` : undefined
+  return normalized === '/blog' || normalized.startsWith('/blog/') || normalized === '/pt-br/blog' || normalized.startsWith('/pt-br/blog/') ? `${normalized}/` : undefined
 }
 
 /** Preserve the English blog URL until reviewed Portuguese equivalents exist. */
-const BLOG_NAV_ITEM = { to: '/blog/', label: L('Blog', 'Blog (em inglês)'), jp: '記事' } as const
+const BLOG_NAV_ITEM = { to: '/blog/', label: L('Blog', 'Blog'), jp: '記事' } as const
 
 export function navigationForLocale(locale: Locale) {
   return [
@@ -195,7 +218,7 @@ export function navigationForLocale(locale: Locale) {
       label: CHROME_COPY[locale].navigation[page],
       jp: PAGE_JP[page],
     })),
-    { ...BLOG_NAV_ITEM, label: resolveCopy<string>(BLOG_NAV_ITEM.label, locale) },
+    { ...BLOG_NAV_ITEM, to: locale === 'pt-BR' ? '/pt-br/blog/' : '/blog/', label: resolveCopy<string>(BLOG_NAV_ITEM.label, locale) },
   ]
 }
 

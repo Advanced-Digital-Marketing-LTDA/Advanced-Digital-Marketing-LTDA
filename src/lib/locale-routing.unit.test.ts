@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { absoluteUrl, blogPathForPath, decideLocaleRequest, isCheckoutPath, languageSwitcherPath, LOCALE_ROUTES, localeForPath, localizedPath, navigationForLocale } from './locale'
 
 describe('locale routes', () => {
-  it.each(['/blog/', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+  it.each(['/blog/chatgpt-ads-complete-guide-august-2026/'])(
     'distinguishes an unavailable translation from an unknown route for %s', (path) => {
       expect(languageSwitcherPath(path, 'en-US')).toBe(path)
       expect(languageSwitcherPath(path, 'pt-BR')).toBeUndefined()
@@ -29,7 +29,7 @@ describe('locale routes', () => {
     },
   )
 
-  it.each(['/blog', '/blog/', '/blog/chatgpt-ads-complete-guide-august-2026', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+  it.each(['/blog/chatgpt-ads-complete-guide-august-2026', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
     'keeps %s English-only without inventing a Portuguese equivalent', (path) => {
       expect(localizedPath(path, 'en-US')).toBe(`${path.replace(/\/$/, '')}/`)
       expect(localizedPath(path, 'pt-BR')).toBeUndefined()
@@ -39,9 +39,15 @@ describe('locale routes', () => {
     },
   )
 
-  it('labels the English blog destination in Portuguese navigation', () => {
-    expect(navigationForLocale('pt-BR').find(({ to }) => to === '/blog/')?.label).toBe('Blog (em inglês)')
+  it('links Portuguese navigation to its localized blog index', () => {
+    expect(navigationForLocale('pt-BR').find(({ to }) => to === '/pt-br/blog/')?.label).toBe('Blog')
     expect(navigationForLocale('en-US').find(({ to }) => to === '/blog/')?.label).toBe('Blog')
+  })
+
+  it('maps the blog index and translated review between languages', () => {
+    for (const path of ['/blog', '/blog/']) expect(localizedPath(path, 'pt-BR')).toBe('/pt-br/blog/')
+    expect(localizedPath('/blog/paperclip-review-coolify-codex/', 'pt-BR')).toBe('/pt-br/blog/paperclip-review-coolify-codex/')
+    expect(localizedPath('/pt-br/blog/paperclip-review-coolify-codex/', 'en-US')).toBe('/blog/paperclip-review-coolify-codex/')
   })
 
   it('maps every existing public page to its Brazilian Portuguese counterpart', () => {
