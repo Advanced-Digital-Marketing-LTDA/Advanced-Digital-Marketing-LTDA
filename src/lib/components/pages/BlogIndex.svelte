@@ -1,16 +1,9 @@
 <script lang="ts">
   import { browser } from '$app/environment'
-  import { SITE_ORIGIN, type Locale } from '$lib/locale'
-  import { L, resolveCopy } from '$lib/localized-copy'
+  import { SITE_ORIGIN, BLOG_INDEX_COPY, type Locale } from '$lib/locale'
+  import { resolveCopy } from '$lib/localized-copy'
   let { articles, locale }: { articles: { slug: string; title: string; category?: string; description: string; published: string }[]; locale: Locale } = $props()
-  const strings = {
-    description: L('Practical guides on search, AI visibility, paid media, and web engineering from Advanced Digital Marketing LTDA.', 'Experiências e guias sobre busca, visibilidade em IA, mídia paga e desenvolvimento web.'),
-    title: L('Ideas for the answer engines.', 'Ideias para os mecanismos de resposta.'),
-    intro: L('Working notes on search, AI visibility, paid media, and the systems that turn attention into demand.', 'Notas sobre busca, visibilidade em IA, mídia paga e sistemas digitais.'),
-    review: L('Review', 'Avaliação'), read: L('Read the review', 'Leia a avaliação'), guide: L('Read the guide', 'Leia o guia'),
-    more: L('', 'Mais artigos estão disponíveis em inglês no blog.'),
-  }
-  let copy = $derived(resolveCopy<{description:string;title:string;intro:string;review:string;read:string;guide:string;more:string}>(strings, locale))
+  let copy = $derived(resolveCopy<{description:string;title:string;intro:string;review:string;read:string;guide:string;more:string}>(BLOG_INDEX_COPY, locale))
   let prefix = $derived(locale === 'pt-BR' ? '/pt-br' : '')
   $effect(() => { if (browser) document.documentElement.lang = locale })
 </script>
