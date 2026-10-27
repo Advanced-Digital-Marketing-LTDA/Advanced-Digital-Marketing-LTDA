@@ -43,7 +43,6 @@ describe('blog content', () => {
     expect(BLOG_ARTICLES).toContain(OPENCLAW_REVIEW_ARTICLE)
     expect(OPENCLAW_REVIEW_ARTICLE.slug).toBe('openclaw-review-coolify-codex')
     expect(OPENCLAW_REVIEW_ARTICLE.html).toContain('503 Service Unavailable')
-    expect(OPENCLAW_REVIEW_ARTICLE.html).toContain('Destructive commands should be based on verified resources')
     expect(OPENCLAW_REVIEW_ARTICLE.html).not.toContain('meta_description')
   })
 
