@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BLOG_ARTICLES, CHATGPT_ADS_ARTICLE, PAPERCLIP_REVIEW_ARTICLE } from './blog'
+import { BLOG_ARTICLES, CHATGPT_ADS_ARTICLE, PAPERCLIP_REVIEW_ARTICLE, PAPERCLIP_REVIEW_PT } from './blog'
 
 describe('blog content', () => {
   it('publishes the Paperclip review with its evidence and without internal metadata', () => {
@@ -11,6 +11,17 @@ describe('blog content', () => {
     expect(PAPERCLIP_REVIEW_ARTICLE.html).toContain('https://github.com/paperclipai/paperclip/issues/15649')
     expect(PAPERCLIP_REVIEW_ARTICLE.html).not.toContain('meta_description')
     expect(PAPERCLIP_REVIEW_ARTICLE.html).not.toContain('ad0ac868')
+  })
+
+  it('provides translated review navigation and reading time', () => {
+    expect(PAPERCLIP_REVIEW_PT.html).toContain('O que é o Paperclip?')
+    expect(PAPERCLIP_REVIEW_PT.html).toContain('waiting_for_receipt')
+    expect(PAPERCLIP_REVIEW_PT.headings.map((heading) => heading.text)).toContain('Principais conclusões')
+    expect(PAPERCLIP_REVIEW_PT.readingMinutes).toBeGreaterThan(0)
+    for (const article of [PAPERCLIP_REVIEW_PT, PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]) {
+      for (const heading of article.headings) expect(article.html).toContain(`id="${heading.id}"`)
+      expect(new Set(article.headings.map((heading) => heading.id)).size).toBe(article.headings.length)
+    }
   })
 
   it('publishes the ChatGPT Ads guide with linked inline citations', () => {
