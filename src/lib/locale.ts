@@ -160,7 +160,11 @@ export function localizedPath(pathname: string, locale: Locale) {
   const servicesLocale = servicesIndexForPath(pathname)
   if (servicesLocale) return SERVICES_INDEX_ROUTES[locale]
   const blogPath = blogPathForPath(pathname)
-  if (blogPath) return locale === 'en-US' ? blogPath : undefined
+  if (blogPath) {
+    const english = blogPath.replace(/^\/pt-br/, '')
+    if (locale === 'en-US') return english
+    return english === '/blog/' || english === '/blog/paperclip-review-coolify-codex/' ? `/pt-br${english}` : undefined
+  }
   const service = serviceForPath(pathname)
   return service ? SERVICE_ROUTES[service][locale] : undefined
 }
@@ -182,7 +186,7 @@ export function absoluteUrl(pathname: string) {
  */
 export function blogPathForPath(pathname: string): string | undefined {
   const normalized = normalizePath(pathname)
-  return normalized === '/blog' || normalized.startsWith('/blog/') ? `${normalized}/` : undefined
+  return normalized === '/blog' || normalized.startsWith('/blog/') || normalized === '/pt-br/blog' || normalized.startsWith('/pt-br/blog/') ? `${normalized}/` : undefined
 }
 
 /** Preserve the English blog URL until reviewed Portuguese equivalents exist. */
@@ -195,7 +199,7 @@ export function navigationForLocale(locale: Locale) {
       label: CHROME_COPY[locale].navigation[page],
       jp: PAGE_JP[page],
     })),
-    { ...BLOG_NAV_ITEM, label: resolveCopy<string>(BLOG_NAV_ITEM.label, locale) },
+    { ...BLOG_NAV_ITEM, to: locale === 'pt-BR' ? '/pt-br/blog/' : '/blog/', label: 'Blog' },
   ]
 }
 
