@@ -157,7 +157,12 @@ describe('rendered accessibility navigation', () => {
     { path: '/pt-br/', locale: 'pt-BR' as const, contact: '/pt-br/contato/', service: SERVICE_ROUTES['technical-seo']['pt-BR'] },
   ])('links the localized skip and no-JavaScript navigation to usable destinations on $path', async ({ path, locale, contact, service }) => {
     const { response, html } = await page(path)
-    const rendered = html.replace(/<!--[\s\S]*?-->/g, '')
+    let rendered = html
+    let previous: string
+    do {
+      previous = rendered
+      rendered = rendered.replace(/<!--[\s\S]*?-->/g, '')
+    } while (rendered !== previous)
     const fallback = /<div class="editorial-mobile-fallback">([\s\S]*?)<\/div>/i.exec(rendered)?.[1]
 
     expect(response.status).toBe(200)
