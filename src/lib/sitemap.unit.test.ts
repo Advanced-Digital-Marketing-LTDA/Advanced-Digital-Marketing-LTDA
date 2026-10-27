@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { LOCALE_ROUTES, SERVICES_INDEX_ROUTES, SITE_ORIGIN } from './locale'
 import { SERVICE_ROUTES } from './services'
+import { BLOG_ARTICLES } from './server/blog'
 
 const read = (file: string) => readFileSync(new URL(`../../static/${file}`, import.meta.url), 'utf8')
 const sitemapLocs = [...read('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
@@ -15,6 +16,8 @@ const ROBOTS_DISALLOWED = ['/api/']
 describe('sitemap.xml', () => {
   it('lists every localized public page, services index and service detail', () => {
     const expected = [
+      '/blog/',
+      ...BLOG_ARTICLES.map((article) => `/blog/${article.slug}/`),
       ...Object.values(LOCALE_ROUTES).flatMap((localized) => Object.values(localized)),
       ...Object.values(SERVICES_INDEX_ROUTES),
       ...Object.values(SERVICE_ROUTES).flatMap((localized) => Object.values(localized)),
