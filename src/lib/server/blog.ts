@@ -5,12 +5,14 @@
  * receive the rendered result through their `+page.server.ts` loaders.
  */
 import { marked } from 'marked'
+import type { Locale } from '$lib/locale'
 import articleMarkdown from '../../../docs/ChatGPT-Ads-Complete-Guide-August-2026.md?raw'
 import paperclipMarkdown from '../../../docs/Paperclip-Review-Coolify-Codex-2026.md?raw'
 import paperclipPortuguese from '$lib/content/paperclip-review-pt-br.md?raw'
 
 export type BlogArticle = {
   slug: string
+  locale: Locale
   title: string
   category: 'Guide' | 'Review'
   metaTitle: string
@@ -79,6 +81,7 @@ function createArticle(
   slug: string,
   category: BlogArticle['category'],
   hasPublishingAppendix: boolean,
+  locale: Locale,
 ): BlogArticle {
   const { fields, body } = splitFrontmatter(markdown)
   const content = hasPublishingAppendix ? publicArticleMarkdown(body) : body
@@ -99,6 +102,7 @@ function createArticle(
 
   return {
     slug,
+    locale,
     category,
     title: requiredField(fields, 'title'),
     metaTitle: requiredField(fields, 'meta_title'),
@@ -112,15 +116,15 @@ function createArticle(
 }
 
 export const CHATGPT_ADS_ARTICLE = createArticle(
-  articleMarkdown, 'chatgpt-ads-complete-guide-august-2026', 'Guide', true,
+  articleMarkdown, 'chatgpt-ads-complete-guide-august-2026', 'Guide', true, 'en-US',
 )
 
 export const PAPERCLIP_REVIEW_ARTICLE = createArticle(
-  paperclipMarkdown, 'paperclip-review-coolify-codex', 'Review', false,
+  paperclipMarkdown, 'paperclip-review-coolify-codex', 'Review', false, 'en-US',
 )
 
 export const BLOG_ARTICLES: readonly BlogArticle[] = [PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]
 
 export const PAPERCLIP_REVIEW_PT = createArticle(
-  paperclipPortuguese, 'paperclip-review-coolify-codex', 'Review', false,
+  paperclipPortuguese, 'paperclip-review-coolify-codex', 'Review', false, 'pt-BR',
 )
