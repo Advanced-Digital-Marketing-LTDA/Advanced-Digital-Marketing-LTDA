@@ -65,7 +65,8 @@ function publicArticleMarkdown(markdown: string): string {
 }
 
 export function uniqueHeadingId(text: string, used: Set<string>): string {
-  const base = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section'
+  const base = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  if (!base) throw new Error(`Heading cannot produce an anchor ID: ${text}`)
   let id = base
   let suffix = 2
   while (used.has(id)) id = `${base}-${suffix++}`
