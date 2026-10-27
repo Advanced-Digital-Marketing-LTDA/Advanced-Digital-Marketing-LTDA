@@ -117,7 +117,7 @@ function canonicalHref(head: string): string {
 }
 
 describe('rendered page titles', () => {
-  it.each(['/blog/', ...BLOG_ARTICLES.map((article) => `/blog/${article.slug}/`)])(
+  it.each(BLOG_ARTICLES.filter((article) => article.slug !== 'paperclip-review-coolify-codex').map((article) => `/blog/${article.slug}/`))(
     'keeps %s in English with its original canonical and no false alternate', async (path) => {
       const { response, html } = await page(`${path}?utm_source=synthetic`)
       const head = documentHead(html)
@@ -131,6 +131,18 @@ describe('rendered page titles', () => {
       expect(switchers[0][1]).not.toContain('hreflang="pt-BR"')
     }, 15_000,
   )
+
+  it.each(['/blog/', '/blog/paperclip-review-coolify-codex/'])('renders matching Portuguese alternate for %s', async (path) => {
+    for (const localized of [path, `/pt-br${path}`]) {
+      const { response, html } = await page(localized)
+      const head = documentHead(html)
+      expect(response.status).toBe(200)
+      expect(canonicalHref(head)).toBe(`${SITE_ORIGIN}${localized}`)
+      expect(head).toContain(`hreflang="en-US" href="${SITE_ORIGIN}${path}"`)
+      expect(head).toContain(`hreflang="pt-BR" href="${SITE_ORIGIN}/pt-br${path}"`)
+      expect(html).toContain(`href="/pt-br${path}" hreflang="pt-BR"`)
+    }
+  }, 15_000)
 
   it.each(routes)('renders one appropriate title and preserves the canonical for $path', async ({ path, title }) => {
     const { response, html } = await page(path)
