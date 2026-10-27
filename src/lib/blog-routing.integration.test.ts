@@ -41,6 +41,8 @@ describe('English-only blog language switching', () => {
 
   it('renders an honest English-content label in Portuguese navigation', () => {
     state.url = new URL('/pt-br/', 'https://example.test')
-    expect(render(Nav).body).toContain('href="/blog/">Blog (em inglês)</a>')
+    const header = render(Nav).body.match(/<header\b[\s\S]*?<\/header>/)?.[0]
+    expect(header).toBeDefined()
+    expect(header).toContain('href="/blog/">Blog (em inglês)</a>')
   })
 })
