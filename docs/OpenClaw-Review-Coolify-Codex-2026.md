@@ -8,6 +8,18 @@ updated: "2026-10-27"
 
 **Author:** Andrew Philip Weilbacher, founder of Advanced Digital Marketing LTDA.
 
+## Summary
+
+I deployed OpenClaw on Coolify to build a self-hosted assistant for business tasks. The gateway eventually started and my Codex login appeared valid, but chat returned blank replies. I also had to address security settings and encountered an upgrade that required an intermediate migration. I never reached a working Discord or project-management workflow, so I decided to try other options.
+
+## Key takeaways
+
+- **A running gateway did not mean a working assistant.** Messages reached the agent, but I never received a usable chat response.
+- **Codex authentication was only part of the setup.** A valid-looking OAuth profile did not resolve the blank replies or model-configuration problems.
+- **Security required hands-on configuration.** Changes brought the audit to zero critical findings, but two warnings remained under review.
+- **Upgrades needed version-specific guidance.** Jumping directly from the installed release to the latest image failed because an intermediate migration was required. The AI assistant's upgrade advice contributed to the problem.
+- **My intended workflow remained untested.** I did not establish a working Discord connection, project-management integration, or dependable approval workflow.
+
 I wanted a self-hosted AI assistant I could talk to from Discord, connect to my project management system, and eventually use to coordinate work across my business.
 
 OpenClaw seemed like a good fit. It promised an AI assistant that could connect to messaging platforms, use tools, and run on my own server. I already use Coolify to manage applications, so I decided to deploy it there.

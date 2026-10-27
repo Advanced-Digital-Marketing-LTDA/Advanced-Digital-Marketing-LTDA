@@ -4,7 +4,7 @@
   import { resolveCopy } from '$lib/localized-copy'
   import type { BlogArticle } from '$lib/server/blog'
 
-  let { article }: { article: BlogArticle } = $props()
+  let { article, readingTimeLabel }: { article: BlogArticle; readingTimeLabel?: string } = $props()
   let locale: Locale = $derived(article.locale)
   let copy = $derived(resolveCopy<{review:string;reading:string;contents:string;onPage:string;author:string;bio:string;about:string}>(BLOG_ARTICLE_COPY, locale))
   let pt = $derived(locale === 'pt-BR')
@@ -67,9 +67,12 @@
 <article class="blog-article">
   <header class="blog-article__header">
     <a class="blog-article__back" href={pt ? "/pt-br/blog/" : "/blog/"}>← Blog</a>
-    <p class="section-label"><span class="font-jp">記事</span> {article.category === 'Review' ? copy.review : article.category} · {article.published} · {article.readingMinutes} {copy.reading}</p>
+    <p class="section-label"><span class="font-jp">記事</span> {article.category === 'Review' ? copy.review : article.category} · {article.published}{#if !readingTimeLabel} · {article.readingMinutes} {copy.reading}{/if}</p>
     <h1>{article.title}</h1>
     <p class="blog-article__dek">{article.description}</p>
+    {#if readingTimeLabel}
+      <p class="blog-article__reading-time">{readingTimeLabel}: {article.readingMinutes} {copy.reading}</p>
+    {/if}
   </header>
 
   <div class="article-layout">
@@ -101,6 +104,7 @@
 </article>
 
 <style>
+  .blog-article__reading-time { margin-top: 1rem; color: var(--ink-muted); }
   .blog-article__body { width: 100%; }
   .blog-article__body :global(h2[id]) { scroll-margin-top: 6rem; }
   .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: auto; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
