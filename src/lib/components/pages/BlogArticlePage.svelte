@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/environment'
-  import { SITE_ORIGIN } from '$lib/locale'
+  import { SITE_ORIGIN, TRANSLATED_BLOG_SLUGS } from '$lib/locale'
   import type { BlogArticle } from '$lib/server/blog'
 
   let { article, locale = 'en-US' }: { article: BlogArticle; locale?: 'en-US' | 'pt-BR' } = $props()
@@ -43,7 +43,7 @@
 <svelte:head>
   <title>{article.metaTitle} | {titleSuffix}</title>
   <meta name="description" content={article.description} />
-  {#if article.slug === 'paperclip-review-coolify-codex'}
+  {#if TRANSLATED_BLOG_SLUGS.includes(article.slug)}
     <link rel="alternate" hreflang="en-US" href={`${SITE_ORIGIN}/blog/${article.slug}/`} />
     <link rel="alternate" hreflang="pt-BR" href={`${SITE_ORIGIN}/pt-br/blog/${article.slug}/`} />
     <link rel="alternate" hreflang="x-default" href={`${SITE_ORIGIN}/blog/${article.slug}/`} />
