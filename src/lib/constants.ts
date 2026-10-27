@@ -1,5 +1,6 @@
 import type { Locale } from './locale'
 import { C, L, resolveCopy, type CopySource } from './localized-copy'
+import { INQUIRY_CTA } from './common-copy'
 import { TECHNICAL_SEO_STEPS, type ServiceId } from './services'
 
 /**
@@ -290,8 +291,8 @@ const PAGE_COPY_SOURCE: CopySource<PageCopy> = {
       'A São Paulo engineering studio putting US small businesses on top of Google and inside AI answers.',
       'Você mantém o controle do negócio. Nós transformamos estratégia, tecnologia e dados em oportunidades comerciais mensuráveis.',
     ),
-    book: L('Start an inquiry', 'Solicitar contato'),
-    email: L('Start an inquiry', 'Solicitar contato'),
+    book: INQUIRY_CTA,
+    email: INQUIRY_CTA,
     whatsapp: L('Book via WhatsApp', 'Falar pelo WhatsApp'),
     emailCta: L(EMAIL, PORTUGUESE_EMAIL),
     explore: L('Explore services', 'Conheça os serviços'),
@@ -430,7 +431,7 @@ const PAGE_COPY_SOURCE: CopySource<PageCopy> = {
       [L('Entity', 'Empresa'), L('LTDA, CNPJ-registered', 'LTDA, registrada no CNPJ')],
     ],
     contactHeading: L('Work with the person who does the work.', 'Trabalhe com quem executa o trabalho.'),
-    bookCall: L('Start an inquiry', 'Solicitar contato'),
+    bookCall: INQUIRY_CTA,
     servicesLink: L('See all services', 'Ver todos os serviços'),
     whatsapp: L('Book via WhatsApp', 'Falar pelo WhatsApp'),
   },

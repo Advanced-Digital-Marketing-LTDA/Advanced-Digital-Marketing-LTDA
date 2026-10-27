@@ -1,7 +1,7 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { createServer } from 'node:net'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { PAGE_META, LOCALE_ROUTES, SERVICES_INDEX_META, SERVICES_INDEX_ROUTES, SITE_ORIGIN } from './locale'
+import { PAGE_META, LOCALE_ROUTES, SERVICES_INDEX_META, SERVICES_INDEX_ROUTES, SITE_ORIGIN, CHROME_COPY } from './locale'
 import { SERVICE_META, SERVICE_ROUTES } from './services'
 import { CHATGPT_ADS_ARTICLE } from './server/blog'
 
@@ -149,4 +149,27 @@ describe('rendered page titles', () => {
     expect(head).not.toContain('rel="canonical"')
     expect(head).toContain('<meta name="robots" content="noindex"')
   })
+})
+
+describe('rendered accessibility navigation', () => {
+  it.each([
+    { path: '/', locale: 'en-US' as const, contact: '/contact/', service: SERVICE_ROUTES['technical-seo']['en-US'] },
+    { path: '/pt-br/', locale: 'pt-BR' as const, contact: '/pt-br/contato/', service: SERVICE_ROUTES['technical-seo']['pt-BR'] },
+  ])('links the localized skip and no-JavaScript navigation to usable destinations on $path', async ({ path, locale, contact, service }) => {
+    const { response, html } = await page(path)
+    const rendered = html.replace(/<!--[\s\S]*?-->/g, '')
+    const fallback = /<div class="editorial-mobile-fallback">([\s\S]*?)<\/div>/i.exec(rendered)?.[1]
+
+    expect(response.status).toBe(200)
+    expect(rendered).toContain(`<a class="skip-link" href="#main-content">${CHROME_COPY[locale].skipToContent}</a>`)
+    expect(rendered).toMatch(/<main\b[^>]*\bid="main-content"[^>]*\btabindex="-1"/)
+    expect(fallback).toBeDefined()
+    expect(fallback).toContain(`<nav aria-label="${CHROME_COPY[locale].navigationLabel}">`)
+
+    const fallbackHrefs = [...fallback!.matchAll(/<a\b[^>]*\bhref="([^"]+)"[^>]*>/g)].map(([, href]) => href)
+    expect(fallbackHrefs.length).toBeGreaterThan(0)
+    expect(fallbackHrefs).toContain(contact)
+    expect(fallbackHrefs).toContain(service)
+    expect(fallbackHrefs.every((href) => !href.startsWith('javascript:'))).toBe(true)
+  }, 15_000)
 })

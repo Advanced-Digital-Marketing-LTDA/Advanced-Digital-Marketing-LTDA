@@ -1,4 +1,5 @@
 import { L, resolveCopy } from './localized-copy'
+import { INQUIRY_CTA } from './common-copy'
 
 export const SITE_ORIGIN = 'https://advanceddigitalmarketingltda.com'
 
@@ -73,7 +74,7 @@ export const CHROME_COPY: Record<Locale, {
     servicesAll: 'All services',
     navigationLabel: 'Primary navigation',
     skipToContent: 'Skip to content',
-    bookCall: 'Start an inquiry',
+    bookCall: resolveCopy<string>(INQUIRY_CTA, 'en-US'),
     menu: 'Menu',
     close: 'Close',
     footerSummary: 'Search, paid media, and web engineering for businesses that need to be found by people and answer engines alike.',
@@ -89,7 +90,7 @@ export const CHROME_COPY: Record<Locale, {
     servicesAll: 'Todos os serviços',
     navigationLabel: 'Navegação principal',
     skipToContent: 'Pular para o conteúdo',
-    bookCall: 'Solicitar contato',
+    bookCall: resolveCopy<string>(INQUIRY_CTA, 'pt-BR'),
     menu: 'Menu',
     close: 'Fechar',
     footerSummary: 'SEO, mídia paga e engenharia web para empresas que precisam ser encontradas por pessoas e respostas de IA.',

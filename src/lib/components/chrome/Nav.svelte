@@ -154,19 +154,17 @@
   </div>
 </header>
 
-<noscript>
-  <div class="editorial-mobile-noscript">
-    <nav aria-label={copy.navigationLabel}>
-      {#each links as link (link.to)}
-        <a href={link.to}>{link.label}</a>
-      {/each}
-      {#each serviceNav as service (service.to)}
-        <a href={service.to}>{service.label}</a>
-      {/each}
-      <a href={LOCALE_ROUTES.contact[locale]}>{copy.bookCall}</a>
-    </nav>
-  </div>
-</noscript>
+<div class="editorial-mobile-fallback">
+  <nav aria-label={copy.navigationLabel}>
+    {#each links as link (link.to)}
+      <a href={link.to}>{link.label}</a>
+    {/each}
+    {#each serviceNav as service (service.to)}
+      <a href={service.to}>{service.label}</a>
+    {/each}
+    <a href={LOCALE_ROUTES.contact[locale]}>{copy.bookCall}</a>
+  </nav>
+</div>
 
 <svelte:window
   onclick={(e) => {
