@@ -1,24 +1,22 @@
 ---
-title: "My Experience With Paperclip: A Promising AI Team Platform With Too Much Troubleshooting"
-meta_title: "Paperclip Review: My Coolify and Codex Setup Experience"
+title: "Paperclip review: My Coolify and Codex setup experience"
+meta_title: "Paperclip review: Coolify and Codex setup"
 meta_description: "My hands-on Paperclip review: organizing AI agents, connecting a Codex subscription, and troubleshooting Coolify deployment, accounting holds, and routines."
 published: "2026-10-27"
 updated: "2026-10-27"
 ---
 
-# My Experience With Paperclip: A Promising AI Team Platform With Too Much Troubleshooting
-
 **Author:** Andrew Philip Weilbacher, founder of Advanced Digital Marketing LTDA.
 
 I wanted a team of AI agents that could help run my business.
 
-As a solo digital marketer and MicroSaaS entrepreneur, I work across client accounts, software projects, research, content, and operations. I wanted agents that could share context, communicate, use my tools, and move work through a review process—with permissions and approval gates.
+I work across [client marketing accounts](/services/), software projects, research, content, and operations. I wanted agents that could share context, communicate, use my tools, and move work through a review process with permissions and approval gates.
 
-That is what drew me to Paperclip.
+That is what drew me to [Paperclip](https://github.com/paperclipai/paperclip).
 
-I deployed it on Coolify, connected my Codex subscription, and started configuring agents. I got far enough to see the appeal. I also encountered deployment problems, plugin installation failures, accounting holds at $0 of recorded spending, and a built-in routine trying to operate on behalf of a nonexistent user.
+I deployed it on Coolify, connected my Codex subscription, and started configuring agents. I got far enough to see the appeal. I also encountered deployment problems, plugin installation failures, accounting holds at $0 of recorded spending, and a built-in routine using the internal identifier `built-in-bundles` as its responsible human user.
 
-My assessment after this setup experience: Paperclip has an appealing approach to managing AI work, but getting my installation into a dependable state required far more troubleshooting than I expected.
+Paperclip gave me useful ways to organize agents, but I spent too much time troubleshooting to rely on it for my business during this setup. I would treat it as an experiment until I can run and recover tasks reliably.
 
 ## What I liked about Paperclip
 
@@ -28,11 +26,9 @@ In my installation, I could configure agents such as a CMO, an assistant, a copy
 
 That structure matters to me. I want to know what an agent is working on, what it can access, what happened during a run, and where human intervention is needed.
 
-Connecting my existing Codex subscription was another attraction. I wanted to use an account I already paid for rather than immediately introduce another usage-based API bill. I eventually got the sign-in environment working through Daytona.
+Connecting my existing Codex subscription was another attraction. I wanted to use an account I already paid for rather than immediately introduce another usage-based API bill. I got the separate Daytona sign-in environment working after fixing npm cache permissions and installing the plugin’s build dependencies.
 
 The diagnostic information was useful, too. Although some interface messages were vague, the detailed run records and accounting endpoint helped identify what was actually failing.
-
-Paperclip gave me enough visibility to uncover the problems. Resolving them was the harder part.
 
 ## Getting it accessible through Coolify
 
@@ -58,7 +54,7 @@ Paperclip displayed:
 
 > This environment does not support browser sign-in.
 
-I followed the sandbox sign-in route using Daytona. Installing the plugin produced its own problems.
+I used Daytona, a sandbox provider, to create a separate environment for signing in. Installing its Paperclip plugin produced its own problems.
 
 First, npm failed because its cache contained root-owned files. After addressing the permissions, the bundled plugin build failed with:
 
@@ -68,36 +64,36 @@ tsc: not found
 
 I eventually got the plugin installed and the environment working.
 
-Then the Codex hello probe failed because the installed CLI was too old for the selected model. That required updating Codex in the environment where execution occurred.
+Then the Codex hello probe, a test that asks the agent to respond with “hello,” failed because the installed CLI was too old for the selected model. That required updating Codex in the environment where execution occurred.
 
-By this point, I was managing database configuration, container networking, npm permissions, plugin build dependencies, sandbox environments, and CLI compatibility—all before reaching a workflow I could depend on.
+By this point, I was managing database configuration, container networking, npm permissions, plugin build dependencies, sandbox environments, and CLI compatibility before reaching a workflow I could depend on.
 
 ## The most frustrating problem: blocked at $0
 
-The accounting issue was where the experience became particularly frustrating.
+The accounting hold stopped me from resuming assigned work.
 
 The interface showed **$0.00 in API spending**, but an agent was paused behind a budget incident. Attempts to resume work failed because accounting was incomplete.
 
-The accounting health endpoint showed:
+The accounting health endpoint, a diagnostic URL listing unresolved usage records, showed:
 
 ```text
 pendingRunCount: 4
 unpricedEventCount: 0
 ```
 
-All four pending runs were marked:
+`pendingRunCount` counts runs whose accounting is unfinished. `unpricedEventCount` counts recorded usage without a reliable price. All four pending runs were marked:
 
 ```text
 waiting_for_receipt
 ```
 
-This distinction matters. Paperclip was waiting for final usage records. The displayed $0 represented known spending; it did not mean every run had finished accounting.
+Paperclip was waiting for final usage records. The displayed $0 represented known spending; it did not mean every run had finished accounting.
 
 Holding work when spending is uncertain is understandable. The problem was that I could not find a straightforward way to resolve the missing receipts and continue.
 
-I found an existing report, [issue #15649](https://github.com/paperclipai/paperclip/issues/15649), describing the same class of accounting hold, including follow-up reports involving Codex subscriptions.
+I found an existing report, [issue #15649](https://github.com/paperclipai/paperclip/issues/15649), describing the same class of accounting hold, including October 24 follow-up reports involving Codex with ChatGPT subscriptions. Those reports describe related symptoms; they do not establish that my installation had the same underlying failure.
 
-Increasing the budget did not resolve my hold. Disabling the setting that blocks unpriced usage did not help either, because my installation had no unpriced events—it had missing receipts.
+Increasing the budget did not resolve my hold. Disabling the setting that blocks unpriced usage did not help either, because my installation had missing receipts and no unpriced events.
 
 That is a difficult experience for an operator: the system stops work as a precaution, but recovering from the stop becomes a separate debugging project.
 
@@ -117,7 +113,7 @@ The interface suggested reconnecting the selected AI account. However, the detai
 
 Paperclip was attempting to use an internal identifier as the responsible human user.
 
-This matched an existing reported problem involving built-in routines, referenced in [issue #12246](https://github.com/paperclipai/paperclip/issues/12246).
+[Issue #12246](https://github.com/paperclipai/paperclip/issues/12246), filed on August 26, references earlier reports of built-in routines storing the same `built-in-bundles` identity. My run showed that value too, although I had not verified whether the underlying code path was identical.
 
 The visible “Responsible” selector did not solve it: that selector offered agents, while the failing field concerned the human identity behind the run.
 
@@ -144,7 +140,7 @@ I also used AI assistance to troubleshoot, and some of the guidance I received w
 
 But the missing-receipt holds and invalid built-in user identity were concrete problems supported by my installation’s output and related public reports.
 
-I still like the idea of Paperclip. Organizing AI agents around shared business work, with oversight and a visible history, is exactly the kind of system I want.
+I still want shared business tasks, oversight, and a visible history for my agents. Paperclip put those controls in one place, but I could not yet depend on its execution and recovery workflows.
 
 What I need before relying on it is dependable execution and a clear way to recover when something fails. My experience showed promise on the organizational side, but too much unresolved friction on the operational side.
 
