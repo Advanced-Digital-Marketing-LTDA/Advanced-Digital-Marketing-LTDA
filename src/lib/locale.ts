@@ -154,6 +154,8 @@ import { normalizePath } from './path.ts'
 
 export { normalizePath }
 
+export const TRANSLATED_BLOG_SLUGS: readonly string[] = ['paperclip-review-coolify-codex']
+
 export function localizedPath(pathname: string, locale: Locale) {
   const page = pageForPath(pathname)
   if (page) return LOCALE_ROUTES[page][locale]
@@ -163,7 +165,8 @@ export function localizedPath(pathname: string, locale: Locale) {
   if (blogPath) {
     const english = blogPath.replace(/^\/pt-br/, '')
     if (locale === 'en-US') return english
-    return english === '/blog/' || english === '/blog/paperclip-review-coolify-codex/' ? `/pt-br${english}` : undefined
+    const slug = english.slice('/blog/'.length).replace(/\/$/, '')
+    return !slug || TRANSLATED_BLOG_SLUGS.includes(slug) ? `/pt-br${english}` : undefined
   }
   const service = serviceForPath(pathname)
   return service ? SERVICE_ROUTES[service][locale] : undefined
