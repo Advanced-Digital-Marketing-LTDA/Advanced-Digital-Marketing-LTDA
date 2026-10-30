@@ -14,14 +14,20 @@ export function isBenchmarkArticle(headings: TocLink[]): boolean {
 
 export type BenchmarkCellRole = 'name' | 'score' | 'category' | 'stat' | 'meta'
 
-/** Columns shown as the main figures on a mobile card; the rest are secondary. */
-const STAT_COLUMNS = new Set(['Open issues', 'Open PRs', 'Merged PRs', 'Releases'])
+/** Roles by column; 'stat' columns are the main figures on a mobile card and
+ *  any other column is secondary 'meta'. */
+const CELL_ROLES = new Map<string, BenchmarkCellRole>([
+  ['Project', 'name'],
+  ['Slop Log Score', 'score'],
+  ['Category', 'category'],
+  ['Open issues', 'stat'],
+  ['Open PRs', 'stat'],
+  ['Merged PRs', 'stat'],
+  ['Releases', 'stat'],
+])
 
 export function benchmarkCellRole(header: string): BenchmarkCellRole {
-  if (header === 'Project') return 'name'
-  if (header === 'Slop Log Score') return 'score'
-  if (header === 'Category') return 'category'
-  return STAT_COLUMNS.has(header) ? 'stat' : 'meta'
+  return CELL_ROLES.get(header) ?? 'meta'
 }
 
 function escapeAttribute(value: string): string {
@@ -33,41 +39,45 @@ function formatTable(table: string): string {
   if (!headers.includes('Project') || !headers.includes('Slop Log Score')) {
     throw new Error(`Benchmark table is missing its Project or Slop Log Score column: ${headers.join(', ')}`)
   }
-  const tagged = table.replace(/<tr>([\s\S]*?)<\/tr>/g, (_row: string, cells: string) => {
-    let column = 0
-    const row = cells.replace(/<(th|td)\b([^>]*)>/g, (_cell: string, name: string, attributes: string) => {
-      const header = headers[column++]
-      if (header === undefined) throw new Error('Benchmark table row has more cells than header columns')
-      return `<${name}${attributes} class="benchmark-cell benchmark-cell--${benchmarkCellRole(header)}" data-label="${escapeAttribute(header)}">`
-    })
-    if (column !== headers.length) throw new Error('Benchmark table row has fewer cells than header columns')
-    return `<tr>${row}</tr>`
-  })
+  const tagged = table.replace(/<tr>([\s\S]*?)<\/tr>/g, (_row: string, cells: string) => `<tr>${tagRowCells(cells, headers)}</tr>`)
   return `<div class="benchmark-table" role="region" aria-label="Benchmark comparison table" tabindex="0">${tagged}</div>`
+}
+
+/** Labels each cell of one row with its column's role and name. */
+function tagRowCells(cells: string, headers: string[]): string {
+  let column = 0
+  const row = cells.replace(/<(th|td)\b([^>]*)>/g, (_cell: string, name: string, attributes: string) => {
+    const header = headers[column++]
+    if (header === undefined) throw new Error('Benchmark table row has more cells than header columns')
+    return `<${name}${attributes} class="benchmark-cell benchmark-cell--${benchmarkCellRole(header)}" data-label="${escapeAttribute(header)}">`
+  })
+  if (column !== headers.length) throw new Error('Benchmark table row has fewer cells than header columns')
+  return row
 }
 
 /** Rewrites one benchmark article's rendered HTML for the redesigned layout. */
 export function formatBenchmarkHtml(html: string): string {
   const tables = html.match(/<table>[\s\S]*?<\/table>/g) ?? []
   if (tables.length !== 1) throw new Error(`Benchmark article must contain exactly one table (found ${tables.length})`)
-  let projects = 0
   const formatted = html
     .replace(/<table>[\s\S]*?<\/table>/, formatTable)
     // Legacy anchors keep old links working without leaving empty paragraphs.
     .replace(/<p><a id="([^"]+)"><\/a><\/p>\n?/g, '<a id="$1" class="benchmark-anchor"></a>\n')
-    .replace(/<h2 id="([^"]+)">([^<]+)<\/h2>/g, (heading: string, id: string, text: string) => {
-      const match = PROJECT_HEADING.exec(text)
-      if (!match) return heading
-      projects++
-      return `<h2 id="${id}" class="benchmark-project"><span class="benchmark-project__name">${match[1]}</span>`
-        + `<span class="benchmark-project__sep">: </span>`
-        + `<span class="benchmark-project__score"><span class="benchmark-project__value">${match[2]}</span> Slop Log Score</span></h2>`
-    })
+    .replace(/<h2 id="([^"]+)">([^<]+)<\/h2>/g, formatProjectHeading)
     // "Label: <a>…</a>; <a>…</a>." (also ", and" separators and a trailing
     // sentence) becomes a label, a list of the same links and that sentence.
     .replace(/<p>([A-Z][^<:]{0,80}): (<a [\s\S]*?)<\/p>/g, formatLinkParagraph)
-  if (projects === 0) throw new Error('Benchmark article has no project headings to format')
+  if (!formatted.includes('class="benchmark-project"')) throw new Error('Benchmark article has no project headings to format')
   return formatted
+}
+
+/** Splits "Name: 0.9031 Slop Log Score" into a name and a score badge, keeping the text. */
+function formatProjectHeading(heading: string, id: string, text: string): string {
+  const match = PROJECT_HEADING.exec(text)
+  if (!match) return heading
+  return `<h2 id="${id}" class="benchmark-project"><span class="benchmark-project__name">${match[1]}</span>`
+    + `<span class="benchmark-project__sep">: </span>`
+    + `<span class="benchmark-project__score"><span class="benchmark-project__value">${match[2]}</span> Slop Log Score</span></h2>`
 }
 
 const LINK = /(<a href="[^"]+">[^<]+<\/a>)/
@@ -81,10 +91,15 @@ function formatLinkParagraph(paragraph: string, label: string, body: string): st
   const links = parts.filter((_part, index) => index % 2 === 1)
   const separators = parts.filter((_part, index) => index % 2 === 0)
   const tail = /^\.(?: ([^<]+))?$/.exec(separators.pop() ?? '')
-  if (!tail || separators.shift() !== '' || !separators.every((separator) => LINK_SEPARATORS.has(separator))) return paragraph
+  if (!tail || !isLinkSequence(separators)) return paragraph
   const items = links.map((link) => `<li>${link}</li>`).join('')
   const trailing = tail[1] ? `<p>${tail[1]}</p>` : ''
   return `<p class="benchmark-threads__label">${label}:</p><ul class="benchmark-threads">${items}</ul>${trailing}`
+}
+
+/** True when the text before the first link is empty and every other gap is a list separator. */
+function isLinkSequence([lead, ...between]: string[]): boolean {
+  return lead === '' && between.every((separator) => LINK_SEPARATORS.has(separator))
 }
 
 export type TocLink = { id: string; text: string }
