@@ -29,27 +29,32 @@ export function isProcessed(key: string): boolean {
   return true
 }
 
+/** Drops every expired marker. */
+function sweepExpired(now: number): void {
+  for (const [key, expiry] of processedEvents) {
+    if (expiry < now) processedEvents.delete(key)
+  }
+}
+
+/**
+ * Drops the oldest marker while it is still live. A redelivery of that event
+ * within its window would repeat the owner notification, so this logs loudly.
+ */
+function evictOldestLive(): void {
+  const oldest = processedEvents.keys().next().value
+  if (oldest === undefined) return
+  console.error(`[webhook-dedupe] store full (${MAX_PROCESSED_EVENTS} live markers); evicting unexpired marker ${oldest}`)
+  processedEvents.delete(oldest)
+}
+
 /**
  * Records an event as processed for deduplication.
  *
  * @param key - The unique key identifying the webhook event
  */
 export function markProcessed(key: string): void {
-  if (processedEvents.size >= MAX_PROCESSED_EVENTS) {
-    const now = Date.now()
-    for (const [k, expiry] of processedEvents) {
-      if (expiry < now) processedEvents.delete(k)
-    }
-    if (processedEvents.size >= MAX_PROCESSED_EVENTS) {
-      const oldest = processedEvents.keys().next().value
-      if (oldest !== undefined) {
-        // Every marker is still live: dropping one means a redelivery of that
-        // event within its window would repeat the owner notification.
-        console.error(`[webhook-dedupe] store full (${MAX_PROCESSED_EVENTS} live markers); evicting unexpired marker ${oldest}`)
-        processedEvents.delete(oldest)
-      }
-    }
-  }
+  if (processedEvents.size >= MAX_PROCESSED_EVENTS) sweepExpired(Date.now())
+  if (processedEvents.size >= MAX_PROCESSED_EVENTS) evictOldestLive()
   processedEvents.set(key, Date.now() + DEDUPE_TTL_MS)
 }
 
