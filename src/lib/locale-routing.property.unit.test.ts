@@ -7,6 +7,9 @@ import { SERVICE_ROUTES } from './services'
 const sitemap = readFileSync(new URL('../../static/sitemap.xml', import.meta.url), 'utf8')
 const sitemapPaths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1].slice(SITE_ORIGIN.length))
 
+// Untranslated articles: each one listed here must lose its entry when it gets a pt-BR version.
+const englishOnlyArticles = ['/blog/chatgpt-ads-complete-guide-august-2026/', '/blog/openclaw-review-coolify-codex/', '/blog/slop-benchmark-ai-agents/', '/blog/agentic-video-benchmark/']
+
 const otherLocale = (locale: Locale): Locale => LOCALES.find((candidate) => candidate !== locale)!
 
 const bilingualPaths = [
@@ -18,14 +21,12 @@ const bilingualPaths = [
 ]
 
 describe('locale routing properties', () => {
-  it('round-trips every bilingual page through its counterpart', () => {
-    fc.assert(fc.property(fc.constantFrom(...bilingualPaths), (path) => {
-      const locale = localeForPath(path)
-      const counterpart = localizedPath(path, otherLocale(locale))
-      expect(counterpart, path).toBeDefined()
-      expect(localeForPath(counterpart!)).toBe(otherLocale(locale))
-      expect(localizedPath(counterpart!, locale)).toBe(path)
-    }))
+  it.each(bilingualPaths)('round-trips %s through its counterpart', (path) => {
+    const locale = localeForPath(path)
+    const counterpart = localizedPath(path, otherLocale(locale))
+    expect(counterpart, path).toBeDefined()
+    expect(localeForPath(counterpart!)).toBe(otherLocale(locale))
+    expect(localizedPath(counterpart!, locale)).toBe(path)
   })
 
   it('never invents a Portuguese counterpart for an untranslated article', () => {
@@ -37,10 +38,13 @@ describe('locale routing properties', () => {
     }))
   })
 
-  it('lists the counterpart of every sitemap page that has one', () => {
-    fc.assert(fc.property(fc.constantFrom(...sitemapPaths), (path) => {
-      const counterpart = localizedPath(path, otherLocale(localeForPath(path)))
-      if (counterpart !== undefined) expect(sitemapPaths, `${path} -> ${counterpart}`).toContain(counterpart)
-    }))
+  it.each(sitemapPaths)('lists the counterpart of sitemap page %s, or marks it English only', (path) => {
+    const counterpart = localizedPath(path, otherLocale(localeForPath(path)))
+    if (englishOnlyArticles.includes(path)) {
+      expect(counterpart, path).toBeUndefined()
+    } else {
+      expect(counterpart, path).toBeDefined()
+      expect(sitemapPaths, `${path} -> ${counterpart}`).toContain(counterpart)
+    }
   })
 })

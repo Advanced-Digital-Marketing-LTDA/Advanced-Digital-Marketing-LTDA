@@ -1,42 +1,36 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import fc from 'fast-check'
 import { isProcessed, markProcessed, resetWebhookDedupe } from './webhook-dedupe'
 
-/** Mirrors how both webhook receivers use the dedupe: act once, then mark. */
-function deliver(keys: readonly string[]): number {
-  let sideEffects = 0
-  for (const key of keys) {
-    if (isProcessed(key)) continue
-    sideEffects += 1
-    markProcessed(key)
-  }
-  return sideEffects
-}
-
-describe('webhook dedupe replay properties', () => {
+// Replay behaviour through the real receivers lives in stripe-webhook.unit.test.ts
+// and mercadoPago-webhook.unit.test.ts; these cover the store's own window and bounds.
+describe('webhook dedupe store', () => {
   beforeEach(() => resetWebhookDedupe())
   afterEach(() => {
     vi.useRealTimers()
     resetWebhookDedupe()
   })
 
-  it('runs the side effect exactly once per distinct event, whatever the replay order', () => {
-    const deliveries = fc.array(fc.constantFrom('evt_a', 'evt_b', 'evt_c', 'evt_d', 'evt_e'), { maxLength: 60 })
-    fc.assert(fc.property(deliveries, (keys) => {
-      resetWebhookDedupe()
-      expect(deliver(keys)).toBe(new Set(keys).size)
-      expect(deliver(keys)).toBe(0)
-    }))
-  })
-
   it('treats a replay after the 24 hour window as a new delivery', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-10-30T12:00:00Z'))
-    expect(deliver(['evt_late'])).toBe(1)
+    markProcessed('evt_late')
     vi.setSystemTime(new Date('2026-10-31T11:59:59Z'))
-    expect(deliver(['evt_late'])).toBe(0)
+    expect(isProcessed('evt_late')).toBe(true)
     vi.setSystemTime(new Date('2026-10-31T12:00:01Z'))
-    expect(deliver(['evt_late'])).toBe(1)
+    expect(isProcessed('evt_late')).toBe(false)
+  })
+
+  it('sweeps expired markers before evicting a live one when the store is full', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-10-30T12:00:00Z'))
+    for (let index = 1; index < 5_000; index += 1) markProcessed(`evt_${index}`)
+    // Newest in insertion order but already expired, so only a sweep can free its slot.
+    vi.setSystemTime(new Date('2026-10-29T00:00:00Z'))
+    markProcessed('evt_expired')
+    vi.setSystemTime(new Date('2026-10-30T13:00:00Z'))
+    markProcessed('evt_new')
+    expect(isProcessed('evt_1')).toBe(true)
+    expect(isProcessed('evt_new')).toBe(true)
   })
 
   it('keeps the newest event deduped when the store is full', () => {

@@ -6,6 +6,7 @@
  */
 import { createHmac } from 'node:crypto'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import fc from 'fast-check'
 import type { MailjetMessageInput } from './mailjet'
 import {
   parseSignatureHeader,
@@ -253,5 +254,57 @@ describe('processWebhookEvent', () => {
     vi.stubEnv('MERCADO_PAGO_WEBHOOK_SECRET', SECRET)
     const outcome = await processWebhookEvent({ body: 'not json', xSignature: null, xRequestId: null, urlDataId: null })
     expect(outcome).toEqual({ handled: false, code: 'bad_signature' })
+  })
+})
+
+describe('processWebhookEvent replay property', () => {
+  beforeEach(() => {
+    vi.stubEnv('MERCADO_PAGO_WEBHOOK_SECRET', SECRET)
+    resetWebhookDedupe()
+  })
+
+  afterEach(() => vi.unstubAllEnvs())
+
+  it('sends one owner email per event across any replay order, retrying after failures', async () => {
+    // Each delivery names one of five events; a flagged delivery's email send throws.
+    const deliveries = fc.array(fc.record({ event: fc.integer({ min: 0, max: 4 }), fails: fc.boolean() }), { maxLength: 40 })
+    await fc.assert(fc.asyncProperty(deliveries, async (plan) => {
+      resetWebhookDedupe()
+      const delivered: string[] = []
+      let requestCount = 0
+      const deliver = async (id: string, fails: boolean) => {
+        requestCount += 1
+        const paymentId = `10${id}`
+        const signed = signedBody(paymentEvent(paymentId), { requestId: `req-${requestCount}` })
+        return processWebhookEvent({
+          body: signed.body,
+          xSignature: signed.xSignature,
+          xRequestId: signed.xRequestId,
+          urlDataId: signed.urlDataId,
+          getPaymentImpl: async () => ({ id: paymentId, status: 'approved', statusDetail: 'accredited', externalReference: 'x', transactionAmount: 10, currencyId: 'BRL', payerEmail: null }),
+          sendEmail: async () => {
+            if (fails) throw new Error('mailjet down')
+            delivered.push(id)
+            delivered.sort()
+            return { messageId: `m_${id}` }
+          },
+        })
+      }
+      const sent = new Set<string>()
+      for (const { event, fails } of plan) {
+        const id = String(event)
+        const outcome = await deliver(id, fails)
+        if (sent.has(id)) {
+          expect(outcome).toEqual({ handled: true, action: 'deduplicated' })
+        } else if (fails) {
+          expect(outcome).toEqual({ handled: false, code: 'processing_failed' })
+        } else {
+          expect(outcome.handled).toBe(true)
+          sent.add(id)
+        }
+      }
+      // One delivered email per event that had at least one healthy delivery.
+      expect(delivered).toEqual([...sent].sort())
+    }))
   })
 })
