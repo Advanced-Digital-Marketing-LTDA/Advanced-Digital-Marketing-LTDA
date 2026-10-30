@@ -42,7 +42,12 @@ export function markProcessed(key: string): void {
     }
     if (processedEvents.size >= MAX_PROCESSED_EVENTS) {
       const oldest = processedEvents.keys().next().value
-      if (oldest !== undefined) processedEvents.delete(oldest)
+      if (oldest !== undefined) {
+        // Every marker is still live: dropping one means a redelivery of that
+        // event within its window would repeat the owner notification.
+        console.error(`[webhook-dedupe] store full (${MAX_PROCESSED_EVENTS} live markers); evicting unexpired marker ${oldest}`)
+        processedEvents.delete(oldest)
+      }
     }
   }
   processedEvents.set(key, Date.now() + DEDUPE_TTL_MS)
