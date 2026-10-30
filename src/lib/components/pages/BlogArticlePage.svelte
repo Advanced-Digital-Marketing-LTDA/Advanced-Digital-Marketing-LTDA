@@ -108,10 +108,12 @@
   .blog-article__body { width: 100%; }
   .blog-article__body :global(h2[id]) { scroll-margin-top: 6rem; }
   /* Benchmark charts retain legible native-size labels on narrow screens. */
-  .blog-article__body :global(p:has(> img[src="/images/blog/slop-benchmark.svg"])),
-  .blog-article__body :global(p:has(> img[src="/images/blog/agentic-video-benchmark.svg"])) { overflow-x: auto; }
-  .blog-article__body :global(img[src="/images/blog/slop-benchmark.svg"]),
-  .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 1120px; max-width: none; }
+  @media (max-width: 900px) {
+    .blog-article__body :global(p:has(> img[src="/images/blog/slop-benchmark.svg"])),
+    .blog-article__body :global(p:has(> img[src="/images/blog/agentic-video-benchmark.svg"])) { overflow-x: auto; }
+    .blog-article__body :global(img[src="/images/blog/slop-benchmark.svg"]),
+    .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 1120px; max-width: none; }
+  }
 
   .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: auto; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
   .article-toc { position: sticky; align-self: start; top: 6rem; display: flex; flex-direction: column; gap: .6rem; max-height: 65vh; overflow: auto; font-size: .85rem; }
