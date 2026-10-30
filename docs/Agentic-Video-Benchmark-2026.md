@@ -71,7 +71,7 @@ The basis column distinguishes two available measures from the release-less fall
 
 ## The ratio graphic
 
-The chart uses the same scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, scroll the chart horizontally to read its labels. [Open the full-size chart](/images/blog/agentic-video-benchmark.svg) for a readable view on a small screen.
+The chart uses the same scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, the chart is arranged vertically for easier reading. You can also [open the full-size chart](/images/blog/agentic-video-benchmark.svg).
 
 ![Slop Log Scores for 38 agentic video repositories, October 30, 2026](/images/blog/agentic-video-benchmark.svg)
 
