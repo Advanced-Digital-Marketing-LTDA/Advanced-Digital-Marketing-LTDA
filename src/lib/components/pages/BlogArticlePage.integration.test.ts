@@ -14,7 +14,8 @@ describe('benchmark article headings', () => {
       const { body } = render(BlogArticlePage, { props: { article } })
       const heading = body.match(/<h1\b[^>]*>/)?.[0]
       expect(heading, article.slug).toBeDefined()
-      expect(heading?.includes('benchmark-title'), article.slug).toBe(benchmarks.includes(article.slug))
+      const classes = heading?.match(/\bclass="([^"]*)"/)?.[1].split(/\s+/) ?? []
+      expect(classes.includes('benchmark-title'), article.slug).toBe(benchmarks.includes(article.slug))
     }
     expect(BLOG_ARTICLES.filter((article) => benchmarks.includes(article.slug))).toHaveLength(2)
   })
@@ -31,6 +32,6 @@ describe('benchmark article headings', () => {
         rule.walkDecls('overflow-wrap', (decl) => { ruleFound ||= decl.value === 'anywhere' })
       })
     })
-    expect(ruleFound).toBe(true)
+    expect(ruleFound, 'benchmark headings must allow wrapping at widths up to 900px').toBe(true)
   })
 })
