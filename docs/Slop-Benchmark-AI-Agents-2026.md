@@ -20,7 +20,11 @@ The score snapshot was collected October 30, 2026, 17:27:15–17:29:31 UTC. The 
 
 When releases are absent but B exists, C is B/2: this intentionally halves B and can lower the result compared with averaging two available measures. When merged PRs are zero, B and the final score are N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; A, B and C are displayed to two decimals and the score to four. Lower scores indicate less public backlog relative to these activity denominators, not proof of software quality or reliability. Release cadence, project age, issue type and contributor practices affect the result. Stars are not a score input.
 
-The original October 27 review used issues per release and editorial bands. Those old ratio bands do not grade the new logarithmic score. The historical issue review and its qualitative judgments below were not re-audited; an issue may be a question, feature request, duplicate or report rather than a confirmed defect. Its sample was the three most-commented currently open issue threads updated since April 27, 2026.
+The original October 27 review used issues per release and editorial bands. Those old ratio bands do not grade the new logarithmic score. The historical issue review and its qualitative judgments below were not re-audited.
+
+**October 27 qualitative methodology:** The qualitative check for each project uses its three most-commented **currently open issue threads updated since April 27, 2026**. These are not necessarily the most-commented issues of all time. I read them to distinguish reproducible bugs from feature proposals, trackers, and design debates; comments are not counted as independent affected users. The examples describe what maintainers and users are discussing, not a complete audit of the repository.
+
+**October 27 ratio bands (historical only):** For a rough reading guide only, I use these sample bands: **low** at 1 or below; **moderate** above 1 through 5; **high** above 5 through 20; **very high** above 20 through 100; and **extreme** above 100. These cutoffs are editorial conveniences, not validated thresholds. “Slop” here refers only to a high ratio plus issue evidence that looks like unresolved reliability or maintenance burden. A feature request alone does not prove a project is slop, and a low score does not certify it as production-ready.
 
 ## The comparison table
 
@@ -55,7 +59,7 @@ Higher values indicate more backlog relative to the activity measures in this sn
 
 ## The ratio graphic
 
-The chart shows the same October 30 log scores as the table. The table is the exact lookup, while the bars make the spread easier to see.
+The chart shows the same October 30 log scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, scroll the chart horizontally to read its labels, or [open the full-size chart](/images/blog/slop-benchmark.svg).
 
 ![Slop Benchmark log scores for 24 AI agent repositories, October 30, 2026](/images/blog/slop-benchmark.svg)
 
