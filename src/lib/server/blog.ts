@@ -12,6 +12,10 @@ import openclawMarkdown from '../../../docs/OpenClaw-Review-Coolify-Codex-2026.m
 import videoBenchmarkMarkdown from '../../../docs/Agentic-Video-Benchmark-2026.md?raw'
 import slopBenchmarkMarkdown from '../../../docs/Slop-Benchmark-AI-Agents-2026.md?raw'
 import paperclipPortuguese from '$lib/content/paperclip-review-pt-br.md?raw'
+import openclawPortuguese from '$lib/content/openclaw-review-coolify-codex-pt-br.md?raw'
+import slopBenchmarkPortuguese from '$lib/content/slop-benchmark-ai-agents-pt-br.md?raw'
+import videoBenchmarkPortuguese from '$lib/content/agentic-video-benchmark-pt-br.md?raw'
+import chatgptAdsPortuguese from '$lib/content/chatgpt-ads-complete-guide-august-2026-pt-br.md?raw'
 
 export type BlogArticle = {
   slug: string
@@ -143,3 +147,21 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [VIDEO_BENCHMARK_ARTICLE, S
 export const PAPERCLIP_REVIEW_PT = createArticle(
   paperclipPortuguese, 'paperclip-review-coolify-codex', 'Review', false, 'pt-BR',
 )
+
+export const OPENCLAW_REVIEW_PT = createArticle(
+  openclawPortuguese, 'openclaw-review-coolify-codex', 'Review', false, 'pt-BR',
+)
+
+export const SLOP_BENCHMARK_PT = createArticle(
+  slopBenchmarkPortuguese, 'slop-benchmark-ai-agents', 'Review', false, 'pt-BR',
+)
+
+export const VIDEO_BENCHMARK_PT = createArticle(
+  videoBenchmarkPortuguese, 'agentic-video-benchmark', 'Review', false, 'pt-BR',
+)
+
+export const CHATGPT_ADS_PT = createArticle(
+  chatgptAdsPortuguese, 'chatgpt-ads-complete-guide-august-2026', 'Guide', false, 'pt-BR',
+)
+
+export const PT_BLOG_ARTICLES: readonly BlogArticle[] = [VIDEO_BENCHMARK_PT, SLOP_BENCHMARK_PT, OPENCLAW_REVIEW_PT, PAPERCLIP_REVIEW_PT, CHATGPT_ADS_PT]

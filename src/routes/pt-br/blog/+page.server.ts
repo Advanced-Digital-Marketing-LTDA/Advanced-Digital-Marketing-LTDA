@@ -1,6 +1,7 @@
-import { PAPERCLIP_REVIEW_PT } from '$lib/server/blog'
+import { PT_BLOG_ARTICLES } from '$lib/server/blog'
 
 export function load() {
-  const { slug, title, description, published } = PAPERCLIP_REVIEW_PT
-  return { articles: [{ slug, title, description, published }] }
+  return {
+    articles: PT_BLOG_ARTICLES.map(({ slug, title, description, published }) => ({ slug, title, description, published })),
+  }
 }

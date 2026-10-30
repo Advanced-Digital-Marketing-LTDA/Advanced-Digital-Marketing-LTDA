@@ -175,7 +175,13 @@ export const BLOG_ARTICLE_COPY = {
   about: L('More about Andrew', 'Mais sobre Andrew'),
 }
 
-export const TRANSLATED_BLOG_SLUGS: readonly string[] = ['paperclip-review-coolify-codex']
+export const TRANSLATED_BLOG_SLUGS: readonly string[] = [
+  'agentic-video-benchmark',
+  'slop-benchmark-ai-agents',
+  'openclaw-review-coolify-codex',
+  'paperclip-review-coolify-codex',
+  'chatgpt-ads-complete-guide-august-2026',
+]
 
 export function localizedPath(pathname: string, locale: Locale) {
   const page = pageForPath(pathname)
