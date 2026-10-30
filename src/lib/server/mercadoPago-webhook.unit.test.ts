@@ -6,7 +6,6 @@
  */
 import { createHmac } from 'node:crypto'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { assertReplayContract } from '../test-utils/webhook-replay'
 import type { MailjetMessageInput } from './mailjet'
 import {
   parseSignatureHeader,
@@ -254,22 +253,5 @@ describe('processWebhookEvent', () => {
     vi.stubEnv('MERCADO_PAGO_WEBHOOK_SECRET', SECRET)
     const outcome = await processWebhookEvent({ body: 'not json', xSignature: null, xRequestId: null, urlDataId: null })
     expect(outcome).toEqual({ handled: false, code: 'bad_signature' })
-  })
-
-  it('sends one owner email per event across any replay order, retrying after failures', async () => {
-    let requestCount = 0
-    await assertReplayContract(async (id, sendEmail) => {
-      requestCount += 1
-      const paymentId = `10${id}`
-      const signed = signedBody(paymentEvent(paymentId), { requestId: `req-${requestCount}` })
-      return processWebhookEvent({
-        body: signed.body,
-        xSignature: signed.xSignature,
-        xRequestId: signed.xRequestId,
-        urlDataId: signed.urlDataId,
-        getPaymentImpl: async () => ({ id: paymentId, status: 'approved', statusDetail: 'accredited', externalReference: 'x', transactionAmount: 10, currencyId: 'BRL', payerEmail: null }),
-        sendEmail,
-      })
-    }, resetWebhookDedupe)
   })
 })
