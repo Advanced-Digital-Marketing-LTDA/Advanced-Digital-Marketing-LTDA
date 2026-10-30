@@ -3,14 +3,20 @@
   import { SITE_ORIGIN, TRANSLATED_BLOG_SLUGS, BLOG_ARTICLE_COPY, LOCALE_ROUTES, type Locale } from '$lib/locale'
   import { resolveCopy } from '$lib/localized-copy'
   import type { BlogArticle } from '$lib/server/blog'
+  import { formatBenchmarkHtml, groupContents, isBenchmarkArticle } from './benchmarkArticle'
 
   let { article, showReadingEstimate = false }: { article: BlogArticle; showReadingEstimate?: boolean } = $props()
   // Keep the original graphic on larger screens and offer a readable, narrow
   // version without changing the article's accessible image description.
-  let articleHtml = $derived(article.html.replace(
-    /<img src="(\/images\/blog\/(?:slop-benchmark|agentic-video-benchmark))\.svg"[^>]*>/g,
-    (image, stem: string) => `<picture><source media="(max-width: 700px)" srcset="${stem}-mobile.svg">${image}</picture>`,
-  ))
+  let benchmark = $derived(isBenchmarkArticle(article.headings))
+  let articleHtml = $derived.by(() => {
+    const html = article.html.replace(
+      /<img src="(\/images\/blog\/(?:slop-benchmark|agentic-video-benchmark))\.svg"[^>]*>/g,
+      (image, stem: string) => `<picture><source media="(max-width: 700px)" srcset="${stem}-mobile.svg">${image}</picture>`,
+    )
+    return benchmark ? formatBenchmarkHtml(html) : html
+  })
+  let contents = $derived(groupContents(article.headings, benchmark))
   let locale: Locale = $derived(article.locale)
   let copy = $derived(resolveCopy<{review:string;reading:string;readingEstimate:string;contents:string;onPage:string;author:string;bio:string;about:string}>(BLOG_ARTICLE_COPY, locale))
   let pt = $derived(locale === 'pt-BR')
@@ -84,11 +90,9 @@
   <div class="article-layout">
   <nav class="article-toc" aria-label={copy.contents}>
     <strong>{copy.onPage}</strong>
-    {#each article.headings as heading}
-      <a href={`#${heading.id}`}>{heading.text}</a>
-    {/each}
+    {@render contentsLinks()}
   </nav>
-  <div class="blog-article__body" class:video-benchmark={article.slug === 'agentic-video-benchmark'} class:agent-benchmark={article.slug === 'slop-benchmark-ai-agents'}>
+  <div class="blog-article__body" class:benchmark class:video-benchmark={article.slug === 'agentic-video-benchmark'} class:agent-benchmark={article.slug === 'slop-benchmark-ai-agents'}>
     {@html articleHtml}
     <section class="article-author" aria-label={copy.author}>
       <h2>{copy.author}</h2>
@@ -101,13 +105,26 @@
     <button type="button" aria-expanded={tocOpen} onclick={() => tocOpen = !tocOpen}>{copy.contents} {tocOpen ? '×' : '↑'}</button>
     {#if tocOpen}
       <nav aria-label={copy.contents}>
-        {#each article.headings as heading}
-          <a href={`#${heading.id}`} onclick={() => tocOpen = false}>{heading.text}</a>
-        {/each}
+        {@render contentsLinks(() => tocOpen = false)}
       </nav>
     {/if}
   </div>
 </article>
+
+{#snippet contentsLinks(onnavigate?: () => void)}
+  {#each contents as entry}
+    {#if entry.kind === 'link'}
+      <a href={`#${entry.link.id}`} onclick={onnavigate}>{entry.link.text}</a>
+    {:else}
+      <details class="toc-projects">
+        <summary>{pt ? 'Projetos' : 'Projects'} ({entry.links.length})</summary>
+        {#each entry.links as link}
+          <a href={`#${link.id}`} onclick={onnavigate}>{link.text}</a>
+        {/each}
+      </details>
+    {/if}
+  {/each}
+{/snippet}
 
 <style>
   .blog-article__reading-time { margin-top: 1rem; color: var(--ink-muted); }
@@ -123,51 +140,62 @@
   }
 
   .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: 0; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
+  /* Slop Benchmark articles: a wide, pinned data table, compact project
+     sections and mobile summary cards. Wording and numbers come unchanged
+     from the article; benchmarkArticle.ts only adds structure and classes. */
+  .benchmark { --benchmark-breakout: 0px; }
+  @media (min-width: 1240px) { .benchmark { --benchmark-breakout: min(20rem, 100vw - 1224px); } }
+  .benchmark :global(.benchmark-anchor) { display: block; scroll-margin-top: 6rem; }
+  .benchmark :global(.benchmark-table) { width: calc(100% + var(--benchmark-breakout)); max-height: min(80vh, 48rem); margin: 2rem 0 2.5rem; overflow: auto; border: 1px solid var(--ink-faint); background: var(--paper); }
+  .benchmark :global(.benchmark-table:focus-visible) { outline: 2px solid var(--verm); outline-offset: 3px; }
+  .benchmark :global(.benchmark-table table) { display: table; width: 100%; margin: 0; white-space: normal; font-size: .84rem; font-variant-numeric: tabular-nums; }
+  .benchmark :global(.benchmark-table th) { position: sticky; top: 0; z-index: 2; min-width: 0; padding: .75rem .6rem; border-bottom: 1px solid var(--ink); background: var(--paper); font-size: .64rem; line-height: 1.3; vertical-align: bottom; }
+  .benchmark :global(.benchmark-table td) { min-width: 0; padding: .6rem; background: var(--paper); vertical-align: middle; }
+  .benchmark :global(.benchmark-table tbody tr:nth-child(even) td) { background: #ebe7e0; }
+  .benchmark :global(.benchmark-table tbody tr:hover td) { background: #e3ded5; }
+  .benchmark :global(.benchmark-cell--stat), .benchmark :global(.benchmark-cell--meta), .benchmark :global(.benchmark-cell--score) { text-align: right; white-space: nowrap; }
+  .benchmark :global(.benchmark-table .benchmark-cell--name) { position: sticky; left: 0; z-index: 1; min-width: 11rem; box-shadow: inset -1px 0 0 var(--ink-faint); }
+  .benchmark :global(.benchmark-table .benchmark-cell--score) { position: sticky; right: 0; z-index: 1; box-shadow: inset 1px 0 0 var(--ink-faint); }
+  .benchmark :global(.benchmark-table th.benchmark-cell--name), .benchmark :global(.benchmark-table th.benchmark-cell--score) { z-index: 3; }
+  .benchmark :global(.benchmark-table td.benchmark-cell--category) { min-width: 8.5rem; color: var(--ink-muted); }
+  .benchmark :global(td.benchmark-cell--score) { color: var(--verm-deep); font-weight: 700; }
+  .benchmark :global(h2.benchmark-project) { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem 1rem; margin: 4rem 0 1.1rem; padding-top: 1.4rem; border-top: 1px solid var(--ink); font-family: 'ADM Semi', sans-serif; font-size: clamp(1.3rem, 2.2vw, 1.7rem); letter-spacing: -.01em; line-height: 1.2; text-transform: none; }
+  .benchmark :global(.benchmark-project__name) { min-width: 0; overflow-wrap: anywhere; }
+  .benchmark :global(.benchmark-project__sep) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .benchmark :global(.benchmark-project__score) { display: inline-flex; align-items: baseline; gap: .45rem; padding: .35rem .7rem; background: var(--verm-deep); color: var(--paper); font-family: 'JetBrains Mono', monospace; font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+  .benchmark :global(.benchmark-project__value) { font-size: 1rem; font-weight: 700; letter-spacing: 0; }
+  .benchmark :global(.benchmark-threads__label) { margin: 1.6rem 0 .35rem; color: var(--ink-muted); font-family: 'ADM Semi', sans-serif; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+  .benchmark :global(ul.benchmark-threads) { max-width: 72ch; margin: 0 0 1.75rem; padding: 0; border-top: 1px solid var(--ink-faint); list-style: none; }
+  .benchmark :global(.benchmark-threads li) { position: relative; margin: 0; padding: .65rem 0 .65rem 1.5rem; border-bottom: 1px solid var(--ink-faint); line-height: 1.5; }
+  .benchmark :global(.benchmark-threads li::before) { position: absolute; left: 0; color: var(--verm-deep); content: '↗' / ''; }
   @media (min-width: 901px) {
-    .video-benchmark :global(table) { display: block; max-width: 100%; overflow-x: auto; }
-    .video-benchmark :global(th), .video-benchmark :global(td) { padding: .6rem .35rem; }
-  }
-  @media (min-width: 701px) and (max-width: 900px) {
-    .video-benchmark :global(table), .agent-benchmark :global(table) { display: block; max-width: 100%; overflow-x: auto; }
+    .benchmark :global(p:has(> picture)) { width: calc(100% + var(--benchmark-breakout)); max-width: none; }
+    .benchmark :global(picture img) { display: block; width: 100%; height: auto; border: 1px solid var(--ink-faint); }
   }
   @media (max-width: 700px) {
-    .video-benchmark, .agent-benchmark {
-      --field-1: "Project"; --field-3: "Open issues"; --field-4: "Open PRs";
-      --field-5: "Merged PRs"; --field-6: "Closed unmerged"; --field-7: "Releases";
-      --field-8: "A"; --field-9: "B"; --field-10: "C"; --field-11: "Slop Log Score";
-    }
-    .agent-benchmark { --field-2: "GitHub stars (Oct 27)"; }
-    .video-benchmark {
-      --field-2: "Category"; --field-3: "GitHub stars"; --field-4: "Open issues";
-      --field-5: "Open PRs"; --field-6: "Merged PRs"; --field-7: "Closed unmerged";
-      --field-8: "Releases"; --field-9: "A"; --field-10: "B"; --field-11: "C";
-      --field-12: "Slop Log Score"; --field-13: "Basis";
-    }
-    .video-benchmark :global(table), .agent-benchmark :global(table) { display: block; width: 100%; overflow: visible; white-space: normal; }
-    .video-benchmark :global(thead), .agent-benchmark :global(thead) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-    .video-benchmark :global(tbody), .agent-benchmark :global(tbody) { display: block; }
-    .video-benchmark :global(tr), .agent-benchmark :global(tr) { display: block; margin: 0 0 1.25rem; padding: .5rem .85rem; border: 1px solid var(--ink-faint); }
-    .video-benchmark :global(td), .agent-benchmark :global(td) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: .75rem; min-width: 0; padding: .5rem 0; overflow-wrap: anywhere; }
-    .video-benchmark :global(td:last-child), .agent-benchmark :global(td:last-child) { border-bottom: 0; }
-    .video-benchmark :global(td::before), .agent-benchmark :global(td::before) { color: var(--ink-muted); font-size: .78rem; font-weight: 700; }
-    .video-benchmark :global(td:nth-child(1)::before), .agent-benchmark :global(td:nth-child(1)::before) { content: var(--field-1); }
-    .video-benchmark :global(td:nth-child(2)::before), .agent-benchmark :global(td:nth-child(2)::before) { content: var(--field-2); }
-    .video-benchmark :global(td:nth-child(3)::before), .agent-benchmark :global(td:nth-child(3)::before) { content: var(--field-3); }
-    .video-benchmark :global(td:nth-child(4)::before), .agent-benchmark :global(td:nth-child(4)::before) { content: var(--field-4); }
-    .video-benchmark :global(td:nth-child(5)::before), .agent-benchmark :global(td:nth-child(5)::before) { content: var(--field-5); }
-    .video-benchmark :global(td:nth-child(6)::before), .agent-benchmark :global(td:nth-child(6)::before) { content: var(--field-6); }
-    .video-benchmark :global(td:nth-child(7)::before), .agent-benchmark :global(td:nth-child(7)::before) { content: var(--field-7); }
-    .video-benchmark :global(td:nth-child(8)::before), .agent-benchmark :global(td:nth-child(8)::before) { content: var(--field-8); }
-    .video-benchmark :global(td:nth-child(9)::before), .agent-benchmark :global(td:nth-child(9)::before) { content: var(--field-9); }
-    .video-benchmark :global(td:nth-child(10)::before), .agent-benchmark :global(td:nth-child(10)::before) { content: var(--field-10); }
-    .video-benchmark :global(td:nth-child(11)::before), .agent-benchmark :global(td:nth-child(11)::before) { content: var(--field-11); }
-    .video-benchmark :global(td:nth-child(12)::before), .agent-benchmark :global(td:nth-child(12)::before) { content: var(--field-12); }
-    .video-benchmark :global(td:nth-child(13)::before), .agent-benchmark :global(td:nth-child(13)::before) { content: var(--field-13); }
+    .benchmark :global(.benchmark-table) { width: 100%; max-height: none; overflow: visible; border: 0; background: none; }
+    .benchmark :global(.benchmark-table table) { display: block; font-size: .9rem; }
+    .benchmark :global(.benchmark-table thead) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .benchmark :global(.benchmark-table tbody) { display: grid; gap: .9rem; }
+    .benchmark :global(.benchmark-table tr) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .6rem .5rem; padding: .85rem .9rem; border: 1px solid var(--ink-faint); background: var(--paper); }
+    .benchmark :global(.benchmark-table td),
+    .benchmark :global(.benchmark-table tbody tr:nth-child(even) td),
+    .benchmark :global(.benchmark-table tbody tr:hover td) { display: block; position: static; min-width: 0; padding: 0; border: 0; background: none; box-shadow: none; text-align: left; white-space: normal; }
+    .benchmark :global(.benchmark-table td.benchmark-cell--name) { position: static; min-width: 0; box-shadow: none; grid-column: 1 / 4; order: 0; align-self: center; font-weight: 700; overflow-wrap: anywhere; }
+    .benchmark :global(.benchmark-table td.benchmark-cell--score) { position: static; box-shadow: none; grid-column: 4; order: 1; justify-self: end; align-self: start; padding: .2rem .45rem; background: var(--verm-deep); color: var(--paper); font-family: 'JetBrains Mono', monospace; text-align: right; }
+    .benchmark :global(.benchmark-table td.benchmark-cell--category) { min-width: 0; grid-column: 1 / -1; order: 2; margin-top: -.35rem; font-size: .8rem; }
+    .benchmark :global(td.benchmark-cell--stat) { order: 3; padding-top: .55rem; border-top: 1px solid var(--ink-faint); font-weight: 600; }
+    .benchmark :global(td.benchmark-cell--meta) { order: 4; color: var(--ink-muted); font-size: .78rem; }
+    .benchmark :global(td.benchmark-cell--stat::before), .benchmark :global(td.benchmark-cell--meta::before), .benchmark :global(td.benchmark-cell--score::before) { display: block; color: var(--ink-muted); content: attr(data-label); font-family: 'ADM Semi', sans-serif; font-size: .6rem; font-weight: 400; letter-spacing: .06em; line-height: 1.25; text-transform: uppercase; }
+    .benchmark :global(td.benchmark-cell--score::before) { color: var(--paper); font-size: .5rem; }
+    .benchmark :global(h2.benchmark-project) { margin-top: 3rem; }
     .blog-article__body :global(img[src="/images/blog/slop-benchmark.svg"]),
-    .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 100%; max-width: 280px; height: auto; }
+    .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 100%; max-width: 26rem; height: auto; border: 1px solid var(--ink-faint); }
   }
   .article-toc { position: sticky; align-self: start; top: 6rem; display: flex; flex-direction: column; gap: .6rem; max-height: 65vh; overflow: auto; font-size: .85rem; }
   .article-toc a, .mobile-toc a { display: block; color: inherit; }
+  .toc-projects summary { cursor: pointer; font-weight: 700; }
+  .toc-projects a { margin-top: .55rem; padding-left: .9rem; }
   .article-author { margin-top: 4rem; border-top: 1px solid currentColor; }
   .mobile-toc { display: none; }
   @media (max-width: 900px) { .article-layout { display: block; } .article-toc { display: none; } .mobile-toc { display: block; position: fixed; z-index: 30; bottom: 0; right: 1rem; box-sizing: border-box; max-width: min(90vw, calc(100vw - var(--rail-w) - 2rem)); overflow-wrap: anywhere; background: #171717; color: white; padding: .75rem; } .mobile-toc nav { display: flex; flex-direction: column; gap: .7rem; max-height: 55vh; overflow: auto; padding: .75rem; } }
