@@ -1,7 +1,7 @@
 ---
 title: "The Slop Benchmark: Comparing 24 AI Agent Repositories"
 meta_title: "Slop Benchmark: 24 AI Agent Repositories Compared"
-meta_description: "A backlog and activity comparison of 24 AI agent repositories, with a chart and historical reviews of their most-discussed open issues."
+meta_description: "A backlog and activity comparison of 24 AI agent repositories, with a chart and reviews of their most-discussed open issues."
 published: "2026-10-27"
 updated: "2026-10-30"
 ---
@@ -10,27 +10,23 @@ A project can have millions of stars and still make you spend your afternoon deb
 
 ## What the ratio can and cannot say
 
-The score snapshot was collected October 30, 2026, 17:27:15–17:29:31 UTC. The original qualitative research below remains from October 27 and was not refreshed. Open issues exclude pull requests. Published GitHub release records include prereleases and exclude drafts. Open PRs include drafts; PRs closed without merging are recorded separately and do not enter the denominator.
+The score snapshot was collected October 30, 2026, 17:27:15–17:29:31 UTC. The issue discussions were reviewed on October 27, 2026; their status may have changed since then. Open issues exclude pull requests. Published GitHub release records include prereleases and exclude drafts. Open PRs include drafts; PRs closed without merging are recorded separately and do not enter the denominator.
 
 > **A = open issues ÷ published releases**
 >
 > **B = (open issues + open PRs) ÷ lifetime merged PRs**
 >
-> **C = (A + B) ÷ 2; final score = log10(1 + C)**
+> **C = (A + B) ÷ 2; Slop Log Score = log10(1 + C)**
 
-When releases are absent but B exists, C is B/2: this intentionally halves B and can lower the result compared with averaging two available measures. When merged PRs are zero, B and the final score are N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; A, B and C are displayed to two decimals and the score to four. Lower scores indicate less public backlog relative to these activity denominators, not proof of software quality or reliability. Release cadence, project age, issue type and contributor practices affect the result. Stars are not a score input.
+When releases are absent but B exists, C is B/2: this intentionally halves B and can lower the result compared with averaging two available measures. When merged PRs are zero, B and the Slop Log Score are N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; A, B and C are displayed to two decimals and the Slop Log Score to four. Lower scores indicate less public backlog relative to these activity denominators, not proof of software quality or reliability. Release cadence, project age, issue type and contributor practices affect the result. Stars are not a score input.
 
-The original October 27 review used issues per release and editorial bands. Those old ratio bands do not grade the new logarithmic score. The historical issue review and its qualitative judgments below were not re-audited.
-
-**October 27 qualitative methodology:** The qualitative check for each project uses its three most-commented **currently open issue threads updated since April 27, 2026**. These are not necessarily the most-commented issues of all time. I read them to distinguish reproducible bugs from feature proposals, trackers, and design debates; comments are not counted as independent affected users. The examples describe what maintainers and users are discussing, not a complete audit of the repository.
-
-**October 27 ratio bands (historical only):** For a rough reading guide only, I use these sample bands: **low** at 1 or below; **moderate** above 1 through 5; **high** above 5 through 20; **very high** above 20 through 100; and **extreme** above 100. These cutoffs are editorial conveniences, not validated thresholds. “Slop” here refers only to a high ratio plus issue evidence that looks like unresolved reliability or maintenance burden. A feature request alone does not prove a project is slop, and a low score does not certify it as production-ready.
+For the qualitative check, I reviewed each project's three most-commented open issue threads updated since April 27, 2026, as of October 27. These are not necessarily the most-commented issues of all time. Comments are not independent affected users, and the examples are not a complete audit. An issue can be a bug report, a question, a feature request, or a tracker.
 
 ## The comparison table
 
-Higher values indicate more backlog relative to the activity measures in this snapshot. Stars remain from October 27. Follow the repository links to inspect project status.
+Higher values indicate more backlog relative to the activity measures in this snapshot. Stars were recorded October 27. Follow the repository links to inspect project status.
 
-| Project | GitHub stars (Oct 27) | Open issues | Open PRs | Merged PRs | Closed unmerged | Releases | A | B | C | Log score |
+| Project | GitHub stars (Oct 27) | Open issues | Open PRs | Merged PRs | Closed unmerged | Releases | A | B | C | Slop Log Score |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | [Hermes Agent](https://github.com/NousResearch/hermes-agent) | 257,719 | 17,785 | 34,297 | 19,872 | 54,069 | 44 | 404.20 | 2.62 | 203.41 | 2.3105 |
 | [Paperclip](https://github.com/paperclipai/paperclip) | 107,968 | 3,476 | 3,180 | 4,118 | 6,256 | 30 | 115.87 | 1.62 | 58.74 | 1.7763 |
@@ -59,210 +55,256 @@ Higher values indicate more backlog relative to the activity measures in this sn
 
 ## The ratio graphic
 
-The chart shows the same October 30 log scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, scroll the chart horizontally to read its labels, or [open the full-size chart](/images/blog/slop-benchmark.svg).
+The chart shows the same October 30 Slop Log Scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, scroll the chart horizontally to read its labels, or [open the full-size chart](/images/blog/slop-benchmark.svg).
 
-![Slop Benchmark log scores for 24 AI agent repositories, October 30, 2026](/images/blog/slop-benchmark.svg)
+![Slop Log Scores for 24 AI agent repositories, October 30, 2026](/images/blog/slop-benchmark.svg)
 
 ## Project-by-project issue review
 
-The following issue assessments and ratio-based commentary are preserved from October 27. Their original ratio verdicts and qualitative labels apply only to that historical ratio, not the refreshed log scores in the headings. Issue status and comments have not been refreshed.
+The issue discussions below were reviewed October 27. They are a screening sample, not a verdict on maintainers or users; issue status and comments can change.
 
 <a id="hermes-agent-395-09-issues-per-release"></a>
 
-## Hermes Agent: 2.3105 log score
+<a id="hermes-agent-2-3105-log-score"></a>
 
-**Historical ratio verdict (October 27): Extreme.** Top-commented open threads in the last six months: [Refactor the godfile: split the 2,000-task tool catalog into maintainable modules (#78647, 82 comments)](https://github.com/NousResearch/hermes-agent/issues/78647); [Desktop app sends the same assistant reply twice (#127665, 58 comments)](https://github.com/NousResearch/hermes-agent/issues/127665); [Opening a pull request fails with a permissions error (#131859, 53 comments)](https://github.com/NousResearch/hermes-agent/issues/131859).
+## Hermes Agent: 2.3105 Slop Log Score
 
-**October 27 assessment:** Hermes has the highest ratio here: 395.09, from 17,384 open issues and 44 releases. Its most-discussed sampled thread concerns splitting a sprawling “godfile,” which signals maintenance burden rather than a single runtime failure. More concrete reports describe duplicate desktop replies and permission errors when opening pull requests. Those affect the assistant’s ability to communicate and finish work. The combination supports a strong slop warning, although the backlog also includes proposals and questions. Active refactoring is encouraging, but popularity does not resolve these defects. Test desktop sessions and PR creation in a pinned release before relying on Hermes for unattended tasks.
+Top-commented open threads in the last six months: [Refactor the godfile: split the 2,000-task tool catalog into maintainable modules (#78647, 82 comments)](https://github.com/NousResearch/hermes-agent/issues/78647); [Desktop app sends the same assistant reply twice (#127665, 58 comments)](https://github.com/NousResearch/hermes-agent/issues/127665); [Opening a pull request fails with a permissions error (#131859, 53 comments)](https://github.com/NousResearch/hermes-agent/issues/131859).
+
+Its most-discussed sampled thread concerns splitting a sprawling “godfile,” which signals maintenance burden rather than a single runtime failure. More concrete reports describe duplicate desktop replies and permission errors when opening pull requests. Those affect the assistant’s ability to communicate and finish work. Active refactoring is encouraging, but popularity does not resolve these defects. Test desktop sessions and PR creation in a pinned release before relying on Hermes for unattended tasks.
 
 <a id="paperclip-113-27-issues-per-release"></a>
 
-## Paperclip: 1.7763 log score
+<a id="paperclip-1-7763-log-score"></a>
 
-**Historical ratio verdict (October 27): Extreme.** Top-commented open threads in the last six months: [Add support for Ollama as a model provider (#187, 34 comments)](https://github.com/paperclipai/paperclip/issues/187); [Reviewer handoff can be skipped and there is no retry (#13532, 26 comments)](https://github.com/paperclipai/paperclip/issues/13532); [Recovery hold can silently deadlock or duplicate watchdog work (#14600, 23 comments)](https://github.com/paperclipai/paperclip/issues/14600).
+## Paperclip: 1.7763 Slop Log Score
 
-**October 27 assessment:** Paperclip scores 113.27, with 3,398 open issues against 30 releases. Its most-commented sampled issue requests Ollama support; that is a missing capability, not a broken feature. The next threads are more concerning: reviewer handoffs can be skipped without retry, and recovery holds can silently deadlock or duplicate watchdog work. Those problems strike directly at delegated task coordination. A coordinator that loses review gates or stalls silently creates extra supervision instead of saving it. The extreme ratio therefore has meaningful reliability evidence behind it. Paperclip deserves a strong slop warning for dependable orchestration until fixes are released and verified in realistic workflows.
+Top-commented open threads in the last six months: [Add support for Ollama as a model provider (#187, 34 comments)](https://github.com/paperclipai/paperclip/issues/187); [Reviewer handoff can be skipped and there is no retry (#13532, 26 comments)](https://github.com/paperclipai/paperclip/issues/13532); [Recovery hold can silently deadlock or duplicate watchdog work (#14600, 23 comments)](https://github.com/paperclipai/paperclip/issues/14600).
+
+Its most-commented sampled issue requests Ollama support; that is a missing capability, not a broken feature. The next threads are more concerning: reviewer handoffs can be skipped without retry, and recovery holds can silently deadlock or duplicate watchdog work. Those problems strike directly at delegated task coordination. A coordinator that loses review gates or stalls silently creates extra supervision instead of saving it.
 
 <a id="happy-41-50-issues-per-release"></a>
 
-## Happy: 1.4022 log score
+<a id="happy-1-4022-log-score"></a>
 
-**Historical ratio verdict (October 27): Very high.** Top-commented open threads in the last six months: [Codex sessions hang while waiting for messages (#358, 17 comments)](https://github.com/slopus/happy/issues/358); [Add OpenCode support (#265, 17 comments)](https://github.com/slopus/happy/issues/265); [Mobile and web cannot connect to a terminal session (#276, 15 comments)](https://github.com/slopus/happy/issues/276).
+## Happy: 1.4022 Slop Log Score
 
-**October 27 assessment:** Happy’s 664 open issues and 16 releases produce a ratio of 41.50. The small release denominator amplifies the score, but the sampled threads contain relevant failures: Codex sessions hanging while waiting for messages, and mobile or web clients failing to reconnect to terminal sessions. Both undermine its cross-device workflow. The OpenCode support thread is a feature request and should not count as evidence of breakage. Happy looks useful but unfinished rather than abandoned. Its slop signal is substantial for users expecting seamless remote access. Before adopting it, test long sessions, stalled-message recovery, and reconnection from every device you intend to use.
+Top-commented open threads in the last six months: [Codex sessions hang while waiting for messages (#358, 17 comments)](https://github.com/slopus/happy/issues/358); [Add OpenCode support (#265, 17 comments)](https://github.com/slopus/happy/issues/265); [Mobile and web cannot connect to a terminal session (#276, 15 comments)](https://github.com/slopus/happy/issues/276).
+
+The sampled threads contain reports of failures: Codex sessions hanging while waiting for messages, and mobile or web clients failing to reconnect to terminal sessions. Both undermine its cross-device workflow. The OpenCode support thread is a feature request and should not count as evidence of breakage. Happy looks useful but unfinished rather than abandoned. Before adopting it, test long sessions, stalled-message recovery, and reconnection from every device you intend to use.
 
 <a id="cindy-23-22-issues-per-release"></a>
 
-## Cindy: 1.1315 log score
+<a id="cindy-1-1315-log-score"></a>
 
-**Historical ratio verdict (October 27): Very high.** Top-commented open threads in the last six months: [Clarify Pi versus Claude/Codex resource scope and project/user context (#1991, 26 comments)](https://github.com/makecindy/cindy/issues/1991); [Windows app steals foreground focus (#500, 16 comments)](https://github.com/makecindy/cindy/issues/500); [Prove the Cindy bridge gate (#3771, 11 comments)](https://github.com/makecindy/cindy/issues/3771).
+## Cindy: 1.1315 Slop Log Score
 
-**October 27 assessment:** Cindy scores 23.22 from 1,718 open issues and 74 releases. The leading sampled discussion concerns inconsistent resource scope across Pi, Claude, and Codex, including project versus user context. Comments report some completed work alongside incomplete extension hooks, suggesting active development with remaining integration debt. Other threads describe Windows focus stealing and seek verification of the bridge gate. These are different problems: desktop polish, provider semantics, and confidence in a boundary between components. Cindy is clearly active, but its high ratio warrants caution. Validate context scope, extension behavior, and desktop interruptions against your exact providers before treating it as dependable shared infrastructure.
+Top-commented open threads in the last six months: [Clarify Pi versus Claude/Codex resource scope and project/user context (#1991, 26 comments)](https://github.com/makecindy/cindy/issues/1991); [Windows app steals foreground focus (#500, 16 comments)](https://github.com/makecindy/cindy/issues/500); [Prove the Cindy bridge gate (#3771, 11 comments)](https://github.com/makecindy/cindy/issues/3771).
+
+The leading sampled discussion concerns inconsistent resource scope across Pi, Claude, and Codex, including project versus user context. Comments report some completed work alongside incomplete extension hooks, suggesting active development with remaining integration debt. Other threads describe Windows focus stealing and seek verification of the bridge gate. These are different problems: desktop polish, provider semantics, and confidence in a boundary between components. Validate context scope, extension behavior, and desktop interruptions against your exact providers before treating it as dependable shared infrastructure.
 
 <a id="nanoclaw-22-46-issues-per-release"></a>
 
-## NanoClaw: 1.1091 log score
+<a id="nanoclaw-1-1091-log-score"></a>
 
-**Historical ratio verdict (October 27): Very high.** Top-commented open threads in the last six months: [Website TLS certificate error (#1503, 19 comments)](https://github.com/nanocoai/nanoclaw/issues/1503); [Support custom OpenAI-compatible endpoints, including Codex and OpenCode (#1984, 6 comments)](https://github.com/nanocoai/nanoclaw/issues/1984); [Skill refresh breaks local model adapters (#3529, 5 comments)](https://github.com/nanocoai/nanoclaw/issues/3529).
+## NanoClaw: 1.1091 Slop Log Score
 
-**October 27 assessment:** NanoClaw’s ratio is 22.46, with 292 open issues and only 13 releases. That small denominator deserves caution before declaring the project slop. Its most-commented sampled thread concerns a website TLS certificate error, which affects onboarding but does not establish a runtime defect. Another requests custom OpenAI-compatible endpoints; again, that is missing functionality. The more relevant reliability report says skill refresh breaks local model adapters. That can disrupt an otherwise working installation after an update. NanoClaw’s evidence is mixed: a high numeric warning with limited core-defect discussion. Test adapter refreshes and provider compatibility, and retain a known-good version when upgrading deployments.
+Top-commented open threads in the last six months: [Website TLS certificate error (#1503, 19 comments)](https://github.com/nanocoai/nanoclaw/issues/1503); [Support custom OpenAI-compatible endpoints, including Codex and OpenCode (#1984, 6 comments)](https://github.com/nanocoai/nanoclaw/issues/1984); [Skill refresh breaks local model adapters (#3529, 5 comments)](https://github.com/nanocoai/nanoclaw/issues/3529).
+
+Its most-commented sampled thread concerns a website TLS certificate error, which affects onboarding but does not establish a runtime defect. Another requests custom OpenAI-compatible endpoints; again, that is missing functionality. The more relevant reliability report says skill refresh breaks local model adapters. That can disrupt an otherwise working installation after an update. The sampled discussions offer mixed evidence, with limited core-defect discussion. Test adapter refreshes and provider compatibility, and retain a known-good version when upgrading deployments.
 
 <a id="openclaw-18-02-issues-per-release"></a>
 
-## OpenClaw: 1.0062 log score
+<a id="openclaw-1-0062-log-score"></a>
 
-**Historical ratio verdict (October 27): High.** Top-commented open threads in the last six months: [Realtime voice work accumulates unbounded state (#116201, 59 comments)](https://github.com/openclaw/openclaw/issues/116201); [Gateway hangs for minutes when copying a large plugin (#160959, 57 comments)](https://github.com/openclaw/openclaw/issues/160959); [Web UI performance and stability tracking issue (#149361, 51 comments)](https://github.com/openclaw/openclaw/issues/149361).
+## OpenClaw: 1.0062 Slop Log Score
 
-**October 27 assessment:** OpenClaw scores 18.02 from 4,937 open issues and 274 releases. Frequent shipping moderates the ratio, but the sampled issues describe consequential failures. A realtime voice report identifies growing state and oversized buffers. Another reports minutes-long Gateway stalls when copying a large plugin, including a reproduction involving an 878 MB extension. A Web UI umbrella issue tracks performance and stability concerns. These are meaningful operational warnings even though OpenClaw is not among the highest ratios. Its release volume should not be confused with reliability. Stress-test long voice sessions, extension installation, and interface responsiveness before allowing unattended work on a persistent server.
+Top-commented open threads in the last six months: [Realtime voice work accumulates unbounded state (#116201, 59 comments)](https://github.com/openclaw/openclaw/issues/116201); [Gateway hangs for minutes when copying a large plugin (#160959, 57 comments)](https://github.com/openclaw/openclaw/issues/160959); [Web UI performance and stability tracking issue (#149361, 51 comments)](https://github.com/openclaw/openclaw/issues/149361).
+
+The sampled issues describe consequential failures. A realtime voice report identifies growing state and oversized buffers. Another reports minutes-long Gateway stalls when copying a large plugin, including a reproduction involving an 878 MB extension. A Web UI umbrella issue tracks performance and stability concerns. These reports are meaningful operational warnings. Its release volume should not be confused with reliability. Stress-test long voice sessions, extension installation, and interface responsiveness before allowing unattended work on a persistent server.
 
 <a id="flowise-8-25-issues-per-release"></a>
 
-## Flowise: 0.7332 log score
+<a id="flowise-0-7332-log-score"></a>
 
-**Historical ratio verdict (October 27): High.** Top-commented open threads in the last six months: [Add GraphRAG support (#2837, 31 comments)](https://github.com/FlowiseAI/Flowise/issues/2837); [Document loader page is blank (#5097, 24 comments)](https://github.com/FlowiseAI/Flowise/issues/5097); [Text splitter overlap behavior (#5173, 19 comments)](https://github.com/FlowiseAI/Flowise/issues/5173).
+## Flowise: 0.7332 Slop Log Score
 
-**October 27 assessment:** Flowise scores 8.25, with 701 open issues and 85 releases. More decisive than that high ratio is its archival on August 13, 2026: the upstream release denominator is effectively frozen. The sampled issues include GraphRAG support, a blank document-loader page, and text-splitter overlap behavior. GraphRAG is an enhancement request; the blank loader is a concrete usability failure. These should not receive identical weight. Existing pinned deployments may remain useful, but new adopters cannot assume ongoing upstream fixes. Flowise’s strongest warning is lifecycle rather than the ratio alone. A maintained fork would need a separate assessment of its releases, backlog, and support activity.
+Top-commented open threads in the last six months: [Add GraphRAG support (#2837, 31 comments)](https://github.com/FlowiseAI/Flowise/issues/2837); [Document loader page is blank (#5097, 24 comments)](https://github.com/FlowiseAI/Flowise/issues/5097); [Text splitter overlap behavior (#5173, 19 comments)](https://github.com/FlowiseAI/Flowise/issues/5173).
+
+Flowise was archived on August 13, 2026. The sampled issues include GraphRAG support, a blank document-loader page, and text-splitter overlap behavior. GraphRAG is an enhancement request; the blank loader is a concrete usability failure. These should not receive identical weight. Existing pinned deployments may remain useful, but new adopters cannot assume ongoing upstream fixes. A maintained fork would need a separate assessment of its releases, backlog, and support activity.
 
 <a id="autogen-5-73-issues-per-release"></a>
 
-## AutoGen: 0.6116 log score
+<a id="autogen-0-6116-log-score"></a>
 
-**Historical ratio verdict (October 27): High.** Top-commented open threads in the last six months: [Cryptographic action receipts for delegated work (#7353, 417 comments)](https://github.com/microsoft/autogen/issues/7353); [Add a GuardrailProvider extension point (#7405, 147 comments)](https://github.com/microsoft/autogen/issues/7405); [Introduce a mission keeper role (#7487, 74 comments)](https://github.com/microsoft/autogen/issues/7487).
+## AutoGen: 0.6116 Slop Log Score
 
-**October 27 assessment:** AutoGen scores 5.73 from 562 open issues and 98 releases. Its highest-commented sampled threads propose cryptographic action receipts, a GuardrailProvider hook, and a mission-keeper role. These are governance and architecture proposals, not hundreds of independent failure reports. Their prominence shows demand for stronger oversight of delegated work. Microsoft’s direction toward Agent Framework for new projects, with AutoGen community-maintained, adds a lifecycle consideration beyond the ratio. AutoGen is not demonstrably slop merely because proposals attract comments. However, new adopters should evaluate the current maintenance path and available governance controls rather than assuming the historical Microsoft association guarantees future support for their workloads.
+Top-commented open threads in the last six months: [Cryptographic action receipts for delegated work (#7353, 417 comments)](https://github.com/microsoft/autogen/issues/7353); [Add a GuardrailProvider extension point (#7405, 147 comments)](https://github.com/microsoft/autogen/issues/7405); [Introduce a mission keeper role (#7487, 74 comments)](https://github.com/microsoft/autogen/issues/7487).
+
+Its highest-commented sampled threads propose cryptographic action receipts, a GuardrailProvider hook, and a mission-keeper role. These are governance and architecture proposals, not hundreds of independent failure reports. Their prominence shows demand for stronger oversight of delegated work. Microsoft has directed new projects toward Agent Framework, while AutoGen is community-maintained. However, new adopters should evaluate the current maintenance path and available governance controls rather than assuming the historical Microsoft association guarantees future support for their workloads.
 
 <a id="microsoft-agent-framework-4-77-issues-per-release"></a>
 
-## Microsoft Agent Framework: 0.5437 log score
+<a id="microsoft-agent-framework-0-5437-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Identity and trust boundaries at agent handoffs (#4842, 17 comments)](https://github.com/microsoft/agent-framework/issues/4842); [DevUI limitations (#2084, 16 comments)](https://github.com/microsoft/agent-framework/issues/2084); [Approval policy unexpectedly applies to every function (#3054, 14 comments)](https://github.com/microsoft/agent-framework/issues/3054).
+## Microsoft Agent Framework: 0.5437 Slop Log Score
 
-**October 27 assessment:** Microsoft Agent Framework scores 4.77, with 615 open issues and 129 releases. Its sampled threads focus on identity and trust during handoffs, DevUI limitations, and an approval policy unexpectedly applying to every function. The first is a design concern; the approval behavior is more directly operational. Both matter when specialist agents inherit permissions or wait for human review. The moderate ratio suggests neither an exceptionally tidy backlog nor overwhelming neglect. The evidence fits a developing framework with consequential semantics still under discussion. Prototype identity propagation, selective approvals, and debugging visibility before choosing it for delegated work that crosses users or permission boundaries.
+Top-commented open threads in the last six months: [Identity and trust boundaries at agent handoffs (#4842, 17 comments)](https://github.com/microsoft/agent-framework/issues/4842); [DevUI limitations (#2084, 16 comments)](https://github.com/microsoft/agent-framework/issues/2084); [Approval policy unexpectedly applies to every function (#3054, 14 comments)](https://github.com/microsoft/agent-framework/issues/3054).
+
+Its sampled threads focus on identity and trust during handoffs, DevUI limitations, and an approval policy unexpectedly applying to every function. The first is a design concern; the approval behavior is more directly operational. Both matter when specialist agents inherit permissions or wait for human review. The evidence fits a developing framework with consequential semantics still under discussion. Prototype identity propagation, selective approvals, and debugging visibility before choosing it for delegated work that crosses users or permission boundaries.
 
 <a id="zeroclaw-4-32-issues-per-release"></a>
 
-## ZeroClaw: 0.5148 log score
+<a id="zeroclaw-0-5148-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Granular sandbox policy drifts from configured settings (#6996, 29 comments)](https://github.com/zeroclaw-labs/zeroclaw/issues/6996); [Work lanes and board automation RFC (#6808, 24 comments)](https://github.com/zeroclaw-labs/zeroclaw/issues/6808); [Provider wire-protocol RFC (#8396, 19 comments)](https://github.com/zeroclaw-labs/zeroclaw/issues/8396).
+## ZeroClaw: 0.5148 Slop Log Score
 
-**October 27 assessment:** ZeroClaw’s 665 open issues and 154 releases yield 4.32. Its most-discussed sampled issue concerns granular sandbox policy drifting from configured settings. That deserves more weight than the score: users must know whether restrictions actually govern tool behavior. Structured policy discussion and an approved vote are encouraging signs of engagement, but do not themselves prove a released fix. Other prominent threads are RFCs for work lanes and provider protocols, which represent planned capabilities rather than confirmed failures. ZeroClaw is not an obvious slop case by the ratio. Still, verify effective sandbox restrictions with negative tests before trusting configuration labels in consequential workflows.
+Top-commented open threads in the last six months: [Granular sandbox policy drifts from configured settings (#6996, 29 comments)](https://github.com/zeroclaw-labs/zeroclaw/issues/6996); [Work lanes and board automation RFC (#6808, 24 comments)](https://github.com/zeroclaw-labs/zeroclaw/issues/6808); [Provider wire-protocol RFC (#8396, 19 comments)](https://github.com/zeroclaw-labs/zeroclaw/issues/8396).
+
+Its most-discussed sampled issue concerns granular sandbox policy drifting from configured settings. Structured policy discussion and an approved vote are encouraging signs of engagement, but do not themselves prove a released fix. Other prominent threads are RFCs for work lanes and provider protocols, which represent planned capabilities rather than confirmed failures. Still, verify effective sandbox restrictions with negative tests before trusting configuration labels in consequential workflows.
 
 <a id="openhands-3-67-issues-per-release"></a>
 
-## OpenHands: 0.4662 log score
+<a id="openhands-0-4662-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Agent Canvas misdetects the port and fails to connect (#17546, 204 comments)](https://github.com/OpenHands/OpenHands/issues/17546); [Roadmap for feature parity (#9689, 29 comments)](https://github.com/OpenHands/OpenHands/issues/9689); [Analytics consent reappears after being dismissed (#16601, 19 comments)](https://github.com/OpenHands/OpenHands/issues/16601).
+## OpenHands: 0.4662 Slop Log Score
 
-**October 27 assessment:** OpenHands scores 3.67 from 573 open issues and 156 releases. The biggest sampled thread describes Agent Canvas misdetecting a port and failing to connect. A linked fix and maintainer prioritization show engagement, although a proposed patch does not establish that every released configuration works. Other threads cover a feature-parity roadmap and analytics consent reappearing after dismissal. The roadmap is not a defect; consent persistence is a concrete UX concern. Overall, the moderate ratio and visible remediation argue against a blanket slop label. Test environment connectivity and preference persistence on your deployment, and check whether unresolved roadmap gaps affect the work you expect agents to perform.
+Top-commented open threads in the last six months: [Agent Canvas misdetects the port and fails to connect (#17546, 204 comments)](https://github.com/OpenHands/OpenHands/issues/17546); [Roadmap for feature parity (#9689, 29 comments)](https://github.com/OpenHands/OpenHands/issues/9689); [Analytics consent reappears after being dismissed (#16601, 19 comments)](https://github.com/OpenHands/OpenHands/issues/16601).
+
+The biggest sampled thread describes Agent Canvas misdetecting a port and failing to connect. A linked fix and maintainer prioritization show engagement, although a proposed patch does not establish that every released configuration works. Other threads cover a feature-parity roadmap and analytics consent reappearing after dismissal. The roadmap is not a defect; consent persistence is a concrete UX concern. Test environment connectivity and preference persistence on your deployment, and check whether unresolved roadmap gaps affect the work you expect agents to perform.
 
 <a id="pydantic-ai-3-19-issues-per-release"></a>
 
-## Pydantic AI: 0.4531 log score
+<a id="pydantic-ai-0-4531-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Automated tracker for detection runs (#5955, 44 comments)](https://github.com/pydantic/pydantic-ai/issues/5955); [Human approval for multi-agent work (#3274, 43 comments)](https://github.com/pydantic/pydantic-ai/issues/3274); [Approval signal is a plain boolean without run binding (#5536, 35 comments)](https://github.com/pydantic/pydantic-ai/issues/5536).
+## Pydantic AI: 0.4531 Slop Log Score
 
-**October 27 assessment:** Pydantic AI scores 3.19, with 1,118 open issues and 350 releases. Its highest-commented sampled thread is an automated detection-run tracker, so comment volume there is weak evidence of product failure. More significant discussions concern human approval for multi-agent work and an approval signal represented as a plain boolean without binding to a specific tool, run, nonce, or expiration. Those details determine whether consent can be reused outside its intended context. The moderate ratio looks reasonable, but cannot certify approval safety. Pydantic AI does not show an obvious slop pattern here. Developers should verify action-specific, expiring approval semantics before building consequential delegated workflows.
+Top-commented open threads in the last six months: [Automated tracker for detection runs (#5955, 44 comments)](https://github.com/pydantic/pydantic-ai/issues/5955); [Human approval for multi-agent work (#3274, 43 comments)](https://github.com/pydantic/pydantic-ai/issues/3274); [Approval signal is a plain boolean without run binding (#5536, 35 comments)](https://github.com/pydantic/pydantic-ai/issues/5536).
+
+Its highest-commented sampled thread is an automated detection-run tracker, so comment volume there is weak evidence of product failure. More significant discussions concern human approval for multi-agent work and an approval signal represented as a plain boolean without binding to a specific tool, run, nonce, or expiration. Those details determine whether consent can be reused outside its intended context. Developers should verify action-specific, expiring approval semantics before building consequential delegated workflows.
 
 <a id="dify-2-96-issues-per-release"></a>
 
-## Dify: 0.3885 log score
+<a id="dify-0-3885-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Parallel fail-fast leaves errors unattributed or stale (#39151, 61 comments)](https://github.com/langgenius/dify/issues/39151); [Rewrite-property behavior request (#40372, 57 comments)](https://github.com/langgenius/dify/issues/40372); [SQLite testing and refactor discussion (#32454, 37 comments)](https://github.com/langgenius/dify/issues/32454).
+## Dify: 0.3885 Slop Log Score
 
-**October 27 assessment:** Dify scores 2.96 from 506 open issues and 171 releases. The strongest sampled reliability concern involves parallel fail-fast execution leaving errors unattributed or stale. A workflow that stops without clearly identifying the failed branch makes recovery harder and can prompt unnecessary reruns. Other prominent discussions concern rewrite behavior and SQLite testing or refactoring; these are product and engineering discussions rather than straightforward evidence of runtime failure. Dify’s moderate ratio provides little support for a blanket slop verdict. For adoption, deliberately fail parallel branches and inspect the resulting trace. Clear attribution and recoverable partial state matter more to your workflow than the raw issue total.
+Top-commented open threads in the last six months: [Parallel fail-fast leaves errors unattributed or stale (#39151, 61 comments)](https://github.com/langgenius/dify/issues/39151); [Rewrite-property behavior request (#40372, 57 comments)](https://github.com/langgenius/dify/issues/40372); [SQLite testing and refactor discussion (#32454, 37 comments)](https://github.com/langgenius/dify/issues/32454).
+
+The strongest sampled reliability concern involves parallel fail-fast execution leaving errors unattributed or stale. A workflow that stops without clearly identifying the failed branch makes recovery harder and can prompt unnecessary reruns. Other prominent discussions concern rewrite behavior and SQLite testing or refactoring; these are product and engineering discussions rather than straightforward evidence of runtime failure. For adoption, deliberately fail parallel branches and inspect the resulting trace. Clear attribution and recoverable partial state matter more to your workflow than the raw issue total.
 
 <a id="mastra-2-72-issues-per-release"></a>
 
-## Mastra: 0.3948 log score
+<a id="mastra-0-3948-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Message branching support (#5093, 15 comments)](https://github.com/mastra-ai/mastra/issues/5093); [Custom tool suspend and resume UI/schema (#20603, 9 comments)](https://github.com/mastra-ai/mastra/issues/20603); [Cancel or stop an agent from Slack (#17065, 8 comments)](https://github.com/mastra-ai/mastra/issues/17065).
+## Mastra: 0.3948 Slop Log Score
 
-**October 27 assessment:** Mastra scores 2.72, with 354 open issues and 130 releases. Its sampled threads request message branching, clearer custom-tool suspension and resumption interfaces, and cancellation from Slack. These are predominantly capability gaps rather than evidence that existing execution is broken. They nevertheless matter for practical delegation: users need to review pending actions, resume safely, and stop incorrect work from the messaging interface. Mastra’s ratio and issue mix do not support a strong slop label. Its fit depends on the control experience you need. Prototype Slack cancellation and human review before committing to a shared workflow, especially when the person supervising agents is not the developer.
+Top-commented open threads in the last six months: [Message branching support (#5093, 15 comments)](https://github.com/mastra-ai/mastra/issues/5093); [Custom tool suspend and resume UI/schema (#20603, 9 comments)](https://github.com/mastra-ai/mastra/issues/20603); [Cancel or stop an agent from Slack (#17065, 8 comments)](https://github.com/mastra-ai/mastra/issues/17065).
+
+Its sampled threads request message branching, clearer custom-tool suspension and resumption interfaces, and cancellation from Slack. These are predominantly capability gaps rather than evidence that existing execution is broken. They nevertheless matter for practical delegation: users need to review pending actions, resume safely, and stop incorrect work from the messaging interface. Its fit depends on the control experience you need. Prototype Slack cancellation and human review before committing to a shared workflow, especially when the person supervising agents is not the developer.
 
 <a id="autogpt-2-62-issues-per-release"></a>
 
-## AutoGPT: 0.3913 log score
+<a id="autogpt-0-3913-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Enforceable delegation limits for spend and elapsed time (#12700, 21 comments)](https://github.com/Significant-Gravitas/AutoGPT/issues/12700); [Add Gemini model support (#6885, 11 comments)](https://github.com/Significant-Gravitas/AutoGPT/issues/6885); [Improve containers and runbooks, including Coolify (#10948, 10 comments)](https://github.com/Significant-Gravitas/AutoGPT/issues/10948).
+## AutoGPT: 0.3913 Slop Log Score
 
-**October 27 assessment:** AutoGPT scores 2.62 from 333 open issues and 127 releases. Its leading sampled thread requests enforceable delegation limits for spending and elapsed time. That is an important governance gap: instructions asking an agent to stop are different from runtime-enforced limits inherited by child agents. Other threads request Gemini support and better container runbooks, including Coolify. Those are integration and deployment needs rather than proof every installation fails. The moderate ratio does not support a strong slop verdict. Before running it unattended, verify hard budgets, child-agent inheritance, persistence, and recovery in a version-pinned container deployment. Those checks address the practical risks highlighted by the issue sample.
+Top-commented open threads in the last six months: [Enforceable delegation limits for spend and elapsed time (#12700, 21 comments)](https://github.com/Significant-Gravitas/AutoGPT/issues/12700); [Add Gemini model support (#6885, 11 comments)](https://github.com/Significant-Gravitas/AutoGPT/issues/6885); [Improve containers and runbooks, including Coolify (#10948, 10 comments)](https://github.com/Significant-Gravitas/AutoGPT/issues/10948).
+
+Its leading sampled thread requests enforceable delegation limits for spending and elapsed time. That is an important governance gap: instructions asking an agent to stop are different from runtime-enforced limits inherited by child agents. Other threads request Gemini support and better container runbooks, including Coolify. Those are integration and deployment needs rather than proof every installation fails. Before running it unattended, verify hard budgets, child-agent inheritance, persistence, and recovery in a version-pinned container deployment. Those checks address the practical risks highlighted by the issue sample.
 
 <a id="goose-2-29-issues-per-release"></a>
 
-## Goose: 0.3405 log score
+<a id="goose-0-3405-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Expose A2UI resources returned from MCP (#12703, 16 comments)](https://github.com/aaif-goose/goose/issues/12703); [Granular shell permission rules (#11399, 15 comments)](https://github.com/aaif-goose/goose/issues/11399); [GRC modularity (#11253, 14 comments)](https://github.com/aaif-goose/goose/issues/11253).
+## Goose: 0.3405 Slop Log Score
 
-**October 27 assessment:** Goose scores 2.29 from 359 open issues and 157 releases. Its prominent sampled threads concern exposing A2UI resources from MCP, granular shell permission rules, and GRC modularity. These are enhancement and architecture discussions, not a cluster of reproducible runtime failures. Contributor work toward an A2UI pull request is a positive engagement signal, although it does not establish a released capability. Shell permissions deserve particular attention because broad command access can exceed what a user intended. Goose shows relatively little slop evidence in this sample. Check which requested controls have shipped, then test the current permission rules against your actual commands and operating-system restrictions.
+Top-commented open threads in the last six months: [Expose A2UI resources returned from MCP (#12703, 16 comments)](https://github.com/aaif-goose/goose/issues/12703); [Granular shell permission rules (#11399, 15 comments)](https://github.com/aaif-goose/goose/issues/11399); [GRC modularity (#11253, 14 comments)](https://github.com/aaif-goose/goose/issues/11253).
+
+Its prominent sampled threads concern exposing A2UI resources from MCP, granular shell permission rules, and GRC modularity. These are enhancement and architecture discussions, not a cluster of reproducible runtime failures. Contributor work toward an A2UI pull request is a positive engagement signal, although it does not establish a released capability. Shell permissions deserve particular attention because broad command access can exceed what a user intended. Check which requested controls have shipped, then test the current permission rules against your actual commands and operating-system restrictions.
 
 <a id="google-adk-2-01-issues-per-release"></a>
 
-## Google ADK: 0.3695 log score
+<a id="google-adk-0-3695-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Add a decision ledger for agent actions (#6099, 48 comments)](https://github.com/google/adk-python/issues/6099); [Database auto-schema behavior (#3343, 23 comments)](https://github.com/google/adk-python/issues/3343); [Redis session key collision with colon-containing identity tuple (#7464, 21 comments)](https://github.com/google/adk-python/issues/7464).
+## Google ADK: 0.3695 Slop Log Score
 
-**October 27 assessment:** Google ADK scores 2.01, with 183 open issues and 91 releases. Its most-discussed sampled thread proposes a decision ledger, highlighting demand for auditable agent actions rather than a confirmed defect. Other discussions address database auto-schema behavior and Redis session-key collisions when identity components contain colons. The Redis report is a concrete correctness concern because ambiguous keys could mix session identities. These issues show why a modest ratio cannot replace technical inspection. ADK is not an obvious slop project by this measure. Test identity encoding, database migration behavior, and retained audit history before adopting it for workflows involving multiple people or persistent sessions.
+Top-commented open threads in the last six months: [Add a decision ledger for agent actions (#6099, 48 comments)](https://github.com/google/adk-python/issues/6099); [Database auto-schema behavior (#3343, 23 comments)](https://github.com/google/adk-python/issues/3343); [Redis session key collision with colon-containing identity tuple (#7464, 21 comments)](https://github.com/google/adk-python/issues/7464).
+
+Its most-discussed sampled thread proposes a decision ledger, highlighting demand for auditable agent actions rather than a confirmed defect. Other discussions address database auto-schema behavior and Redis session-key collisions when identity components contain colons. The Redis report is a concrete correctness concern because ambiguous keys could mix session identities. Test identity encoding, database migration behavior, and retained audit history before adopting it for workflows involving multiple people or persistent sessions.
 
 <a id="crewai-1-46-issues-per-release"></a>
 
-## CrewAI: 0.2959 log score
+<a id="crewai-0-2959-log-score"></a>
 
-**Historical ratio verdict (October 27): Moderate.** Top-commented open threads in the last six months: [Retries can repeat external tool side effects such as email or payment (#5802, 216 comments)](https://github.com/crewAIInc/crewAI/issues/5802); [Add governance middleware for tool authorization (#5888, 148 comments)](https://github.com/crewAIInc/crewAI/issues/5888); [Runtime release-control mediation proposal (#6025, 127 comments)](https://github.com/crewAIInc/crewAI/issues/6025).
+## CrewAI: 0.2959 Slop Log Score
 
-**October 27 assessment:** CrewAI scores 1.46 from 357 open issues and 244 releases. That favorable ratio contrasts with a serious sampled issue: retries can repeat external side effects such as sending emails or making payments. If an action succeeds but its acknowledgment is lost, retrying without idempotency can duplicate the action. Other heavily discussed threads propose authorization middleware and runtime release-control mediation. Those are governance requests, not independent evidence of crashes. CrewAI is not slop by its backlog ratio, but the retry concern can outweigh that reassuring number. Verify idempotency and partial-success handling before allowing agents to send, pay, publish, or modify important records without supervision.
+Top-commented open threads in the last six months: [Retries can repeat external tool side effects such as email or payment (#5802, 216 comments)](https://github.com/crewAIInc/crewAI/issues/5802); [Add governance middleware for tool authorization (#5888, 148 comments)](https://github.com/crewAIInc/crewAI/issues/5888); [Runtime release-control mediation proposal (#6025, 127 comments)](https://github.com/crewAIInc/crewAI/issues/6025).
+
+One serious sampled issue reports that retries can repeat external side effects such as sending emails or making payments. If an action succeeds but its acknowledgment is lost, retrying without idempotency can duplicate the action. Other heavily discussed threads propose authorization middleware and runtime release-control mediation. Those are governance requests, not independent evidence of crashes. Verify idempotency and partial-success handling before allowing agents to send, pay, publish, or modify important records without supervision.
 
 <a id="agent-zero-0-78-issues-per-release"></a>
 
-## Agent Zero: 0.2106 log score
+<a id="agent-zero-0-2106-log-score"></a>
 
-**Historical ratio verdict (October 27): Low.** Top-commented open threads in the last six months: [Installation and setup question (#1847, 6 comments)](https://github.com/agent0ai/agent-zero/issues/1847); [Image base64 data grows until provider returns HTTP 413 (#1857, 4 comments)](https://github.com/agent0ai/agent-zero/issues/1857); [Memory save repeats or is skipped with Ollama and Qwen (#1967, 4 comments)](https://github.com/agent0ai/agent-zero/issues/1967).
+## Agent Zero: 0.2106 Slop Log Score
 
-**October 27 assessment:** Agent Zero scores 0.78 from 59 open issues and 76 releases. Its leading sampled thread is a setup question with only six comments, offering limited evidence about general reliability. Two smaller reports are more specific: base64 image data grows until a provider returns HTTP 413, and memory saving repeats or is skipped with Ollama and Qwen. These identify multimodal-history and provider-specific persistence cases worth testing, but their comment counts do not establish prevalence. Agent Zero has a favorable score and little basis for a blanket slop label here. Verify image-heavy sessions and memory retention using your exact local-model configuration before depending on long-running autonomous work.
+Top-commented open threads in the last six months: [Installation and setup question (#1847, 6 comments)](https://github.com/agent0ai/agent-zero/issues/1847); [Image base64 data grows until provider returns HTTP 413 (#1857, 4 comments)](https://github.com/agent0ai/agent-zero/issues/1857); [Memory save repeats or is skipped with Ollama and Qwen (#1967, 4 comments)](https://github.com/agent0ai/agent-zero/issues/1967).
+
+Its leading sampled thread is a setup question with only six comments, offering limited evidence about general reliability. Two smaller reports are more specific: base64 image data grows until a provider returns HTTP 413, and memory saving repeats or is skipped with Ollama and Qwen. These identify multimodal-history and provider-specific persistence cases worth testing, but their comment counts do not establish prevalence. Verify image-heavy sessions and memory retention using your exact local-model configuration before depending on long-running autonomous work.
 
 <a id="langflow-0-66-issues-per-release"></a>
 
-## Langflow: 0.1491 log score
+<a id="langflow-0-1491-log-score"></a>
 
-**Historical ratio verdict (October 27): Low.** Top-commented open threads in the last six months: [Celery, RabbitMQ, and Redis flow fails because of pickle behavior (#8476, 23 comments)](https://github.com/langflow-ai/langflow/issues/8476); [Collaboration, roles, sharing, and version history (#1864, 21 comments)](https://github.com/langflow-ai/langflow/issues/1864); [Support for a custom base path (#8503, 15 comments)](https://github.com/langflow-ai/langflow/issues/8503).
+## Langflow: 0.1491 Slop Log Score
 
-**October 27 assessment:** Langflow scores 0.66, with 208 open issues and 316 releases. The sampled threads cover a distributed-worker failure involving Celery, RabbitMQ, Redis, and pickle behavior; collaboration controls; and custom base-path support. The worker discussion has a fix-and-test path, an encouraging maintenance signal that still needs release verification. Collaboration requests are particularly relevant for shared use: roles, sharing, and version history can determine whether two people can manage work safely. Langflow is not slop by this ratio. However, a tidy backlog does not establish product fit. Test separate accounts, flow permissions, distributed execution, and proxy routing in the environment you intend to deploy.
+Top-commented open threads in the last six months: [Celery, RabbitMQ, and Redis flow fails because of pickle behavior (#8476, 23 comments)](https://github.com/langflow-ai/langflow/issues/8476); [Collaboration, roles, sharing, and version history (#1864, 21 comments)](https://github.com/langflow-ai/langflow/issues/1864); [Support for a custom base path (#8503, 15 comments)](https://github.com/langflow-ai/langflow/issues/8503).
+
+The sampled threads cover a distributed-worker failure involving Celery, RabbitMQ, Redis, and pickle behavior; collaboration controls; and custom base-path support. The worker discussion has a fix-and-test path, an encouraging maintenance signal that still needs release verification. Collaboration requests are particularly relevant for shared use: roles, sharing, and version history can determine whether two people can manage work safely. However, a tidy backlog does not establish product fit. Test separate accounts, flow permissions, distributed execution, and proxy routing in the environment you intend to deploy.
 
 <a id="langgraph-0-59-issues-per-release"></a>
 
-## LangGraph: 0.1379 log score
+<a id="langgraph-0-1379-log-score"></a>
 
-**Historical ratio verdict (October 27): Low.** Top-commented open threads in the last six months: [Long tool calls may replay from checkpoint while original is still running (#7417, 88 comments)](https://github.com/langchain-ai/langgraph/issues/7417); [PostgreSQL checkpointer SSL error (#3716, 53 comments)](https://github.com/langchain-ai/langgraph/issues/3716); [Cancellation loses uncheckpointed streamed state (#5672, 52 comments)](https://github.com/langchain-ai/langgraph/issues/5672).
+## LangGraph: 0.1379 Slop Log Score
 
-**October 27 assessment:** LangGraph scores 0.59 from 346 open issues and 590 releases. Its low ratio contrasts with consequential sampled reports: long tool calls may replay from checkpoints while the original remains running, PostgreSQL checkpoint connections can fail on SSL, and cancellation can lose uncheckpointed streamed state. The replay report describes duplicated work and cost, with additional risk when tools have non-idempotent effects. These threads concern durability and recovery rather than cosmetic polish. LangGraph is not slop under the simple index, but the number cannot establish execution guarantees. Test calls longer than three minutes, deliberate cancellation, and database TLS behavior before delegating important actions through its recovery mechanisms.
+Top-commented open threads in the last six months: [Long tool calls may replay from checkpoint while original is still running (#7417, 88 comments)](https://github.com/langchain-ai/langgraph/issues/7417); [PostgreSQL checkpointer SSL error (#3716, 53 comments)](https://github.com/langchain-ai/langgraph/issues/3716); [Cancellation loses uncheckpointed streamed state (#5672, 52 comments)](https://github.com/langchain-ai/langgraph/issues/5672).
+
+The sampled reports describe consequential issues: long tool calls may replay from checkpoints while the original remains running, PostgreSQL checkpoint connections can fail on SSL, and cancellation can lose uncheckpointed streamed state. The replay report describes duplicated work and cost, with additional risk when tools have non-idempotent effects. These threads concern durability and recovery rather than cosmetic polish. Test calls longer than three minutes, deliberate cancellation, and database TLS behavior before delegating important actions through its recovery mechanisms.
 
 <a id="letta-code-0-53-issues-per-release"></a>
 
-## Letta Code: 0.1174 log score
+<a id="letta-code-0-1174-log-score"></a>
 
-**Historical ratio verdict (October 27): Low.** Top-commented open threads in the last six months: [Automated tracker for stale skills (#4065, 36 comments)](https://github.com/letta-ai/letta-code/issues/4065); [Expose BYOK token-limit metadata (#3802, 6 comments)](https://github.com/letta-ai/letta-code/issues/3802); [Memory is isolated per agent and not shared across new sessions (#2666, 5 comments)](https://github.com/letta-ai/letta-code/issues/2666).
+## Letta Code: 0.1174 Slop Log Score
 
-**October 27 assessment:** Letta Code scores 0.53, with 188 open issues and 352 releases. Its highest-commented sampled issue is an automated stale-skill tracker, so the comments should not be read as independent user failures. Other threads request BYOK token-limit metadata and discuss memory being isolated across agents or new sessions. The memory question matters because users may expect continuity that the actual scoping model does not provide. Letta Code looks relatively tidy by the ratio, with limited evidence of broad breakage in this sample. Confirm exactly how memory persists and is shared, and verify provider-limit reporting before assuming an agent will carry decisions across your working sessions.
+Top-commented open threads in the last six months: [Automated tracker for stale skills (#4065, 36 comments)](https://github.com/letta-ai/letta-code/issues/4065); [Expose BYOK token-limit metadata (#3802, 6 comments)](https://github.com/letta-ai/letta-code/issues/3802); [Memory is isolated per agent and not shared across new sessions (#2666, 5 comments)](https://github.com/letta-ai/letta-code/issues/2666).
+
+Its highest-commented sampled issue is an automated stale-skill tracker, so the comments should not be read as independent user failures. Other threads request BYOK token-limit metadata and discuss memory being isolated across agents or new sessions. The memory question matters because users may expect continuity that the actual scoping model does not provide. Confirm exactly how memory persists and is shared, and verify provider-limit reporting before assuming an agent will carry decisions across your working sessions.
 
 <a id="n8n-0-39-issues-per-release"></a>
 
-## n8n: 0.0839 log score
+<a id="n8n-0-0839-log-score"></a>
 
-**Historical ratio verdict (October 27): Low.** Top-commented open threads in the last six months: [AI Agent/Memory omits tool messages and can claim a tool was used (#14361, 57 comments)](https://github.com/n8n-io/n8n/issues/14361); [WhatsApp Business Cloud AI tool returns Invalid URL (#14290, 26 comments)](https://github.com/n8n-io/n8n/issues/14290); [Chat Trigger public URL fails after upgrade (#28891, 25 comments)](https://github.com/n8n-io/n8n/issues/28891).
+## n8n: 0.0839 Slop Log Score
 
-**October 27 assessment:** n8n scores 0.39 from 339 open issues and 867 releases. That is a low ratio, though OpenAI Agents SDK scores lower. The sampled issues still identify practical failures: AI Agent/Memory omits tool messages from its record, a WhatsApp Business Cloud tool returns an invalid-URL error, and a public Chat Trigger URL stops working after an upgrade. Missing tool evidence can make an agent’s claims difficult to audit; connector and endpoint failures can interrupt otherwise valid workflows. n8n is not slop by this benchmark. Test your exact connectors after upgrades and ensure execution traces record actual tool calls before trusting the assistant’s narrative about completed work.
+Top-commented open threads in the last six months: [AI Agent/Memory omits tool messages and can claim a tool was used (#14361, 57 comments)](https://github.com/n8n-io/n8n/issues/14361); [WhatsApp Business Cloud AI tool returns Invalid URL (#14290, 26 comments)](https://github.com/n8n-io/n8n/issues/14290); [Chat Trigger public URL fails after upgrade (#28891, 25 comments)](https://github.com/n8n-io/n8n/issues/28891).
+
+The sampled issues still identify practical failures: AI Agent/Memory omits tool messages from its record, a WhatsApp Business Cloud tool returns an invalid-URL error, and a public Chat Trigger URL stops working after an upgrade. Missing tool evidence can make an agent’s claims difficult to audit; connector and endpoint failures can interrupt otherwise valid workflows. Test your exact connectors after upgrades and ensure execution traces record actual tool calls before trusting the assistant’s narrative about completed work.
 
 <a id="openai-agents-sdk-0-06-issues-per-release"></a>
 
-## OpenAI Agents SDK: 0.0273 log score
+<a id="openai-agents-sdk-0-0273-log-score"></a>
 
-**Historical ratio verdict (October 27): Low.** Top-commented open threads in the last six months: [Approval decision can transfer across runs when call ID is reused (#5413, 6 comments)](https://github.com/openai/openai-agents-python/issues/5413); [Typing issue (#5387, 4 comments)](https://github.com/openai/openai-agents-python/issues/5387); [Redis Cluster support (#5322, 2 comments)](https://github.com/openai/openai-agents-python/issues/5322).
+## OpenAI Agents SDK: 0.0273 Slop Log Score
 
-**October 27 assessment:** OpenAI Agents SDK scores 0.06 from seven open issues and 124 releases, the lowest ratio here. Its tiny queue is encouraging, but the leading sampled report alleges that approval can transfer across runs when a tool-call ID is reused. The reporter describes an offline reproduction on the main branch. That potentially crosses an authorization boundary: consent should apply only to the action and context reviewed. Smaller threads concern typing and Redis Cluster support. The SDK is not slop by the ratio, but its strongest issue deserves targeted verification. Reproduce call-ID reuse against your chosen release and confirm that approvals cannot authorize unintended later actions.
+Top-commented open threads in the last six months: [Approval decision can transfer across runs when call ID is reused (#5413, 6 comments)](https://github.com/openai/openai-agents-python/issues/5413); [Typing issue (#5387, 4 comments)](https://github.com/openai/openai-agents-python/issues/5387); [Redis Cluster support (#5322, 2 comments)](https://github.com/openai/openai-agents-python/issues/5322).
+
+Its tiny queue is encouraging, but the leading sampled report alleges that approval can transfer across runs when a tool-call ID is reused. The reporter describes an offline reproduction on the main branch. That potentially crosses an authorization boundary: consent should apply only to the action and context reviewed. Smaller threads concern typing and Redis Cluster support. Its strongest sampled issue deserves targeted verification. Reproduce call-ID reuse against your chosen release and confirm that approvals cannot authorize unintended later actions.
 
 ## What the Slop Benchmark says overall
 
-The following conclusion describes the original October 27 issues-per-release ratio and its historical issue sample, not the October 30 log score.
-
-The ratio’s largest outlier is Hermes Agent at 395.09, followed by Paperclip at 113.27; the issue threads show that both have conversations about meaningful architecture or workflow risks, though Paperclip’s sample also includes a feature request. Happy, Cindy, and NanoClaw sit above 20, where the relatively small release denominators deserve extra caution. At the low end, n8n, OpenAI Agents SDK, Letta Code, LangGraph, and Langflow have fewer open issues per release—but their issue samples still include behavior that merits targeted testing.
+Hermes Agent has the highest score in this snapshot at 2.3105, followed by Paperclip at 1.7763. Their sampled issues include architecture and workflow discussions, alongside feature requests. At the lower end, OpenAI Agents SDK, n8n, Letta Code, LangGraph, and Langflow have smaller scores, but their issue samples still include behavior worth testing. A score alone cannot establish a project's reliability.
 
 That is the benchmark’s useful role: it helps find repositories whose open queues deserve closer inspection, then the issues explain whether you are looking at defects, missing features, automated noise, or active design work. It is not fair to say a project is “good” just because it has many releases, or “bad” because it has many open issues. If choosing an agent framework for real work, read the specific issue threads that intersect with your workflow—permissions, retries, persistence, long-running calls, and recovery—and verify those behaviors against the release you plan to run.
