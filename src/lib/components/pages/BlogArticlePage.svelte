@@ -5,6 +5,12 @@
   import type { BlogArticle } from '$lib/server/blog'
 
   let { article, showReadingEstimate = false }: { article: BlogArticle; showReadingEstimate?: boolean } = $props()
+  // Keep the original graphic on larger screens and offer a readable, narrow
+  // version without changing the article's accessible image description.
+  let articleHtml = $derived(article.html.replace(
+    /<img src="(\/images\/blog\/(?:slop-benchmark|agentic-video-benchmark))\.svg"[^>]*>/g,
+    (image, stem: string) => `<picture><source media="(max-width: 700px)" srcset="${stem}-mobile.svg">${image}</picture>`,
+  ))
   let locale: Locale = $derived(article.locale)
   let copy = $derived(resolveCopy<{review:string;reading:string;readingEstimate:string;contents:string;onPage:string;author:string;bio:string;about:string}>(BLOG_ARTICLE_COPY, locale))
   let pt = $derived(locale === 'pt-BR')
@@ -82,8 +88,8 @@
       <a href={`#${heading.id}`}>{heading.text}</a>
     {/each}
   </nav>
-  <div class="blog-article__body">
-    {@html article.html}
+  <div class="blog-article__body" class:video-benchmark={article.slug === 'agentic-video-benchmark'} class:agent-benchmark={article.slug === 'slop-benchmark-ai-agents'}>
+    {@html articleHtml}
     <section class="article-author" aria-label={copy.author}>
       <h2>{copy.author}</h2>
       <p>{copy.bio}</p>
@@ -110,16 +116,59 @@
   @media (max-width: 900px) {
     .blog-article__header h1 { overflow-wrap: anywhere; }
     /* Benchmark charts retain legible native-size labels on narrow screens. */
-    .blog-article__body :global(p:has(> img[src="/images/blog/slop-benchmark.svg"])),
-    .blog-article__body :global(p:has(> img[src="/images/blog/agentic-video-benchmark.svg"])) { overflow-x: auto; }
+    .blog-article__body :global(p:has(> picture > img[src="/images/blog/slop-benchmark.svg"])),
+    .blog-article__body :global(p:has(> picture > img[src="/images/blog/agentic-video-benchmark.svg"])) { overflow-x: auto; }
     .blog-article__body :global(img[src="/images/blog/slop-benchmark.svg"]),
     .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 1120px; max-width: none; }
   }
 
-  .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: auto; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
+  .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: 0; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
+  @media (min-width: 901px) {
+    .video-benchmark :global(table) { display: block; max-width: 100%; overflow-x: auto; }
+    .video-benchmark :global(th), .video-benchmark :global(td) { padding: .6rem .35rem; }
+  }
+  @media (min-width: 701px) and (max-width: 900px) {
+    .video-benchmark :global(table), .agent-benchmark :global(table) { display: block; max-width: 100%; overflow-x: auto; }
+  }
+  @media (max-width: 700px) {
+    .video-benchmark, .agent-benchmark {
+      --field-1: "Project"; --field-3: "Open issues"; --field-4: "Open PRs";
+      --field-5: "Merged PRs"; --field-6: "Closed unmerged"; --field-7: "Releases";
+      --field-8: "A"; --field-9: "B"; --field-10: "C"; --field-11: "Slop Log Score";
+    }
+    .agent-benchmark { --field-2: "GitHub stars (Oct 27)"; }
+    .video-benchmark {
+      --field-2: "Category"; --field-3: "GitHub stars"; --field-4: "Open issues";
+      --field-5: "Open PRs"; --field-6: "Merged PRs"; --field-7: "Closed unmerged";
+      --field-8: "Releases"; --field-9: "A"; --field-10: "B"; --field-11: "C";
+      --field-12: "Slop Log Score"; --field-13: "Basis";
+    }
+    .video-benchmark :global(table), .agent-benchmark :global(table) { display: block; width: 100%; overflow: visible; white-space: normal; }
+    .video-benchmark :global(thead), .agent-benchmark :global(thead) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .video-benchmark :global(tbody), .agent-benchmark :global(tbody) { display: block; }
+    .video-benchmark :global(tr), .agent-benchmark :global(tr) { display: block; margin: 0 0 1.25rem; padding: .5rem .85rem; border: 1px solid var(--ink-faint); }
+    .video-benchmark :global(td), .agent-benchmark :global(td) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: .75rem; min-width: 0; padding: .5rem 0; overflow-wrap: anywhere; }
+    .video-benchmark :global(td:last-child), .agent-benchmark :global(td:last-child) { border-bottom: 0; }
+    .video-benchmark :global(td::before), .agent-benchmark :global(td::before) { color: var(--ink-muted); font-size: .78rem; font-weight: 700; }
+    .video-benchmark :global(td:nth-child(1)::before), .agent-benchmark :global(td:nth-child(1)::before) { content: var(--field-1); }
+    .video-benchmark :global(td:nth-child(2)::before), .agent-benchmark :global(td:nth-child(2)::before) { content: var(--field-2); }
+    .video-benchmark :global(td:nth-child(3)::before), .agent-benchmark :global(td:nth-child(3)::before) { content: var(--field-3); }
+    .video-benchmark :global(td:nth-child(4)::before), .agent-benchmark :global(td:nth-child(4)::before) { content: var(--field-4); }
+    .video-benchmark :global(td:nth-child(5)::before), .agent-benchmark :global(td:nth-child(5)::before) { content: var(--field-5); }
+    .video-benchmark :global(td:nth-child(6)::before), .agent-benchmark :global(td:nth-child(6)::before) { content: var(--field-6); }
+    .video-benchmark :global(td:nth-child(7)::before), .agent-benchmark :global(td:nth-child(7)::before) { content: var(--field-7); }
+    .video-benchmark :global(td:nth-child(8)::before), .agent-benchmark :global(td:nth-child(8)::before) { content: var(--field-8); }
+    .video-benchmark :global(td:nth-child(9)::before), .agent-benchmark :global(td:nth-child(9)::before) { content: var(--field-9); }
+    .video-benchmark :global(td:nth-child(10)::before), .agent-benchmark :global(td:nth-child(10)::before) { content: var(--field-10); }
+    .video-benchmark :global(td:nth-child(11)::before), .agent-benchmark :global(td:nth-child(11)::before) { content: var(--field-11); }
+    .video-benchmark :global(td:nth-child(12)::before), .agent-benchmark :global(td:nth-child(12)::before) { content: var(--field-12); }
+    .video-benchmark :global(td:nth-child(13)::before), .agent-benchmark :global(td:nth-child(13)::before) { content: var(--field-13); }
+    .blog-article__body :global(img[src="/images/blog/slop-benchmark.svg"]),
+    .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 100%; max-width: 280px; height: auto; }
+  }
   .article-toc { position: sticky; align-self: start; top: 6rem; display: flex; flex-direction: column; gap: .6rem; max-height: 65vh; overflow: auto; font-size: .85rem; }
   .article-toc a, .mobile-toc a { display: block; color: inherit; }
   .article-author { margin-top: 4rem; border-top: 1px solid currentColor; }
   .mobile-toc { display: none; }
-  @media (max-width: 900px) { .article-layout { display: block; } .article-toc { display: none; } .mobile-toc { display: block; position: fixed; z-index: 30; bottom: 0; right: 1rem; max-width: 90vw; background: #171717; color: white; padding: .75rem; } .mobile-toc nav { display: flex; flex-direction: column; gap: .7rem; max-height: 55vh; overflow: auto; padding: .75rem; } }
+  @media (max-width: 900px) { .article-layout { display: block; } .article-toc { display: none; } .mobile-toc { display: block; position: fixed; z-index: 30; bottom: 0; right: 1rem; box-sizing: border-box; max-width: min(90vw, calc(100vw - var(--rail-w) - 2rem)); overflow-wrap: anywhere; background: #171717; color: white; padding: .75rem; } .mobile-toc nav { display: flex; flex-direction: column; gap: .7rem; max-height: 55vh; overflow: auto; padding: .75rem; } }
 </style>

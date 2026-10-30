@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { render } from 'svelte/server'
-import { readFileSync } from 'node:fs'
-import postcss from 'postcss'
 import BlogArticlePage from './BlogArticlePage.svelte'
 import { BLOG_ARTICLES } from '$lib/server/blog'
+import { readBlogArticleStyle } from './blogArticleTestStyle'
 
 // Every blog article title shares the narrow-screen wrapping rule.
 describe('blog article headings', () => {
@@ -17,10 +16,7 @@ describe('blog article headings', () => {
   })
 
   it('allows article headings to wrap on narrow screens', () => {
-    const component = readFileSync(new URL('./BlogArticlePage.svelte', import.meta.url), 'utf8')
-    const style = component.match(/<style>([\s\S]*?)<\/style>/)?.[1]
-    expect(style).toBeDefined()
-    const css = postcss.parse(style!)
+    const css = readBlogArticleStyle()
     let ruleFound = false
     css.walkAtRules('media', (media) => {
       if (media.params !== '(max-width: 900px)') return

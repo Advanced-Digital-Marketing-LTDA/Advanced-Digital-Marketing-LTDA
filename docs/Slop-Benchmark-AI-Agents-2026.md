@@ -55,7 +55,7 @@ Higher values indicate more backlog relative to the activity measures in this sn
 
 ## The ratio graphic
 
-The chart shows the same October 30 Slop Log Scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, scroll the chart horizontally to read its labels, or [open the full-size chart](/images/blog/slop-benchmark.svg).
+The chart shows the same October 30 Slop Log Scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, the chart is arranged vertically for easier reading. You can also [open the full-size chart](/images/blog/slop-benchmark.svg).
 
 ![Slop Log Scores for 24 AI agent repositories, October 30, 2026](/images/blog/slop-benchmark.svg)
 
