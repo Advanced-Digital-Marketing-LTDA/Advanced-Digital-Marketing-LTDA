@@ -65,16 +65,26 @@ export function formatBenchmarkHtml(html: string): string {
     })
     // "Label: <a>…</a>; <a>…</a>." (also ", and" separators and a trailing
     // sentence) becomes a label, a list of the same links and that sentence.
-    .replace(
-      /<p>([A-Z][^<:]{0,80}): ((?:<a href="[^"]+">[^<]+<\/a>(?:; |,? and |, )?)+)\.(?: ([^<]+))?<\/p>/g,
-      (_paragraph: string, label: string, links: string, note: string | undefined) => {
-        const items = [...links.matchAll(/<a href="[^"]+">[^<]+<\/a>/g)].map((link) => `<li>${link[0]}</li>`).join('')
-        const trailing = note ? `<p>${note}</p>` : ''
-        return `<p class="benchmark-threads__label">${label}:</p><ul class="benchmark-threads">${items}</ul>${trailing}`
-      },
-    )
+    .replace(/<p>([A-Z][^<:]{0,80}): (<a [\s\S]*?)<\/p>/g, formatLinkParagraph)
   if (projects === 0) throw new Error('Benchmark article has no project headings to format')
   return formatted
+}
+
+const LINK = /(<a href="[^"]+">[^<]+<\/a>)/
+const LINK_SEPARATORS = new Set(['; ', ', ', ', and ', ' and '])
+
+/** Splits "<a>…</a>; <a>…</a>. Note" into list items, or keeps the paragraph
+ *  when anything other than links, separators and a closing sentence is in it. */
+function formatLinkParagraph(paragraph: string, label: string, body: string): string {
+  // split() with a capture group alternates: text, link, text, link, …, text.
+  const parts = body.split(LINK)
+  const links = parts.filter((_part, index) => index % 2 === 1)
+  const separators = parts.filter((_part, index) => index % 2 === 0)
+  const tail = /^\.(?: ([^<]+))?$/.exec(separators.pop() ?? '')
+  if (!tail || separators.shift() !== '' || !separators.every((separator) => LINK_SEPARATORS.has(separator))) return paragraph
+  const items = links.map((link) => `<li>${link}</li>`).join('')
+  const trailing = tail[1] ? `<p>${tail[1]}</p>` : ''
+  return `<p class="benchmark-threads__label">${label}:</p><ul class="benchmark-threads">${items}</ul>${trailing}`
 }
 
 export type TocLink = { id: string; text: string }
