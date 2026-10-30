@@ -107,8 +107,9 @@
   .blog-article__reading-time { margin-top: 1rem; color: var(--ink-muted); }
   .blog-article__body { width: 100%; }
   .blog-article__body :global(h2[id]) { scroll-margin-top: 6rem; }
-  /* Benchmark charts retain legible native-size labels on narrow screens. */
   @media (max-width: 900px) {
+    .blog-article__header h1 { overflow-wrap: anywhere; }
+    /* Benchmark charts retain legible native-size labels on narrow screens. */
     .blog-article__body :global(p:has(> img[src="/images/blog/slop-benchmark.svg"])),
     .blog-article__body :global(p:has(> img[src="/images/blog/agentic-video-benchmark.svg"])) { overflow-x: auto; }
     .blog-article__body :global(img[src="/images/blog/slop-benchmark.svg"]),
