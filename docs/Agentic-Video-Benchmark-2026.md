@@ -1,7 +1,7 @@
 ---
-title: "The Slop Benchmark: Comparing 49 Agentic Video Repositories"
-meta_title: "Slop Benchmark: 49 Agentic Video Repositories Compared"
-meta_description: "A GitHub backlog and activity comparison of 49 agentic video repositories, with a chart and a review of selected issue threads."
+title: "The Slop Benchmark: Comparing 38 Agentic Video Repositories"
+meta_title: "Slop Benchmark: 38 Agentic Video Repositories Compared"
+meta_description: "A GitHub backlog and activity comparison of 38 agentic video repositories, with a chart and a review of selected issue threads."
 published: "2026-10-30"
 updated: "2026-10-30"
 ---
@@ -10,7 +10,7 @@ A project can have millions of stars and still make you spend your afternoon deb
 
 ## What the ratio can and cannot say
 
-The 49 independent repositories include editors, headless engines, commercial-editor bridges, agent skills and research or production frameworks. They are not interchangeable full video editors. No repository was installed or executed for this comparison; capabilities below are documentation claims, not tested behavior.
+The 38 independent repositories include editors, headless engines, commercial-editor bridges, agent skills and research or production frameworks. They are not interchangeable full video editors. No repository was installed or executed for this comparison; capabilities below are documentation claims, not tested behavior.
 
 The score snapshot was collected October 30, 2026, 15:32:03–15:35:40 UTC, with batch labels 15:34 and 15:36 UTC. The collection is sequential, not atomic. Open issues exclude PRs. Published GitHub release records include prereleases and exclude drafts. Open PRs include drafts; PRs closed without merging are listed separately and excluded from B's denominator.
 
@@ -18,17 +18,17 @@ The score snapshot was collected October 30, 2026, 15:32:03–15:35:40 UTC, with
 >
 > **B = (open issues + open PRs) ÷ lifetime merged PRs**
 >
-> **C = (A + B) ÷ 2; final score = log10(1 + C)**
+> **C = (A + B) ÷ 2; Slop Log Score = log10(1 + C)**
 
-If there are no releases but B exists, C = B/2. This intentionally halves B; it does not mean the missing A is zero. If B is undefined because no PRs have been merged, the final score is N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; components are displayed to two decimals and the final score to four. Lower indicates less public backlog relative to these denominators, not proof of reliable editing. Release practices, issue types and project age affect the score. The original ratio benchmark's illustrative bands do not apply to this logarithmic metric.
+If there are no releases but B exists, C = B/2. This intentionally halves B; it does not mean the missing A is zero. If B is undefined because no PRs have been merged, the Slop Log Score is N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; components are displayed to two decimals and the Slop Log Score to four. Lower indicates less public backlog relative to these denominators, not proof of reliable editing. Release practices, issue types and project age affect the score.
 
 For the qualitative check, up to three currently open issues updated since April 30 were selected per repository, excluding PRs, sorted by comment count then issue number descending. Issue bodies and available comments were reviewed on October 30; the video-use issue counters exceeded the comments returned by the endpoint, for reasons unknown, so this is not a claim of complete historical comment coverage. Open threads include support, proposals and administrative noise as well as reports; no qualifying thread does not mean bug-free software.
 
 ## The comparison table
 
-The basis column distinguishes two available measures from the release-less fallback and unavailable scores. Stars are context, not a score input.
+The basis column distinguishes two available measures from the release-less fallback. Stars are context, not a score input.
 
-| Project | Category | GitHub stars | Open issues | Open PRs | Merged PRs | Closed unmerged | Releases | A | B | C | Log score | Basis |
+| Project | Category | GitHub stars | Open issues | Open PRs | Merged PRs | Closed unmerged | Releases | A | B | C | Slop Log Score | Basis |
 |:--|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|:--|
 | [HKUDS/VideoAgent](https://github.com/HKUDS/VideoAgent) | Research system | 1,981 | 12 | 2 | 1 | 1 | 0 | N/A | 14.00 | 7.00 | 0.9031 | B/2 |
 | [browser-use/video-use](https://github.com/browser-use/video-use) | footage-editing skill | 30,139 | 35 | 127 | 14 | 25 | 0 | N/A | 11.57 | 5.79 | 0.8316 | B/2 |
@@ -68,324 +68,375 @@ The basis column distinguishes two available measures from the release-less fall
 | [matrodrigs/shotcut-mcp](https://github.com/matrodrigs/shotcut-mcp) | Shotcut integration | 24 | 0 | 0 | 6 | 0 | 17 | 0.00 | 0.00 | 0.00 | 0.0000 | A + B |
 | [naman-sharma12345/kimo](https://github.com/naman-sharma12345/kimo) | Headless editing engine | 20 | 0 | 0 | 38 | 2 | 5 | 0.00 | 0.00 | 0.00 | 0.0000 | A + B |
 | [Remocn/remocn-studio](https://github.com/Remocn/remocn-studio) | Agent-directed code composition | 209 | 0 | 0 | 23 | 0 | 4 | 0.00 | 0.00 | 0.00 | 0.0000 | A + B |
-| [Aoike123/blender-vse](https://github.com/Aoike123/blender-vse) | Blender VSE integration | 4 | 0 | 0 | 0 | 0 | 2 | 0.00 | N/A | N/A | N/A | N/A |
-| [hassancs91/claude-youtube-editor](https://github.com/hassancs91/claude-youtube-editor) | Talking-head editing pipeline | 359 | 0 | 1 | 0 | 1 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [krshailendra/Agentic-Video-Editor](https://github.com/krshailendra/Agentic-Video-Editor) | Editing research/prototype | 1 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [martinsbrezauckis/shellx-cut](https://github.com/martinsbrezauckis/shellx-cut) | Local editor and agent API | 7 | 1 | 0 | 0 | 0 | 11 | 0.09 | N/A | N/A | N/A | N/A |
-| [Monet-AI-Editor/Monet](https://github.com/Monet-AI-Editor/Monet) | archived desktop editor | 119 | 0 | 0 | 0 | 0 | 10 | 0.00 | N/A | N/A | N/A | N/A |
-| [open-ribbi/velocut](https://github.com/open-ribbi/velocut) | browser editing/3D studio | 453 | 1 | 6 | 0 | 8 | 2 | 0.50 | N/A | N/A | N/A | N/A |
-| [paulduplessis/agentic-video-editor](https://github.com/paulduplessis/agentic-video-editor) | Transcript editing pipeline | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [poseljacob/agentic-video-editor](https://github.com/poseljacob/agentic-video-editor) | multi-agent footage-to-ad pipeline | 506 | 1 | 2 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [real-simple-labs/agentic-video-editing](https://github.com/real-simple-labs/agentic-video-editing) | Editing skill pipeline | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [sandraschi/blender-mcp](https://github.com/sandraschi/blender-mcp) | Blender headless/live integration | 62 | 2 | 0 | 0 | 1 | 3 | 0.67 | N/A | N/A | N/A | N/A |
-| [YizhouWang777/agentic-video-editor](https://github.com/YizhouWang777/agentic-video-editor) | Agent editing scaffold | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
 
 ## The ratio graphic
 
-The chart uses the same scores as the table, with unavailable entries labeled N/A. The table is the exact lookup, while the bars make the spread easier to see. [Open the full-size chart](/images/blog/agentic-video-benchmark.svg) for a readable view on a small screen.
+The chart uses the same scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, scroll the chart horizontally to read its labels. [Open the full-size chart](/images/blog/agentic-video-benchmark.svg) for a readable view on a small screen.
 
-![Slop Benchmark log scores for 49 agentic video repositories, October 30, 2026](/images/blog/agentic-video-benchmark.svg)
+![Slop Log Scores for 38 agentic video repositories, October 30, 2026](/images/blog/agentic-video-benchmark.svg)
 
 ## Project-by-project issue review
 
 The score is a screening signal, not a verdict on maintainers or users. The linked discussions below reflect the selected sample and do not establish the prevalence or present status of reported problems.
 
-## HKUDS/VideoAgent: 0.9031 log score
+<a id="hkuds-videoagent-0-9031-log-score"></a>
+
+## HKUDS/VideoAgent: 0.9031 Slop Log Score
 
 The repository is categorized here as Research system. Paper-backed Python research agent translating intent into workflows and tool plans with feedback. Includes clipping, assembly and remixing alongside generation. Evaluate separately from end-user editors; claims of professional quality are not validated by this audit.
 
-Selected discussions: [third-party promotion/support thread](https://github.com/HKUDS/VideoAgent/issues/14); [bug/dependency report thread](https://github.com/HKUDS/VideoAgent/issues/16); [community/dataset distribution thread](https://github.com/HKUDS/VideoAgent/issues/11). These classifications describe the thread, not a verified defect or current resolution.
+The sampled directory discussion concerns a third-party site, not a VideoAgent runtime error. A separate dependency report alleges differing package resolution; it has no visible maintainer reply. The dataset-hosting invitation is community discussion, not a defect.
 
-## browser-use/video-use: 0.8316 log score
+Selected discussions: [third-party promotion/support thread](https://github.com/HKUDS/VideoAgent/issues/14); [bug/dependency report thread](https://github.com/HKUDS/VideoAgent/issues/16); [community/dataset distribution thread](https://github.com/HKUDS/VideoAgent/issues/11).
+
+<a id="browser-use-video-use-0-8316-log-score"></a>
+
+## browser-use/video-use: 0.8316 Slop Log Score
 
 The repository is categorized here as footage-editing skill. Coding-agent skill turns a raw-footage folder into a transcript/EDL and FFmpeg MP4, with filmstrip/waveform inspection and bounded self-evaluation repairs. MIT. The documented transcription setup requires an ElevenLabs API key; this is not a timeline GUI.
 
-The selected threads include off-topic material and a video-creation request; they do not establish a software defect. Available comment responses were fewer than the displayed counters. Selected threads: [#101](https://github.com/browser-use/video-use/issues/101), [#74](https://github.com/browser-use/video-use/issues/74), and [#33](https://github.com/browser-use/video-use/issues/33).
+The selected threads include off-topic material and a video-creation request; they do not establish a software defect. Available comment responses were fewer than the displayed counters, for reasons unknown.
 
-## MBehtemam/Montagent: 0.7159 log score
+Selected threads: [#101](https://github.com/browser-use/video-use/issues/101), [#74](https://github.com/browser-use/video-use/issues/74), and [#33](https://github.com/browser-use/video-use/issues/33).
+
+<a id="mbehtemam-montagent-0-7159-log-score"></a>
+
+## MBehtemam/Montagent: 0.7159 Slop Log Score
 
 The repository is categorized here as headless editing engine. JSON projects, CLI and MCP tools cover frame inspection, preview, render, measurement, validation and verification. Actual LICENSE is MIT despite GitHub's NOASSERTION metadata; media licenses are separate. Requires FFmpeg with libx264. Remote hosted MCP is designed but not shipped.
 
-The selected Montagent discussions are capability-planning inventories rather than individual bug reports. Selected discussions: [umbrella thread](https://github.com/MBehtemam/Montagent/issues/956); [umbrella thread](https://github.com/MBehtemam/Montagent/issues/954); [umbrella thread](https://github.com/MBehtemam/Montagent/issues/2). These classifications describe the thread, not a verified defect or current resolution.
+The selected threads are capability-planning inventories and a historical specification, not individual bug reports. Their large appendices were retrieved, but individual feature rows were not independently validated.
 
-## video-db/Director: 0.7065 log score
+Selected discussions: [umbrella thread](https://github.com/MBehtemam/Montagent/issues/956); [umbrella thread](https://github.com/MBehtemam/Montagent/issues/954); [umbrella thread](https://github.com/MBehtemam/Montagent/issues/2). These classifications describe the thread, not a verified defect or current resolution.
+
+<a id="video-db-director-0-7065-log-score"></a>
+
+## video-db/Director: 0.7065 Slop Log Score
 
 The repository is categorized here as Cloud production orchestrator. Multi-agent video search, highlights, clipping, overlays, dubbing/subtitles and compilations. Depends on VideoDB infrastructure/API configuration; not a self-contained desktop NLE.
 
-Selected discussions: [feature thread](https://github.com/video-db/Director/issues/194); [feature/provider recommendation thread](https://github.com/video-db/Director/issues/186). These classifications describe the thread, not a verified defect or current resolution.
+The sampled threads request provider support or a provider recommendation. A linked pull request does not establish that support shipped.
 
-## GVCLab/CutClaw: 0.4771 log score
+Selected discussions: [feature thread](https://github.com/video-db/Director/issues/194); [feature/provider recommendation thread](https://github.com/video-db/Director/issues/186).
+
+<a id="gvclab-cutclaw-0-4771-log-score"></a>
+
+## GVCLab/CutClaw: 0.4771 Slop Log Score
 
 The repository is categorized here as Research system. Long footage and music feed structured descriptions, multi-agent shot planning, checks and rendering. CLI/Streamlit interfaces; Python 3.12 and recommended GPU decoding. MCP is on the roadmap, not a verified current capability. A clear license was not established.
 
-Selected discussions: [feature thread](https://github.com/GVCLab/CutClaw/issues/10); [support/capability thread](https://github.com/GVCLab/CutClaw/issues/8); [support/feature thread](https://github.com/GVCLab/CutClaw/issues/5). These classifications describe the thread, not a verified defect or current resolution.
+A collaborator said only one source video had been tested, while multiple sources might be supported in principle. The other discussions request a multicamera workflow and describe experimental beat segmentation omitted for stability; they do not establish released capabilities.
 
-## Dakkshin/after-effects-mcp: 0.4559 log score
+Selected discussions: [feature thread](https://github.com/GVCLab/CutClaw/issues/10); [support/capability thread](https://github.com/GVCLab/CutClaw/issues/8); [support/feature thread](https://github.com/GVCLab/CutClaw/issues/5).
+
+<a id="dakkshin-after-effects-mcp-0-4559-log-score"></a>
+
+## Dakkshin/after-effects-mcp: 0.4559 Slop Log Score
 
 The repository is categorized here as After Effects compositing integration. MCP and ExtendScript control compositions, layers, text, shapes, masks, properties, keyframes and animation in installed After Effects. MIT. A compositing bridge, not an independent footage-editing NLE. Its documented Node minimum is old; last push April 1, 2026.
 
-Selected discussions: [bug thread](https://github.com/Dakkshin/after-effects-mcp/issues/7); [bug thread](https://github.com/Dakkshin/after-effects-mcp/issues/43); [other thread](https://github.com/Dakkshin/after-effects-mcp/issues/39). These classifications describe the thread, not a verified defect or current resolution.
+Users report a blank bridge panel, with a proposed fix but no maintainer-confirmed release resolution. Another thread reports a preset path exposure at a particular commit; it was not independently reproduced. A selected promotional post is not defect evidence.
 
-## UniVA-Verse/UniVA: 0.3979 log score
+Selected discussions: [bug thread](https://github.com/Dakkshin/after-effects-mcp/issues/7); [bug thread](https://github.com/Dakkshin/after-effects-mcp/issues/43); [other thread](https://github.com/Dakkshin/after-effects-mcp/issues/39).
+
+<a id="univa-verse-univa-0-3979-log-score"></a>
+
+## UniVA-Verse/UniVA: 0.3979 Slop Log Score
 
 The repository is categorized here as research generalist. Plan/act agent architecture with MCP processing, editing and generation tools, Python backend and timeline UI; understanding/segmentation guide edits. MIT. Canonical redirect from univa-agent/univa. Research system with provider/local-model dependencies, not a proven consumer NLE; frontend adapted from OpenCut.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## calesthio/OpenMontage: 0.3734 log score
+<a id="calesthio-openmontage-0-3734-log-score"></a>
+
+## calesthio/OpenMontage: 0.3734 Slop Log Score
 
 The repository is categorized here as Broad production orchestrator. Agentic system spanning research, scripts, assets, editing and composition. Its README documents real motion clips placed on a timeline and rendered, alongside generated assets. It includes storyboard approval and local review. Broader than an NLE, with pipeline-specific provider costs and authentication.
 
-Selected discussions: [administrative/media upload thread](https://github.com/calesthio/OpenMontage/issues/1); [community/reviewer recruitment thread](https://github.com/calesthio/OpenMontage/issues/149); [support/integration thread](https://github.com/calesthio/OpenMontage/issues/165). These classifications describe the thread, not a verified defect or current resolution.
+The most-commented selected issue hosts trailer attachments; another recruits reviewers. The Hermes integration thread contains differing reports, including a successful preflight and a later workflow concern, without a final maintainer resolution.
 
-## veedstudio/open-edit: 0.3150 log score
+Selected discussions: [administrative/media upload thread](https://github.com/calesthio/OpenMontage/issues/1); [community/reviewer recruitment thread](https://github.com/calesthio/OpenMontage/issues/149); [support/integration thread](https://github.com/calesthio/OpenMontage/issues/165).
+
+<a id="veedstudio-open-edit-0-3150-log-score"></a>
+
+## veedstudio/open-edit: 0.3150 Slop Log Score
 
 The repository is categorized here as code-driven editing pipeline. CLI and agent skill for word-timed captions and HTML-to-video, with headless Chrome rendering, partial rerenders, still/contact-sheet output and audio muxing. Apache-2.0. Current source documents its Chrome renderer; older claims of a required closed VEED renderer are stale. Transcription can be local or hosted.
 
-Selected discussions: [support thread](https://github.com/veedstudio/open-edit/issues/25). These classifications describe the thread, not a verified defect or current resolution.
+The selected discussion asks about Windows signing and offline compatibility and reports a startup failure. A responder says no signed build is available and the offline flow is untested; their project authority was not independently established.
 
-## Aepzie/cutline: 0.2730 log score
+Selected discussions: [support thread](https://github.com/veedstudio/open-edit/issues/25).
+
+<a id="aepzie-cutline-0-2730-log-score"></a>
+
+## Aepzie/cutline: 0.2730 Slop Log Score
 
 The repository is categorized here as Browser editor. Browser NLE and MCP share typed operations over a declarative timeline. Documents trim/split/ripple, captions, keyframes, overlays and transcription. The demo is still a placeholder and some advertised capabilities also appear on the roadmap; this audit does not establish feature completeness.
 
-Selected discussions: [feature thread](https://github.com/Aepzie/cutline/issues/8); [feature/usability thread](https://github.com/Aepzie/cutline/issues/11); [feature/persistence thread](https://github.com/Aepzie/cutline/issues/10). These classifications describe the thread, not a verified defect or current resolution.
+The selected requests cover timeline waveforms, exposing asset removal in the editor UI, and retaining undo history after a server restart. They describe capability and persistence needs, not demonstrated export failures.
 
-## diffusionstudio/editor: 0.2556 log score
+Selected discussions: [feature thread](https://github.com/Aepzie/cutline/issues/8); [feature/usability thread](https://github.com/Aepzie/cutline/issues/11); [feature/persistence thread](https://github.com/Aepzie/cutline/issues/10).
+
+<a id="diffusionstudio-editor-0-2556-log-score"></a>
+
+## diffusionstudio/editor: 0.2556 Slop Log Score
 
 The repository is categorized here as code-backed desktop editor. Humans and agents edit real footage through the same code-backed document, with MCP/CLI inspection, checking, rendering and headless support. MPL-2.0. Current desktop downloads target Apple Silicon macOS and Windows x64. Distinct from the older diffusionstudio/agent framework.
 
-Selected discussions: [bug thread](https://github.com/diffusionstudio/editor/issues/82); [feature thread](https://github.com/diffusionstudio/editor/issues/40); [feature thread](https://github.com/diffusionstudio/editor/issues/52). These classifications describe the thread, not a verified defect or current resolution.
+A contributor reports that the original Windows build and handshake defects were fixed on main and v0.206.0; the reporter intended to retest, while source-checkout auto-launch remained a limitation. Other threads request Linux and browser support; a linked partial implementation does not establish a released feature.
 
-## WeftCut/WeftCut: 0.2283 log score
+Selected discussions: [bug thread](https://github.com/diffusionstudio/editor/issues/82); [feature thread](https://github.com/diffusionstudio/editor/issues/40); [feature thread](https://github.com/diffusionstudio/editor/issues/52).
+
+<a id="weftcut-weftcut-0-2283-log-score"></a>
+
+## WeftCut/WeftCut: 0.2283 Slop Log Score
 
 The repository is categorized here as Desktop editor. Desktop NLE with local MCP, a shared human/agent timeline, captions, keyframes, audio, checkpoints and dry runs. Explicitly pre-1.0. Cross-platform CI and test documentation exist; the MCP connection helper is not evidence of a standalone headless renderer.
 
-Selected discussions: [resolved subproblems in thread but open thread](https://github.com/WeftCut/WeftCut/issues/69); [umbrella/performance thread](https://github.com/WeftCut/WeftCut/issues/62); [umbrella thread](https://github.com/WeftCut/WeftCut/issues/11). These classifications describe the thread, not a verified defect or current resolution.
+A reporter confirmed long-video sampling improvements in v0.5.2 and a maintainer described further controls in v0.5.5. Other threads track preview performance research and broader v1 acceptance; an open umbrella is not one unresolved defect.
 
-## hypit-ai/hypit: 0.2021 log score
+Selected discussions: [resolved subproblems in thread but open thread](https://github.com/WeftCut/WeftCut/issues/69); [umbrella/performance thread](https://github.com/WeftCut/WeftCut/issues/62); [umbrella thread](https://github.com/WeftCut/WeftCut/issues/11).
+
+<a id="hypit-ai-hypit-0-2021-log-score"></a>
+
+## hypit-ai/hypit: 0.2021 Slop Log Score
 
 The repository is categorized here as Video workflow compiler. Agent-readable language anchors footage/captions/B-roll/effects to spoken words, supports variants and code-rendered graphics. License restricts multi-tenant SaaS, redistribution and branding; expressly permits own-organization/client work.
 
-Selected discussions: [support/capability clarification thread](https://github.com/hypit-ai/hypit/issues/432); [bug/render awaiting retest thread](https://github.com/hypit-ai/hypit/issues/330); [support/cost thread](https://github.com/hypit-ai/hypit/issues/270). These classifications describe the thread, not a verified defect or current resolution.
+One thread asks about strict source-video editing and billing without having submitted a generation. A caption-render report awaits a requested retest, while a separate user reports exhausting a token allowance before render; its cause remained unresolved.
 
-## palmier-io/palmier-pro: 0.1789 log score
+Selected discussions: [support/capability clarification thread](https://github.com/hypit-ai/hypit/issues/432); [bug/render awaiting retest thread](https://github.com/hypit-ai/hypit/issues/330); [support/cost thread](https://github.com/hypit-ai/hypit/issues/270).
+
+<a id="palmier-io-palmier-pro-0-1789-log-score"></a>
+
+## palmier-io/palmier-pro: 0.1789 Slop Log Score
 
 The repository is categorized here as desktop editor / historical source. Swift-native macOS timeline with local MCP so coding agents can edit the same project; generation is optional. GPL source/releases extend only through v0.7.6 and last-gpl-source. Later binaries are proprietary and their source unpublished; new code contributions are not accepted. macOS 26+ on Apple Silicon.
 
-Selected discussions: [bug thread](https://github.com/palmier-io/palmier-pro/issues/68); [bug thread](https://github.com/palmier-io/palmier-pro/issues/58); [feature thread](https://github.com/palmier-io/palmier-pro/issues/14). These classifications describe the thread, not a verified defect or current resolution.
+A user reported a 4K/60 export hang and a contributor requested reproduction; there was no definitive fix confirmation. Another thread reports freezes with partial improvements discussed, while a third requests older macOS and Intel support.
 
-## VelornLabs/velorn: 0.1642 log score
+Selected discussions: [bug thread](https://github.com/palmier-io/palmier-pro/issues/68); [bug thread](https://github.com/palmier-io/palmier-pro/issues/58); [feature thread](https://github.com/palmier-io/palmier-pro/issues/14).
+
+<a id="velornlabs-velorn-0-1642-log-score"></a>
+
+## VelornLabs/velorn: 0.1642 Slop Log Score
 
 The repository is categorized here as desktop editor / generation workstation. Multitrack editing, captions, effects and exports with local MCP frame inspection, preview-first edits and undo; generation workflows use ComfyUI. GPL-3.0. Editing/export/MCP do not require ComfyUI, but current generation does. Filesystem and import/export operations are not universally undoable.
 
-Selected discussions: [bug thread](https://github.com/VelornLabs/velorn/issues/77); [feature thread](https://github.com/VelornLabs/velorn/issues/57); [feature thread](https://github.com/VelornLabs/velorn/issues/55). These classifications describe the thread, not a verified defect or current resolution.
+A user confirmed the original reference-free keyframe issue was fixed in v0.3.8. A separate optional-image workflow remains a follow-up; other threads request gap-fill and editing conveniences without establishing that every requested feature has shipped.
 
-## openfilm/openfilm: 0.1518 log score
+Selected discussions: [bug thread](https://github.com/VelornLabs/velorn/issues/77); [feature thread](https://github.com/VelornLabs/velorn/issues/57); [feature thread](https://github.com/VelornLabs/velorn/issues/55).
+
+<a id="openfilm-openfilm-0-1518-log-score"></a>
+
+## openfilm/openfilm: 0.1518 Slop Log Score
 
 The repository is categorized here as Editor/composition system. Coding agents edit film.html; Studio supplies timeline and element editing for footage, audio and programmable graphics. Node 22.2+, FFmpeg and Chromium are documented prerequisites. A good code-driven composition reference, but not tested hands-on in this audit.
 
-Selected discussions: [bug thread](https://github.com/openfilm/openfilm/issues/304); [integration report thread](https://github.com/openfilm/openfilm/issues/290); [enhancement/usability thread](https://github.com/openfilm/openfilm/issues/230). These classifications describe the thread, not a verified defect or current resolution.
+One report says Studio closes a project when film.html temporarily disappears during an agent edit; a maintainer acknowledged the recovery concern, but the later fix was not verified shipped. A version mismatch report remained under investigation, and another thread concerns usability requests.
 
-## 0xsline/OpenChatCut: 0.1493 log score
+Selected discussions: [bug thread](https://github.com/openfilm/openfilm/issues/304); [integration report thread](https://github.com/openfilm/openfilm/issues/290); [enhancement/usability thread](https://github.com/openfilm/openfilm/issues/230).
+
+<a id="0xsline-openchatcut-0-1493-log-score"></a>
+
+## 0xsline/OpenChatCut: 0.1493 Slop Log Score
 
 The repository is categorized here as local conversational timeline editor. External MCP and built-in agents share an editable multitrack project with transcript cuts, captions, effects, keyframes and Remotion rendering. AGPL-3.0-or-later. Do not conflate the separate Pro desktop offering with the public-source edition. Test, lint and build commands are documented.
 
-Selected discussions: [bug thread](https://github.com/0xsline/OpenChatCut/issues/120); [feature thread](https://github.com/0xsline/OpenChatCut/issues/155); [feature thread](https://github.com/0xsline/OpenChatCut/issues/127). These classifications describe the thread, not a verified defect or current resolution.
+A user later confirmed Whisper works after fixes discussed in the thread, while raising separate agent, subtitle and preview complaints that remain unconfirmed. Another request concerns larger models; the owner says one model shipped, with a different backend still unsupported.
 
-## FireRedTeam/FireRed-OpenStoryline: 0.1331 log score
+Selected discussions: [bug thread](https://github.com/0xsline/OpenChatCut/issues/120); [feature thread](https://github.com/0xsline/OpenChatCut/issues/155); [feature thread](https://github.com/0xsline/OpenChatCut/issues/127).
+
+<a id="fireredteam-firered-openstoryline-0-1331-log-score"></a>
+
+## FireRedTeam/FireRed-OpenStoryline: 0.1331 Slop Log Score
 
 The repository is categorized here as conversational editing orchestrator. Media search and segmentation, story planning, narration/music and conversational cut/swap/resequence operations, plus reusable style and speech rough-cut skills. Apache-2.0 and Python-based. Optional AI transitions use third-party services with documented cost/result uncertainty. Do not present TODO items as shipped features.
 
-Selected discussions: [support thread](https://github.com/FireRedTeam/FireRed-OpenStoryline/issues/30); [support thread](https://github.com/FireRedTeam/FireRed-OpenStoryline/issues/76); [feature thread](https://github.com/FireRedTeam/FireRed-OpenStoryline/issues/104). These classifications describe the thread, not a verified defect or current resolution.
+Two support threads describe conversation startup errors and investigation of proxy or MCP connectivity. One user reports a workaround while others still fail; the selected provider request does not establish a shipped integration.
 
-## BeatAPI/BeatDesign: 0.1004 log score
+Selected discussions: [support thread](https://github.com/FireRedTeam/FireRed-OpenStoryline/issues/30); [support thread](https://github.com/FireRedTeam/FireRed-OpenStoryline/issues/76); [feature thread](https://github.com/FireRedTeam/FireRed-OpenStoryline/issues/104).
+
+<a id="beatapi-beatdesign-0-1004-log-score"></a>
+
+## BeatAPI/BeatDesign: 0.1004 Slop Log Score
 
 The repository is categorized here as local canvas and timeline editor. Shared canvas and editor with MCP for trimming, splitting, moving, audio mixing, image overlays, captions and MP4 rendering. Apache-2.0. Published v0.2.5 has 30 tools versus 38 in unreleased source. Local editing needs no API key; generation/analysis does. Do not imply advanced transitions or desktop packaging are already shipped.
 
-Selected discussions: [feature thread](https://github.com/BeatAPI/BeatDesign/issues/34); [feature thread](https://github.com/BeatAPI/BeatDesign/issues/19). These classifications describe the thread, not a verified defect or current resolution.
+The selected discussions propose external providers or partnerships; one author explicitly had not validated the full workflow. They are not defect evidence.
 
-## hetpatel-11/Adobe_Premiere_Pro_MCP: 0.0990 log score
+Selected discussions: [feature thread](https://github.com/BeatAPI/BeatDesign/issues/34); [feature thread](https://github.com/BeatAPI/BeatDesign/issues/19).
+
+<a id="hetpatel-11-adobe-premiere-pro-mcp-0-0990-log-score"></a>
+
+## hetpatel-11/Adobe_Premiere_Pro_MCP: 0.0990 Slop Log Score
 
 The repository is categorized here as Premiere Pro integration. Local MCP connects to a CEP panel and ExtendScript for timeline operations, audio keyframes/ducking and Media Encoder export. MIT. Requires installed Premiere and Node. CEP is supported; UXP is experimental. Installer changes to debug/client settings need deliberate review, not automatic execution.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## ronak-create/FableCut: 0.0882 log score
+<a id="ronak-create-fablecut-0-0882-log-score"></a>
+
+## ronak-create/FableCut: 0.0882 Slop Log Score
 
 The repository is categorized here as Browser editor. JSON-timeline browser editor with REST/MCP, clips, effects, transitions and keyframes. Node test scripts are present. Agent control is not the same as agent vision: frame/contact-sheet inspection remains an open feature request.
 
-Selected discussions: [feature thread](https://github.com/ronak-create/FableCut/issues/62); [maintenance thread](https://github.com/ronak-create/FableCut/issues/64); [feature thread](https://github.com/ronak-create/FableCut/issues/5). These classifications describe the thread, not a verified defect or current resolution.
+The selected discussions cover a proposed Rive integration, Node runtime and CI policy, and frame-inspection tools. A contributor demo is not proof that an integration has shipped.
 
-## pireel/pireel: 0.0792 log score
+Selected discussions: [feature thread](https://github.com/ronak-create/FableCut/issues/62); [maintenance thread](https://github.com/ronak-create/FableCut/issues/64); [feature thread](https://github.com/ronak-create/FableCut/issues/5).
+
+<a id="pireel-pireel-0-0792-log-score"></a>
+
+## pireel/pireel: 0.0792 Slop Log Score
 
 The repository is categorized here as browser timeline editor. Local canvas and timeline editing with captions, graphics, audio and export. External agents connect through a separate public plugin. AGPL-3.0-only editor and separately licensed Apache plugin. Hosted chat and connected-service features should not be assumed available in the self-hosted edition.
 
-Selected discussions: [feature thread](https://github.com/pireel/pireel/issues/6); [feature thread](https://github.com/pireel/pireel/issues/7). These classifications describe the thread, not a verified defect or current resolution.
+The two selected threads propose optional research context and a model-router provider. Neither establishes that those integrations are implemented.
 
-## mhadifilms/dvr: 0.0742 log score
+Selected discussions: [feature thread](https://github.com/pireel/pireel/issues/6); [feature thread](https://github.com/pireel/pireel/issues/7).
+
+<a id="mhadifilms-dvr-0-0742-log-score"></a>
+
+## mhadifilms/dvr: 0.0742 Slop Log Score
 
 The repository is categorized here as DaVinci Resolve integration. Typed Python library, CLI and MCP for declarative editing, color and delivery, with structured JSON and connection diagnostics. MIT. Requires running Resolve. The maintainer's stable-from-1.0 claim is not a hands-on result; edition compatibility needs per-version checking.
 
-Selected discussions: [bug thread](https://github.com/mhadifilms/dvr/issues/10); [bug thread](https://github.com/mhadifilms/dvr/issues/7). These classifications describe the thread, not a verified defect or current resolution.
+Two environment-specific reports describe a Resolve gallery API TypeError and an audio-track argument-order issue. Neither has a confirmed fix in the sampled comments, and neither was independently reproduced.
 
-## deonmenezes/edit-ai: 0.0631 log score
+Selected discussions: [bug thread](https://github.com/mhadifilms/dvr/issues/10); [bug thread](https://github.com/mhadifilms/dvr/issues/7).
+
+<a id="deonmenezes-edit-ai-0-0631-log-score"></a>
+
+## deonmenezes/edit-ai: 0.0631 Slop Log Score
 
 The repository is categorized here as Editor and agent harness. TrueForge harness, browser timeline and MCP editing tools; silence removal, captions, beat cuts and resumable sessions. Separate services/provider credentials, optional sandbox; approval claims are not independently tested.
 
-Selected discussions: [maintenance/test coverage thread](https://github.com/deonmenezes/edit-ai/issues/19); [maintenance/configuration thread](https://github.com/deonmenezes/edit-ai/issues/18); [maintenance/architecture thread](https://github.com/deonmenezes/edit-ai/issues/17). These classifications describe the thread, not a verified defect or current resolution.
+The selected threads concern bot-verdict test coverage, demo connector configuration and merge-workflow architecture. They do not establish a video-render failure.
 
-## AKMessi/vex: 0.0583 log score
+Selected discussions: [maintenance/test coverage thread](https://github.com/deonmenezes/edit-ai/issues/19); [maintenance/configuration thread](https://github.com/deonmenezes/edit-ai/issues/18); [maintenance/architecture thread](https://github.com/deonmenezes/edit-ai/issues/17).
+
+<a id="akmessi-vex-0-0583-log-score"></a>
+
+## AKMessi/vex: 0.0583 Slop Log Score
 
 The repository is categorized here as Terminal editing agent. LLM tool-loop for footage copying, trim/merge/audio/captions and timeline history; optional visual-generation backends. README excludes internal business/revenue workflows without separate commercial licensing.
 
-Selected discussions: [support/task request thread](https://github.com/AKMessi/vex/issues/52); [documentation/feature thread](https://github.com/AKMessi/vex/issues/17). These classifications describe the thread, not a verified defect or current resolution.
+One thread contains a requested montage and another asks for output examples. Neither proves the requested capabilities work or fail.
 
-## Mvp2o-ai/cuttingfloor: 0.0555 log score
+Selected discussions: [support/task request thread](https://github.com/AKMessi/vex/issues/52); [documentation/feature thread](https://github.com/AKMessi/vex/issues/17).
+
+<a id="mvp2o-ai-cuttingfloor-0-0555-log-score"></a>
+
+## Mvp2o-ai/cuttingfloor: 0.0555 Slop Log Score
 
 The repository is categorized here as Headless editing engine. MCP editor for importing footage, granular timeline operations, previews and exports; each edit returns an immutable timeline ID. Docker packages FFmpeg/MLT. Documented 24-hour timeline and seven-day media/export cache lifetimes matter for unattended workflows. License verified in develop/LICENSE.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## MartinDelophy/ai-video-editor: 0.0458 log score
+<a id="martindelophy-ai-video-editor-0-0458-log-score"></a>
+
+## MartinDelophy/ai-video-editor: 0.0458 Slop Log Score
 
 The repository is categorized here as Local editor and skill. Shared timeline and Codex skill for scene/transcript analysis and plans, with editable Jianying export and compatibility reports. Mixed app also contains avatar features; optional macOS host/runtime requirements.
 
-Selected discussions: [feature/optimization suggestion thread](https://github.com/MartinDelophy/ai-video-editor/issues/119); [documentation thread](https://github.com/MartinDelophy/ai-video-editor/issues/55); [umbrella/research thread](https://github.com/MartinDelophy/ai-video-editor/issues/54). These classifications describe the thread, not a verified defect or current resolution.
+The sampled discussions suggest model optimization, request contributor-guide translation and track a digital-human research spike. They are not evidence that the proposed changes have been completed.
 
-## KyaniteLabs/kinocut: 0.0333 log score
+Selected discussions: [feature/optimization suggestion thread](https://github.com/MartinDelophy/ai-video-editor/issues/119); [documentation thread](https://github.com/MartinDelophy/ai-video-editor/issues/55); [umbrella/research thread](https://github.com/MartinDelophy/ai-video-editor/issues/54).
+
+<a id="kyanitelabs-kinocut-0-0333-log-score"></a>
+
+## KyaniteLabs/kinocut: 0.0333 Slop Log Score
 
 The repository is categorized here as headless editing toolkit. Typed FFmpeg tools through MCP, Python and CLI for trimming, captions and repurposing, with provenance receipts, preflight and release checks. Apache-2.0. Requires Python and FFmpeg; HyperFrames/Whisper are optional. Canonical rename of mcp-video, not an additional independent product.
 
-Selected discussions: [support thread](https://github.com/KyaniteLabs/kinocut/issues/488); [umbrella thread](https://github.com/KyaniteLabs/kinocut/issues/476); [feature thread](https://github.com/KyaniteLabs/kinocut/issues/591). These classifications describe the thread, not a verified defect or current resolution.
+The selected mirror thread concerns a synchronization policy gate, not rendering. A separate umbrella tracks verification gates and unreleased fixes, while a tool-discovery proposal is not on the current roadmap according to a member.
 
-## diffusionstudio/agent: 0.0126 log score
+Selected discussions: [support thread](https://github.com/KyaniteLabs/kinocut/issues/488); [umbrella thread](https://github.com/KyaniteLabs/kinocut/issues/476); [feature thread](https://github.com/KyaniteLabs/kinocut/issues/591).
+
+<a id="diffusionstudio-agent-0-0126-log-score"></a>
+
+## diffusionstudio/agent: 0.0126 Slop Log Score
 
 The repository is categorized here as older code-composition agent. Python VideoComposerAgent retrieves semantic documentation and creates compositions against Diffusion Studio APIs. MIT. Last push February 10, 2025. It is an older framework, not the current desktop editor; MCP integration remains on its README's TODO list.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## samuelgursky/davinci-resolve-mcp: 0.0111 log score
+<a id="samuelgursky-davinci-resolve-mcp-0-0111-log-score"></a>
+
+## samuelgursky/davinci-resolve-mcp: 0.0111 Slop Log Score
 
 The repository is categorized here as DaVinci Resolve integration. MCP bridge to Resolve's scripting APIs for timeline/media organization, rendering, review markers, grading, Fusion and Fairlight. MIT. Compatibility is edition- and version-sensitive: current docs describe a Free-edition bridge but warn that Free 21.1 removed Python from its Scripts menu. Avoid blanket Free/Studio claims.
 
-Selected discussions: [bug thread](https://github.com/samuelgursky/davinci-resolve-mcp/issues/318); [support thread](https://github.com/samuelgursky/davinci-resolve-mcp/issues/316); [support thread](https://github.com/samuelgursky/davinci-resolve-mcp/issues/290). These classifications describe the thread, not a verified defect or current resolution.
+A reporter confirmed a guard against an earlier timeline-application problem; the owner said later timeline generation still awaited live confirmation. The other selected threads concern CVE assignment for an already fixed advisory and an unattributed CPU report.
 
-## dziksu/synkinema: 0.0110 log score
+Selected discussions: [bug thread](https://github.com/samuelgursky/davinci-resolve-mcp/issues/318); [support thread](https://github.com/samuelgursky/davinci-resolve-mcp/issues/316); [support thread](https://github.com/samuelgursky/davinci-resolve-mcp/issues/290).
+
+<a id="dziksu-synkinema-0-0110-log-score"></a>
+
+## dziksu/synkinema: 0.0110 Slop Log Score
 
 The repository is categorized here as Local editor and headless engine. Studio and REST/MCP/CLI share project history. A local gateway connects installed coding agents and a containerized backend renders. Docker support alone does not verify a working Coolify deployment; launcher and authentication prerequisites still apply.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## mattppal/mcut: 0.0107 log score
+<a id="mattppal-mcut-0-0107-log-score"></a>
+
+## mattppal/mcut: 0.0107 Slop Log Score
 
 The repository is categorized here as editing SDK and desktop studio. TypeScript headless timeline engine with serializable commands, undo/redo, rendering, transcription adapters, CLI/MCP and Electron Studio. Apache-2.0. Alpha packages and unstable APIs. Current GitHub documentation says Studio ships on macOS/Linux; the older mcut.io waitlist claim is stale.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## OrellBuehler/kerf: 0.0057 log score
+<a id="orellbuehler-kerf-0-0057-log-score"></a>
+
+## OrellBuehler/kerf: 0.0057 Slop Log Score
 
 The repository is categorized here as Desktop editor. Rust/Tauri editor with MCP, frame/contact-sheet tools, timeline previews and staged agent proposals for human review. Source-available under a noncommercial license, not unrestricted open source. GitHub metadata says NOASSERTION, but the actual LICENSE.md identifies the license.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## CanadaApollo6/Kinewright: 0.0000 log score
+<a id="canadaapollo6-kinewright-0-0000-log-score"></a>
+
+## CanadaApollo6/Kinewright: 0.0000 Slop Log Score
 
 The repository is categorized here as Native editor. Native Rust Windows/Linux editor where CLI agents use the same editing operations and undo stack as the GUI. Documents footage, transcript editing, grading, mixing and export. Explicitly early development; full-rate 1080p preview is not yet achieved according to its README.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## DareDev256/fcp-mcp-server: 0.0000 log score
+<a id="daredev256-fcp-mcp-server-0-0000-log-score"></a>
+
+## DareDev256/fcp-mcp-server: 0.0000 Slop Log Score
 
 The repository is categorized here as Final Cut Pro XML integration. Reads, edits and generates FCPXML for trims, splits, silence removal, rough cuts, keyframes, speed ramps and transcript edits; optional macOS live mode. MIT. Journaled writes, hash guards and undo are documented. Media inspection differs from XML-only views. Final Cut is a separate paid host application.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## matrodrigs/shotcut-mcp: 0.0000 log score
+<a id="matrodrigs-shotcut-mcp-0-0000-log-score"></a>
+
+## matrodrigs/shotcut-mcp: 0.0000 Slop Log Score
 
 The repository is categorized here as Shotcut integration. Transactional MCP creates, edits, validates, previews and renders native MLT timelines, including tracks, transitions, titles, subtitles and contact sheets. MIT. Requires Python and Shotcut/MLT. Cross-platform CI does not establish real rendering on every platform; documented real-render integration is Windows-specific.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## naman-sharma12345/kimo: 0.0000 log score
+<a id="naman-sharma12345-kimo-0-0000-log-score"></a>
+
+## naman-sharma12345/kimo: 0.0000 Slop Log Score
 
 The repository is categorized here as Headless editing engine. Rust/C++ engine exposed through MCP and CLI for cutting, grading, keyframes and export. The spectator is read-only, not an editing GUI. FFmpeg is required. Linux has the clearest tested path; Windows CI is not hardware validation and macOS is described as untested.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## Remocn/remocn-studio: 0.0000 log score
+<a id="remocn-remocn-studio-0-0000-log-score"></a>
+
+## Remocn/remocn-studio: 0.0000 Slop Log Score
 
 The repository is categorized here as Agent-directed code composition. Coding agents create editable Remotion projects with live preview, point-and-edit updates and staged review artifacts. Explicitly no conventional timeline/keyframe/track UI; macOS/Linux and external agent CLI.
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-## Aoike123/blender-vse: N/A log score
-
-The repository is categorized here as Blender VSE integration. Local MCP controls named Blender timelines using bounded reads, revision/hash guards, atomic patches and fresh-process structural verification. MIT, alpha. Blender 5.1 is its primary documented target. Structural persistence checks are not visual-quality verification; it is an execution layer rather than a creative agent.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-## hassancs91/claude-youtube-editor: N/A log score
-
-The repository is categorized here as Talking-head editing pipeline. Recording to cut list, clean master, timed Remotion visuals, audio and optional private YouTube upload. AssemblyAI transcription and optional paid providers; publishing is a capability, not tested or authorized here.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-## krshailendra/Agentic-Video-Editor: N/A log score
-
-The repository is categorized here as Editing research/prototype. Raw clips plus prompt/transcript feed story-beat planning and a deterministic sequencing solver, with captions, reframing, grading and OTIO finishing. One-commit prototype; no visible top-level license.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-## martinsbrezauckis/shellx-cut: N/A log score
-
-The repository is categorized here as Local editor and agent API. Human/agent timeline with REST/MCP verb API, reversible edits, render receipts and sampled frame/transcript/audio evidence. Documented QA functionality is not independent validation.
-
-Selected discussions: [bug/preview thread](https://github.com/martinsbrezauckis/shellx-cut/issues/2). These classifications describe the thread, not a verified defect or current resolution.
-
-## Monet-AI-Editor/Monet: N/A log score
-
-The repository is categorized here as archived desktop editor. macOS timeline/design canvas with an embedded coding-agent terminal, local API/MCP, transcription and Remotion composition. MIT, but archived; last push July 7, 2026. Its README describes automatically using Codex danger-full-access. That is a safety concern, not a recommended setup.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-## open-ribbi/velocut: N/A log score
-
-The repository is categorized here as browser editing/3D studio. Browser multitrack editor and 3D director with shared projects/undo, Codex plugin/MCP, visual inspection and WebGPU/WebCodecs export. MIT, early release. Chrome/Edge are the clearest supported browsers; not a headless Node renderer. Projects use browser storage and AI observations may leave the browser.
-
-Selected discussions: [other thread](https://github.com/open-ribbi/velocut/issues/13). These classifications describe the thread, not a verified defect or current resolution.
-
-## paulduplessis/agentic-video-editor: N/A log score
-
-The repository is categorized here as Transcript editing pipeline. Transcript rough cuts and waveform-validated boundaries, captions/music/export and editable Premiere handoff. Bash/Python/FFmpeg/WhisperX; third-party HyperFrames skill pack is excluded from its license.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-## poseljacob/agentic-video-editor: N/A log score
-
-The repository is categorized here as multi-agent footage-to-ad pipeline. A director, trim refiner, FFmpeg/MoviePy editor and reviewer form a bounded-retry pipeline with versioned output and a structured brief. MIT. Requires Python, FFmpeg and a Google AI key. CLI is supported; web UI is pre-alpha/work in progress. Tests are documented, not run in this audit.
-
-Selected discussions: [support thread](https://github.com/poseljacob/agentic-video-editor/issues/4). These classifications describe the thread, not a verified defect or current resolution.
-
-## real-simple-labs/agentic-video-editing: N/A log score
-
-The repository is categorized here as Editing skill pipeline. Raw takes to ads through A/B-roll selection, captions, timestamped review and apply-notes rerender/QA. Claude Code skills, not a full NLE.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-## sandraschi/blender-mcp: N/A log score
-
-The repository is categorized here as Blender headless/live integration. Blender automation includes documented VSE import, cuts, trimming, effects, transitions, speed, audio and rendering; headless default with optional GUI bridge. MIT. Requires Blender separately. Broader 3D toolkit, but documented VSE functionality qualifies it for the editing comparison. Tool-count claims differ across its documentation.
-
-Selected discussions: [bug thread](https://github.com/sandraschi/blender-mcp/issues/7); [feature thread](https://github.com/sandraschi/blender-mcp/issues/5). These classifications describe the thread, not a verified defect or current resolution.
-
-## YizhouWang777/agentic-video-editor: N/A log score
-
-The repository is categorized here as Agent editing scaffold. Assets/contact sheets/transcripts to EDL, validation, FFmpeg and QA. Explicit alpha scaffold; full Remotion and HyperFrames adapters not implemented.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
 ## What the Slop Benchmark says overall
 
-Of 49 repositories, 38 have a calculable score and 11 are N/A. Release-less projects with merged PRs use the explicitly halved B fallback, so their scores are not directly comparable to a complete two-measure average. Release counts also reflect different publishing practices: mcut includes 195 prereleases in 206 records, while the Resolve MCP repository has 486 published releases.
+All 38 repositories shown have a calculable score. Release-less projects with merged PRs use the explicitly halved B fallback, so their scores are not directly comparable to a complete two-measure average. Release counts also reflect different publishing practices: mcut includes 195 prereleases in 206 records, while the Resolve MCP repository has 486 published releases.
 
-Licenses and product boundaries matter alongside the numbers. Kerf and Vex use PolyForm Noncommercial; Hypit uses a modified Apache license with restrictions. Palmier's public GPL source ends at v0.7.6/last-gpl-source, while later binaries are proprietary. Monet is archived and its README uses danger-full-access. Review current licenses, dependencies and the specific issue threads that intersect with your workflow before adoption.
+Licenses and product boundaries matter alongside the numbers. Kerf and Vex use PolyForm Noncommercial; Hypit uses a modified Apache license with restrictions. Palmier's public GPL source ends at v0.7.6/last-gpl-source, while later binaries are proprietary. Review current licenses, dependencies and the specific issue threads that intersect with your workflow before adoption.
