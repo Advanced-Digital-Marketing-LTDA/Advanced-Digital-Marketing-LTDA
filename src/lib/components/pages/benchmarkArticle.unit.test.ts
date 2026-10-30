@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { benchmarkCellRole, formatBenchmarkHtml, groupContents, isBenchmarkSlug } from './benchmarkArticle'
+import { benchmarkCellRole, formatBenchmarkHtml, groupContents, isBenchmarkArticle } from './benchmarkArticle'
 
 const table = '<table>\n<thead>\n<tr>\n<th align="left">Project</th>\n<th align="right">Open issues</th>\n<th align="right">Slop Log Score</th>\n</tr>\n</thead>\n'
   + '<tbody><tr>\n<td align="left"><a href="https://github.com/a/b">a/b</a></td>\n<td align="right">12</td>\n<td align="right">0.9031</td>\n</tr>\n</tbody></table>'
@@ -7,15 +7,10 @@ const article = `${table}\n<p><a id="a-b-0-9031-log-score"></a></p>\n<h2 id="a-b
   + '<p>Selected discussions: <a href="https://github.com/a/b/issues/1">first thread</a>; <a href="https://github.com/a/b/issues/2">second thread</a>.</p>\n'
   + '<h2 id="what-the-slop-benchmark-says-overall">What the Slop Benchmark says overall</h2>\n'
 
-function text(html: string): string {
-  return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
-}
-
 describe('benchmark article formatting', () => {
-  it('recognises only the two benchmark articles', () => {
-    expect(isBenchmarkSlug('slop-benchmark-ai-agents')).toBe(true)
-    expect(isBenchmarkSlug('agentic-video-benchmark')).toBe(true)
-    expect(isBenchmarkSlug('paperclip-review-coolify-codex')).toBe(false)
+  it('recognises a benchmark by its scored project headings', () => {
+    expect(isBenchmarkArticle([{ id: 'intro', text: 'Intro' }, { id: 'a', text: 'a/b: 0.9031 Slop Log Score' }])).toBe(true)
+    expect(isBenchmarkArticle([{ id: 'intro', text: 'Intro' }, { id: 'setup', text: 'Coolify setup: 3 steps' }])).toBe(false)
   })
 
   it('assigns card roles from column names', () => {
@@ -35,7 +30,8 @@ describe('benchmark article formatting', () => {
     expect(html).toContain('<a id="a-b-0-9031-log-score" class="benchmark-anchor"></a>')
     expect(html).not.toContain('<p><a id=')
     expect(html).toContain('<h2 id="a-b-0-9031-slop-log-score" class="benchmark-project">')
-    expect(text(html.match(/<h2 id="a-b[\s\S]*?<\/h2>/)![0])).toBe('a/b: 0.9031 Slop Log Score')
+    expect(html).toContain('<span class="benchmark-project__name">a/b</span><span class="benchmark-project__sep">: </span>'
+      + '<span class="benchmark-project__score"><span class="benchmark-project__value">0.9031</span> Slop Log Score</span></h2>')
     expect(html).toContain('<p class="benchmark-threads__label">Selected discussions:</p><ul class="benchmark-threads">'
       + '<li><a href="https://github.com/a/b/issues/1">first thread</a></li><li><a href="https://github.com/a/b/issues/2">second thread</a></li></ul>')
     expect(html).toContain('<h2 id="what-the-slop-benchmark-says-overall">What the Slop Benchmark says overall</h2>')

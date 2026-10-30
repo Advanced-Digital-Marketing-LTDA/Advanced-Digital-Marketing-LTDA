@@ -3,12 +3,12 @@
   import { SITE_ORIGIN, TRANSLATED_BLOG_SLUGS, BLOG_ARTICLE_COPY, LOCALE_ROUTES, type Locale } from '$lib/locale'
   import { resolveCopy } from '$lib/localized-copy'
   import type { BlogArticle } from '$lib/server/blog'
-  import { formatBenchmarkHtml, groupContents, isBenchmarkSlug } from './benchmarkArticle'
+  import { formatBenchmarkHtml, groupContents, isBenchmarkArticle } from './benchmarkArticle'
 
   let { article, showReadingEstimate = false }: { article: BlogArticle; showReadingEstimate?: boolean } = $props()
   // Keep the original graphic on larger screens and offer a readable, narrow
   // version without changing the article's accessible image description.
-  let benchmark = $derived(isBenchmarkSlug(article.slug))
+  let benchmark = $derived(isBenchmarkArticle(article.headings))
   let articleHtml = $derived.by(() => {
     const html = article.html.replace(
       /<img src="(\/images\/blog\/(?:slop-benchmark|agentic-video-benchmark))\.svg"[^>]*>/g,

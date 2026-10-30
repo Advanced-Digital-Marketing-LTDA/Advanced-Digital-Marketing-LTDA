@@ -5,13 +5,12 @@
  * Each transform fails loudly when the article no longer has the expected
  * shape, so a content change cannot silently ship the old broken layout.
  */
-export const BENCHMARK_SLUGS = ['slop-benchmark-ai-agents', 'agentic-video-benchmark'] as const
-
-export function isBenchmarkSlug(slug: string): boolean {
-  return (BENCHMARK_SLUGS as readonly string[]).includes(slug)
-}
-
 const PROJECT_HEADING = /^(.+): (\d+\.\d{4}) Slop Log Score$/
+
+/** An article is a Slop Benchmark when its headings score projects. */
+export function isBenchmarkArticle(headings: TocLink[]): boolean {
+  return headings.some((heading) => PROJECT_HEADING.test(heading.text))
+}
 
 export type BenchmarkCellRole = 'name' | 'score' | 'category' | 'stat' | 'meta'
 
