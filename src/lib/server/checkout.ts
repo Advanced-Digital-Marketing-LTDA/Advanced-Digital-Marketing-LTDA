@@ -1,5 +1,5 @@
 /**
- * Shared helpers for the subscription checkout endpoint (spec §4, §8).
+ * Shared helpers for the Stripe checkout endpoint (spec §4, §8).
  * Kept out of `+server.ts` so they are importable by tests — SvelteKit
  * endpoint modules only export HTTP handlers and config keys.
  */
@@ -21,45 +21,24 @@ export function isValidEmail(value: unknown): value is string {
 }
 
 /**
- * Mercado Pago preapproval IDs are opaque server-generated identifiers
- * (hex-shaped in the observed responses, e.g. "2c938084…"), so this guard is
- * deliberately conservative: it only rejects the obvious junk a scripted flood
- * would send (special characters, control bytes, absurd length) while any
- * real identifier passes. `getSubscription` URL-encodes the id; this check
- * keeps malformed values from ever reaching the paid API at all.
- */
-const PREAPPROVAL_ID_RE = /^[A-Za-z0-9_-]{1,128}$/
-
-export function isValidPreapprovalId(value: string): boolean {
-  return PREAPPROVAL_ID_RE.test(value)
-}
-
-/**
- * Mercado Pago payment ids (Checkout Pro) are decimal strings of varying
- * length; the same conservative shape guard as preapproval ids applies.
- */
-const PAYMENT_ID_RE = /^[A-Za-z0-9_-]{1,128}$/
-
-export function isValidPaymentId(value: string): boolean {
-  return PAYMENT_ID_RE.test(value)
-}
-
-/**
- * Back URL for the hosted checkout. The production hostname resolution is
+ * Back-links for the hosted checkout. The production hostname resolution is
  * shared with the contact form (`publicSiteOrigin()` in site-url.ts) and is
  * loud when it falls back to the canonical origin — see site-url.ts.
  */
+import { SERVICES_INDEX_ROUTES, type Locale } from '$lib/locale'
 import { publicSiteOrigin } from './site-url.ts'
 
-export function checkoutBackUrl(): string {
-  return new URL('/pt-br/checkout/complete/', publicSiteOrigin()).toString()
+/** Stripe return page per locale (the cancel URL is the services index). */
+const STRIPE_SUCCESS_PATHS: Record<Locale, string> = {
+  'en-US': '/checkout/complete/',
+  'pt-BR': '/pt-br/checkout/complete/',
 }
 
-/** Success/cancel URLs for the Stripe (en-US) hosted checkout. */
-export function stripeCheckoutUrls(): { successUrl: string; cancelUrl: string } {
+/** Locale-aware success/cancel URLs for the Stripe hosted checkout. */
+export function stripeCheckoutUrls(locale: Locale): { successUrl: string; cancelUrl: string } {
   const origin = publicSiteOrigin()
   return {
-    successUrl: new URL('/checkout/complete/', origin).toString(),
-    cancelUrl: new URL('/services/', origin).toString(),
+    successUrl: new URL(STRIPE_SUCCESS_PATHS[locale], origin).toString(),
+    cancelUrl: new URL(SERVICES_INDEX_ROUTES[locale], origin).toString(),
   }
 }

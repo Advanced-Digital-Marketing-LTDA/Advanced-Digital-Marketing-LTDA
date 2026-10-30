@@ -62,7 +62,7 @@ describe('computeUsdMonthlyQuote', () => {
     return undefined
   }
 
-  it('rejects invalid selections with the same codes as the BRL quote', () => {
+  it('rejects invalid selections with the shared quote pipeline codes', () => {
     expect(codeOf(() => computeUsdMonthlyQuote([], {}, 'en-US'))).toBe('no_services_selected')
     expect(codeOf(() => computeUsdMonthlyQuote(['nope'], {}, 'en-US'))).toBe('invalid_service')
     expect(codeOf(() => computeUsdMonthlyQuote(['ai-automation'], {}, 'en-US'))).toBe('quote_only_service')

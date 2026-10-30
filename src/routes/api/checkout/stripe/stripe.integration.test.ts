@@ -1,7 +1,8 @@
 /**
- * Guards POST /api/checkout/stripe (en-US, USD): server-derived pricing for
- * subscriptions and one-time builds, validation, rate limiting, and Stripe
- * session creation (mocked at the fetch boundary).
+ * Guards POST /api/checkout/stripe (en-US and pt-BR, both billed in USD):
+ * server-derived pricing for subscriptions and one-time builds, locale-aware
+ * item names and return URLs, validation, rate limiting, and Stripe session
+ * creation (mocked at the fetch boundary).
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { POST } from './+server'
@@ -28,6 +29,10 @@ const requestEvent = (body: unknown) =>
   }) as Parameters<typeof POST>[0]
 
 const UUID = '00000000-0000-4000-8000-000000000000'
+
+/** Form body of the first Stripe API call the endpoint made. */
+const sentBody = () =>
+  new URLSearchParams(String((vi.mocked(fetch).mock.calls[0] as unknown as [string, RequestInit])[1].body))
 
 const validSubscription = {
   flow: 'subscription',
@@ -83,6 +88,46 @@ describe('POST /api/checkout/stripe', () => {
     expect(body.get('line_items[0][price_data][unit_amount]')).toBe('300000')
   })
 
+  it('sends the en-US return URLs and English item names for en-US', async () => {
+    await POST(requestEvent(validSubscription))
+    const body = sentBody()
+    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/checkout/complete/')
+    expect(body.get('cancel_url')).toBe('https://advanceddigitalmarketingltda.com/services/')
+    expect(body.get('line_items[0][price_data][product_data][name]')).toBe('SEO Content')
+    expect(body.get('line_items[1][price_data][product_data][name]')).toBe('Hosting')
+  })
+
+  it('accepts pt-BR subscriptions: same USD amounts, Portuguese names and pt-BR return URLs', async () => {
+    const response = await POST(requestEvent({ ...validSubscription, locale: 'pt-BR' }))
+    expect(response.status).toBe(200)
+    expect(await response.json()).toEqual({ checkoutUrl: 'https://checkout.stripe.com/c/pay/cs_test_1' })
+    const body = sentBody()
+    expect(body.get('mode')).toBe('subscription')
+    expect(body.get('client_reference_id')).toBe('seo-content+hosting')
+    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/checkout/complete/')
+    expect(body.get('cancel_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/servicos/')
+    expect(body.get('line_items[0][price_data][product_data][name]')).toBe('Conteúdo SEO')
+    expect(body.get('line_items[1][price_data][product_data][name]')).toBe('Hospedagem')
+    expect(body.get('line_items[0][price_data][currency]')).toBe('usd')
+    expect(body.get('line_items[0][price_data][unit_amount]')).toBe('40000')
+    expect(body.get('line_items[1][price_data][unit_amount]')).toBe('6000')
+  })
+
+  it('accepts pt-BR one-time builds at the USD build price with the Portuguese title', async () => {
+    const response = await POST(
+      requestEvent({ flow: 'build', type: 'ecommerce', kind: 'migration', idempotencyKey: UUID, locale: 'pt-BR' }),
+    )
+    expect(response.status).toBe(200)
+    const body = sentBody()
+    expect(body.get('mode')).toBe('payment')
+    expect(body.get('client_reference_id')).toBe('website-build:ecommerce:migration')
+    expect(body.get('line_items[0][price_data][product_data][name]')).toBe('Desenvolvimento de Site E-commerce (Migração)')
+    expect(body.get('line_items[0][price_data][currency]')).toBe('usd')
+    expect(body.get('line_items[0][price_data][unit_amount]')).toBe('300000')
+    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/checkout/complete/')
+    expect(body.get('cancel_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/servicos/')
+  })
+
   it('rejects invalid flows, emails and idempotency keys with 400', async () => {
     const cases = [
       [{ flow: 'nope', idempotencyKey: UUID, locale: 'en-US' }, 'invalid_build'],
@@ -90,8 +135,9 @@ describe('POST /api/checkout/stripe', () => {
       [{ ...validSubscription, idempotencyKey: 'not-a-uuid' }, 'invalid_idempotency_key'],
       [{ flow: 'subscription', email: 'a@b.com', serviceIds: [], config: {}, idempotencyKey: UUID, locale: 'en-US' }, 'no_services_selected'],
       [{ flow: 'build', type: 'hovercraft', kind: 'new', idempotencyKey: UUID, locale: 'en-US' }, 'invalid_build'],
-      [{ ...validSubscription, locale: 'pt-BR' }, 'invalid_locale'],
       [{ ...validSubscription, locale: 'fr-FR' }, 'invalid_locale'],
+      [{ ...validSubscription, locale: 'pt-br' }, 'invalid_locale'],
+      [{ ...validSubscription, locale: 'pt' }, 'invalid_locale'],
       [{ ...validSubscription, locale: undefined }, 'invalid_locale'],
     ] as const
     for (const [body, code] of cases) {

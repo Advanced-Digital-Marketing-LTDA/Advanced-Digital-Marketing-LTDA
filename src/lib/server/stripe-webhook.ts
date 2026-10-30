@@ -2,8 +2,8 @@
  * Stripe webhook handling for `POST /api/webhooks/stripe`.
  *
  * The one actionable event today is `checkout.session.completed` with
- * `payment_status: paid`: email the owner (the same handoff the Mercado Pago
- * webhook provides for BRL flows). Signature-verified with the
+ * `payment_status: paid`: email the owner (the order handoff for both
+ * locales' checkouts). Signature-verified with the
  * `STRIPE_WEBHOOK_SECRET`; redeliveries are deduped in memory.
  */
 import { EMAIL } from '$lib/constants'
@@ -74,8 +74,8 @@ export async function processStripeWebhookEvent(input: {
   const secret = process.env.STRIPE_WEBHOOK_SECRET?.trim() ?? ''
   const verified = verifyStripeWebhookSignature({ payload: input.payload, signatureHeader: input.signatureHeader, secret })
   if (!verified.ok) return { handled: false, code: verified.code }
-  // Reject BOTH directions outside the window (same rule as the Mercado Pago
-  // webhook): a future-dated signature would otherwise ride the replay window.
+  // Reject BOTH directions outside the window: a future-dated signature would
+  // otherwise ride the replay window.
   const age = now - verified.ts * 1000
   if (age < 0 || age > STRIPE_SIGNATURE_MAX_AGE_SECONDS * 1000) {
     return { handled: false, code: 'stale_timestamp' }

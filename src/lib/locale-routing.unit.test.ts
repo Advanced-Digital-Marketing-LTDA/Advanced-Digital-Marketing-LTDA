@@ -72,7 +72,7 @@ describe('locale routes', () => {
 
   it('flags checkout routes so the language switcher can hide on them', () => {
     expect(isCheckoutPath('/pt-br/checkout/complete/')).toBe(true)
-    expect(isCheckoutPath('/pt-br/checkout/complete?preapproval_id=123')).toBe(true)
+    expect(isCheckoutPath('/pt-br/checkout/complete?session_id=cs_test_123')).toBe(true)
     expect(isCheckoutPath('/')).toBe(false)
     expect(isCheckoutPath('/pt-br/')).toBe(false)
     expect(isCheckoutPath('/pt-br/contato/')).toBe(false)

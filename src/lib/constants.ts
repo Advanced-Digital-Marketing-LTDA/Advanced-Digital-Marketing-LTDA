@@ -4,14 +4,14 @@ import { INQUIRY_CTA } from './common-copy'
 import { TECHNICAL_SEO_STEPS, type ServiceId } from './services'
 
 /**
- * Browser-side bound for the `/api/checkout/subscription` round-trip.
+ * Browser-side bound for the `/api/checkout/stripe` round-trip.
  *
- * Deliberately LONGER than the server's `REQUEST_TIMEOUT_MS` (15s in
- * `src/lib/server/mercadoPago.ts`): this timer starts when the browser issues
+ * Deliberately LONGER than the server's `STRIPE_REQUEST_TIMEOUT_MS` (15s in
+ * `src/lib/server/stripe.ts`): this timer starts when the browser issues
  * the fetch, so it also covers browser→function latency and server
  * processing. An equal or shorter client timeout could abort right as the
- * server returns the checkout URL, turning a successful preapproval into a
- * generic failure. Guarded by `checkout-timeouts.unit.test.ts`.
+ * server returns the checkout URL, turning a successful checkout session into
+ * a generic failure. Guarded by `checkout-timeouts.unit.test.ts`.
  */
 export const CHECKOUT_REQUEST_TIMEOUT_MS = 30_000
 

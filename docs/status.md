@@ -6,6 +6,12 @@ This file is the handoff for finishing this repository and completing the
 Netlify → Coolify migration. It records what is done, what is left, and which
 remaining items are owner/ops actions rather than code changes.
 
+> **Payments:** the site now uses Stripe only. The former pt-BR payment
+> provider was removed; the Portuguese subscribe and website-build forms pay
+> through the same USD Stripe checkout as the English pages (see
+> `docs/stripe-checkout.md`). History below is kept as written except where
+> it named the removed provider.
+
 ## TL;DR
 
 **PR #2 was merged** (`dev` → `main`, merge commit `4be3ba6`). The Coolify
@@ -49,10 +55,10 @@ duplicated lines). It stays red until the next SonarCloud analysis re-measures
   - Checkout/payment binding (website-build payments, subscriptions, and
     Stripe sessions are all bound to server-created references before any
     success claim).
-  - Webhook retry semantics (Mercado Pago + Stripe): events are unmarked on
+  - Webhook retry semantics (Stripe): events are unmarked on
     failure and `processing_failed` maps to 5xx so redelivery retries instead
     of losing the owner notification.
-  - Shared `buildQuote` pipeline for BRL/USD quotes; `authoritativeSubscriptionTotalBRL/USD`.
+  - Shared `buildQuote` pipeline for the USD quote; `authoritativeSubscriptionTotalUSD`.
   - Contact opt-in: no-JS form fallback (303 redirect), sandbox guard in
     production, no-store verify pages, in-flight notification dedupe.
   - Dependency overrides (`cookie`, `nanoid`, `qs`) → 0 audit/OSV findings.
@@ -84,16 +90,16 @@ all three were valid and are fixed on `dev`:
 1. **Future-dated webhook signatures were accepted.** Both webhooks only
    rejected timestamps OLDER than the window; a future timestamp (negative
    age) rode the replay window forward. Now `age < 0 || age > MAX_AGE` is
-   rejected in `mercadoPago-webhook.ts` and `stripe-webhook.ts`, with tests
-   for both.
+   rejected in `stripe-webhook.ts` (and the since-removed pt-BR provider's
+   webhook), with tests.
 2. **Stripe pending sessions were not bound.** The en-US completion page
    returned `payment_pending` for any open/processing session; it now applies
    the same `isSiteStripeSession` binding as the paid branch (mismatch →
    error state), with tests.
-3. **Stale docs/PR description.** The PR body and
-   `docs/mercado-pago-subscriptions.md` still described the English Stripe
-   checkout as "future work"; the PR body was updated and the docs now state
-   the en-US Stripe checkout is live.
+3. **Stale docs/PR description.** The PR body and the pt-BR payment-provider
+   doc (since removed) still described the English Stripe checkout as
+   "future work"; the PR body was updated and the docs now state the Stripe
+   checkout is live.
 
 Also extracted the duplicated bounded dedupe map from both webhook modules
 into one shared `src/lib/server/webhook-dedupe.ts` (removes the remaining
@@ -151,8 +157,7 @@ See `docs/coolify-deployment.md` and `docs/bunny-cdn-purge.md` for full detail.
 
 - [ ] **Coolify** — create a **Dockerfile** application pointing at `main`.
 - [ ] Set environment variables on the app:
-      `MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_SANDBOX_ACCESS_TOKEN`,
-      `MERCADO_PAGO_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+      `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
       `MAILJET_API_KEY`, `MAILJET_API_SECRET`, `MAILJET_SENDER_EMAIL`,
       `CONTACT_FORM_TOKEN_SECRET` (`openssl rand -hex 32`),
       `CONTACT_FORM_OWNER_EMAIL`, `PUBLIC_SITE_URL`,

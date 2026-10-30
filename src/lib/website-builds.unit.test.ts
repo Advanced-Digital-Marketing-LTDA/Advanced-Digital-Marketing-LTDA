@@ -1,11 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
-  BRAZIL_CHECKOUT_PAYMENT_TYPES,
   MIGRATION_MULTIPLIER,
-  OFFERED_CHECKOUT_PAYMENT_TYPES,
   WEBSITE_BUILD_BASE_PRICE,
-  WEBSITE_BUILD_BASE_PRICE_BRL,
-  WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS,
+  WEBSITE_BUILD_KINDS,
   WEBSITE_BUILD_NAMES,
   WEBSITE_BUILD_TYPES,
   formatBuildPrice,
@@ -13,7 +10,7 @@ import {
   isWebsiteBuildType,
   websiteBuildExternalReference,
   websiteBuildPrice,
-  websiteBuildPriceBRL,
+  websiteBuildPriceUSD,
   websiteBuildTitle,
 } from './website-builds'
 
@@ -48,22 +45,22 @@ describe('formatBuildPrice', () => {
   })
 })
 
-describe('authoritative BRL pricing (checkout currency)', () => {
-  it('stores the BRL base prices that checkout bills', () => {
-    expect(WEBSITE_BUILD_BASE_PRICE_BRL).toEqual({ website: 3000, ecommerce: 6000 })
+describe('authoritative USD pricing (checkout currency, both locales)', () => {
+  it('prices new builds at the USD base and migrations at 2×', () => {
+    expect(websiteBuildPriceUSD('website', 'new')).toBe(750)
+    expect(websiteBuildPriceUSD('ecommerce', 'new')).toBe(1500)
+    expect(websiteBuildPriceUSD('website', 'migration')).toBe(1500)
+    expect(websiteBuildPriceUSD('ecommerce', 'migration')).toBe(3000)
   })
 
-  it('keeps the pt-BR display prices equal to the authoritative BRL prices', () => {
-    // The pt-BR page shows exactly what the /api/checkout/build endpoint
-    // bills — if they ever diverge, this fails loudly.
-    expect(WEBSITE_BUILD_BASE_PRICE['pt-BR']).toEqual(WEBSITE_BUILD_BASE_PRICE_BRL)
-  })
-
-  it('prices new builds at the BRL base and migrations at 2×', () => {
-    expect(websiteBuildPriceBRL('website', 'new')).toBe(3000)
-    expect(websiteBuildPriceBRL('ecommerce', 'new')).toBe(6000)
-    expect(websiteBuildPriceBRL('website', 'migration')).toBe(6000)
-    expect(websiteBuildPriceBRL('ecommerce', 'migration')).toBe(12000)
+  it('keeps the USD display prices equal to what checkout charges', () => {
+    // The checkout forms show websiteBuildPrice('en-US') formatted as USD on
+    // both locales; if it ever diverges from the charged amount, this fails.
+    for (const type of WEBSITE_BUILD_TYPES) {
+      for (const kind of WEBSITE_BUILD_KINDS) {
+        expect(websiteBuildPriceUSD(type, kind)).toBe(websiteBuildPrice('en-US', type, kind))
+      }
+    }
   })
 })
 
@@ -97,49 +94,5 @@ describe('website build guards and checkout metadata', () => {
         expect(websiteBuildTitle(locale, type, 'new')).toBe(WEBSITE_BUILD_NAMES[locale][type])
       }
     }
-  })
-})
-
-describe('WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS (Checkout Pro policy)', () => {
-  it('preselects à vista within the allowed installment range', () => {
-    expect(WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.defaultInstallments).toBeGreaterThanOrEqual(1)
-    expect(WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.defaultInstallments).toBeLessThanOrEqual(
-      WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.maxInstallments,
-    )
-  })
-
-  it('only excludes non-empty Mercado Pago payment-type ids', () => {
-    expect(WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.excludedPaymentTypes.length).toBeGreaterThan(0)
-    for (const id of WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.excludedPaymentTypes) {
-      expect(id.length).toBeGreaterThan(0)
-    }
-  })
-
-  it('excludes every known Brazil payment type outside the offered set (complete policy)', () => {
-    // Checkout Pro enables all account methods unless excluded, so the
-    // exclusion list must be the complement of the offered set — otherwise
-    // e.g. prepaid cards or digital currency would appear in the checkout.
-    const offered = OFFERED_CHECKOUT_PAYMENT_TYPES as readonly string[]
-    for (const type of BRAZIL_CHECKOUT_PAYMENT_TYPES) {
-      if (offered.includes(type)) {
-        expect(WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.excludedPaymentTypes).not.toContain(type)
-      } else if (type !== 'account_money') {
-        // account_money (the Mercado Pago wallet) cannot be excluded by
-        // preference — the docs say so — every other type must be.
-        expect(WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.excludedPaymentTypes).toContain(type)
-      }
-    }
-  })
-
-  it('never excludes an offered method', () => {
-    for (const type of OFFERED_CHECKOUT_PAYMENT_TYPES) {
-      expect(WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.excludedPaymentTypes).not.toContain(type)
-    }
-  })
-
-  it('never lists account_money as excluded (the wallet cannot be excluded)', () => {
-    // Mercado Pago always keeps account_money available in Checkout Pro; the
-    // derived list must not claim to exclude it.
-    expect(WEBSITE_BUILD_CHECKOUT_PAYMENT_METHODS.excludedPaymentTypes).not.toContain('account_money')
   })
 })

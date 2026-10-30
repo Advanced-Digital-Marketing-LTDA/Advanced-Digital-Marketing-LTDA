@@ -1,7 +1,7 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig, loadEnv } from 'vite'
 
-// Load .env files into process.env so server-only modules (mercadoPago.ts,
+// Load .env files into process.env so server-only modules (stripe.ts,
 // checkout.ts) see the values in Vite SSR dev mode — Vite only exposes them
 // via import.meta.env otherwise. Production (Docker/Coolify) sets real OS env vars,
 // so this is a no-op there. Never overwrites values already in process.env.

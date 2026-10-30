@@ -1,9 +1,9 @@
 /**
  * Shared browser-side checkout fetch.
  *
- * POSTs the checkout payload to one of the `/api/checkout/*` endpoints with a
- * bounded abort timer. The timer is deliberately LONGER than the server's
- * Mercado Pago request timeout (`REQUEST_TIMEOUT_MS`): the browser clock
+ * POSTs the checkout payload to the Stripe checkout endpoint
+ * (`CHECKOUT_ENDPOINT`, shared by both locales) with a bounded abort timer. The timer is deliberately LONGER than the server's
+ * Stripe request timeout (`STRIPE_REQUEST_TIMEOUT_MS`): the browser clock
  * starts when the fetch is issued and therefore also covers browser→function
  * latency and server processing, so an equal or shorter client timeout could
  * abort right as the server returns the checkout URL (guarded by
@@ -17,7 +17,11 @@ import { CHECKOUT_REQUEST_TIMEOUT_MS } from '$lib/constants'
 
 export type CheckoutFetchResult = { ok: true; checkoutUrl: string } | { ok: false; errorCode?: string }
 
-export async function fetchCheckoutUrl(endpoint: string, body: unknown): Promise<CheckoutFetchResult> {
+/** The one checkout endpoint: every locale pays through Stripe in USD. */
+export const CHECKOUT_ENDPOINT = '/api/checkout/stripe'
+
+export async function fetchCheckoutUrl(body: unknown): Promise<CheckoutFetchResult> {
+  const endpoint = CHECKOUT_ENDPOINT
   const controller = new AbortController()
   const timeout = globalThis.setTimeout(() => controller.abort(), CHECKOUT_REQUEST_TIMEOUT_MS)
   try {

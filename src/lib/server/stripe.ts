@@ -1,9 +1,9 @@
 /**
- * Stripe Checkout client for the en-US (USD) checkout flows.
+ * Stripe Checkout client for the site's checkout flows (both locales).
  *
- * Mercado Pago bills BRL from the Brazilian account; English pages get a
- * Stripe-hosted checkout billed in USD. This module isolates all Stripe API
- * access (raw REST — no SDK dependency, matching the Mercado Pago client):
+ * The English and Portuguese pages get the same Stripe-hosted checkout,
+ * billed in USD. This module isolates all Stripe API access (raw REST — no
+ * SDK dependency):
  * create a Checkout Session, retrieve one for return-page verification, and
  * verify webhook signatures. Server-only: reads `STRIPE_SECRET_KEY` and
  * `STRIPE_WEBHOOK_SECRET` from the environment.
@@ -223,9 +223,10 @@ export async function getCheckoutSession(sessionId: string): Promise<CheckoutSes
 }
 
 /**
- * USD subscription quote (en-US Stripe checkout). Mirrors the BRL quote's
- * validation and error codes; amounts are derived from the catalog at the
- * 5:1 reference rate or the stored USD reference. Never trusts the browser.
+ * USD subscription quote (Stripe checkout, both locales). Uses the shared
+ * quote pipeline's validation and error codes; amounts are derived from the
+ * catalog at the 5:1 reference rate or the stored USD reference. Never trusts
+ * the browser.
  */
 export type UsdLineItem = { id: CatalogServiceId; name: string; monthlyUSD: number }
 
@@ -237,10 +238,10 @@ export type UsdPriceQuote = {
 }
 
 /**
- * Computes the authoritative USD monthly quote for the en-US Stripe checkout.
- * Runs the shared quote pipeline (buildQuote — the same validation, ordering,
- * deduplication, zero-total guard, rounding and externalReference contract as
- * the BRL path) with a USD amount resolver: stored USD references or the 5:1
+ * Computes the authoritative USD monthly quote for the Stripe checkout (both
+ * locales; `locale` only picks the item names). Runs the shared quote pipeline
+ * (buildQuote — validation, ordering, deduplication, zero-total guard,
+ * rounding and the externalReference contract) with a USD amount resolver: stored USD references or the 5:1
  * BRL conversion for fixed services, the US$ fee for ads-spend services.
  */
 export function computeUsdMonthlyQuote(

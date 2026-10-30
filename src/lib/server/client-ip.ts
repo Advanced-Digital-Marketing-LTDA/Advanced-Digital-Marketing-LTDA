@@ -1,7 +1,8 @@
 /**
  * Client IP resolution for per-IP abuse protection on the public checkout
- * entry points: POST /api/checkout/subscription and the
- * /pt-br/checkout/complete/ return page. Shared so both behave identically.
+ * entry points: POST /api/checkout/stripe and the Stripe return pages
+ * (/checkout/complete/, /pt-br/checkout/complete/). Shared so they behave
+ * identically.
  *
  * Only the platform-provided address is accepted: with adapter-node,
  * `getClientAddress` returns the socket address UNLESS the deployment
