@@ -8,7 +8,7 @@ vi.mock('$app/state', () => ({ page: state }))
 vi.mock('$app/environment', () => ({ browser: false }))
 
 describe('blog language switching', () => {
-  it.each(['/blog/chatgpt-ads-complete-guide-august-2026/'])(
+  it.each(['/blog/english-only-article/'])(
     'offers only the available English destination on %s', (path) => {
       state.url = new URL(`${path}?utm_source=synthetic`, 'https://example.test')
       const { body } = render(LanguageSwitcher)

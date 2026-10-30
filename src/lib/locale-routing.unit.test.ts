@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { absoluteUrl, blogPathForPath, decideLocaleRequest, isCheckoutPath, languageSwitcherPath, LOCALE_ROUTES, localeForPath, localizedPath, navigationForLocale } from './locale'
 
 describe('locale routes', () => {
-  it.each(['/blog/chatgpt-ads-complete-guide-august-2026/'])(
+  it.each(['/blog/english-only-article/'])(
     'distinguishes an unavailable translation from an unknown route for %s', (path) => {
       expect(languageSwitcherPath(path, 'en-US')).toBe(path)
       expect(languageSwitcherPath(path, 'pt-BR')).toBeUndefined()
@@ -29,7 +29,7 @@ describe('locale routes', () => {
     },
   )
 
-  it.each(['/blog/chatgpt-ads-complete-guide-august-2026', '/blog/chatgpt-ads-complete-guide-august-2026/'])(
+  it.each(['/blog/english-only-article', '/blog/english-only-article/'])(
     'keeps %s English-only without inventing a Portuguese equivalent', (path) => {
       expect(localizedPath(path, 'en-US')).toBe(`${path.replace(/\/$/, '')}/`)
       expect(localizedPath(path, 'pt-BR')).toBeUndefined()
