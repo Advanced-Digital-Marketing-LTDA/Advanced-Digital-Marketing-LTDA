@@ -1,6 +1,8 @@
 import fc from 'fast-check'
 import { expect } from 'vitest'
 
+const byText = (a: string, b: string) => a.localeCompare(b)
+
 type ReplayOutcome = { handled: boolean; action?: string; code?: string }
 
 /** Owner-email stub for one delivery: throws when the delivery is flagged to fail, records the event otherwise. */
@@ -37,6 +39,6 @@ export async function assertReplayContract(deliver: (id: string, sendEmail: Repl
       }
     }
     // One delivered email per event that had at least one healthy delivery.
-    expect(delivered.sort()).toEqual([...sent].sort())
+    expect(delivered.sort(byText)).toEqual([...sent].sort(byText))
   }))
 }
