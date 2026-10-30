@@ -9,6 +9,7 @@ import type { Locale } from '$lib/locale'
 import articleMarkdown from '../../../docs/ChatGPT-Ads-Complete-Guide-August-2026.md?raw'
 import paperclipMarkdown from '../../../docs/Paperclip-Review-Coolify-Codex-2026.md?raw'
 import openclawMarkdown from '../../../docs/OpenClaw-Review-Coolify-Codex-2026.md?raw'
+import videoBenchmarkMarkdown from '../../../docs/Agentic-Video-Benchmark-2026.md?raw'
 import slopBenchmarkMarkdown from '../../../docs/Slop-Benchmark-AI-Agents-2026.md?raw'
 import paperclipPortuguese from '$lib/content/paperclip-review-pt-br.md?raw'
 
@@ -133,7 +134,11 @@ export const SLOP_BENCHMARK_ARTICLE = createArticle(
   slopBenchmarkMarkdown, 'slop-benchmark-ai-agents', 'Review', false, 'en-US',
 )
 
-export const BLOG_ARTICLES: readonly BlogArticle[] = [SLOP_BENCHMARK_ARTICLE, OPENCLAW_REVIEW_ARTICLE, PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]
+export const VIDEO_BENCHMARK_ARTICLE = createArticle(
+  videoBenchmarkMarkdown, 'agentic-video-benchmark', 'Review', false, 'en-US',
+)
+
+export const BLOG_ARTICLES: readonly BlogArticle[] = [VIDEO_BENCHMARK_ARTICLE, SLOP_BENCHMARK_ARTICLE, OPENCLAW_REVIEW_ARTICLE, PAPERCLIP_REVIEW_ARTICLE, CHATGPT_ADS_ARTICLE]
 
 export const PAPERCLIP_REVIEW_PT = createArticle(
   paperclipPortuguese, 'paperclip-review-coolify-codex', 'Review', false, 'pt-BR',
