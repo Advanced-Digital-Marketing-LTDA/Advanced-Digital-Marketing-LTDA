@@ -255,15 +255,6 @@ describe('processWebhookEvent', () => {
     const outcome = await processWebhookEvent({ body: 'not json', xSignature: null, xRequestId: null, urlDataId: null })
     expect(outcome).toEqual({ handled: false, code: 'bad_signature' })
   })
-})
-
-describe('processWebhookEvent replay property', () => {
-  beforeEach(() => {
-    vi.stubEnv('MERCADO_PAGO_WEBHOOK_SECRET', SECRET)
-    resetWebhookDedupe()
-  })
-
-  afterEach(() => vi.unstubAllEnvs())
 
   it('sends one owner email per event across any replay order, retrying after failures', async () => {
     let requestCount = 0
