@@ -3,7 +3,6 @@ import { render } from 'svelte/server'
 import { readFileSync } from 'node:fs'
 import BlogArticlePage from './BlogArticlePage.svelte'
 import { BLOG_ARTICLES } from '$lib/server/blog'
-import { readBlogArticleStyle } from './blogArticleTestStyle'
 
 const charts = [
   { slug: 'slop-benchmark-ai-agents', stem: 'slop-benchmark', className: '.agent-benchmark', count: 24 },
@@ -27,6 +26,10 @@ describe('mobile benchmark presentation', () => {
       expect(body).toContain(`srcset="/images/blog/${chart.stem}-mobile.svg"`)
       const bodyClass = body.match(/<div class="([^"]*\bblog-article__body\b[^"]*)"/)?.[1].split(/\s+/) ?? []
       expect(bodyClass).toContain(chart.className.slice(1))
+      // Project sections are restyled and every issue-link paragraph became a list.
+      expect(body.match(/<h2 id="[^"]+" class="benchmark-project">/g)).toHaveLength(chart.count)
+      expect(body).not.toMatch(/<p>[A-Z][^<:]{0,80}: <a href=/)
+      expect(body).not.toContain('<p><a id=')
       const table = body.match(/<table>[\s\S]*?<\/table>/)?.[0]
       expect(table).toBeDefined()
       const headers = [...table!.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/g)].map((match) => match[1].replace(/[<>]/g, '').trim())
@@ -36,15 +39,9 @@ describe('mobile benchmark presentation', () => {
       const cells = rows.map((row) => [...row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g)].map((cell) => cell[1].trim()))
       for (const row of cells) expect(row).toHaveLength(headers.length)
 
-      const fields = new Map<string, string>()
-      readBlogArticleStyle().walkAtRules('media', (media) => {
-        if (media.params !== '(max-width: 700px)') return
-        media.walkRules((rule) => {
-          if (!rule.selectors.includes(chart.className)) return
-          rule.walkDecls(/^--field-/, (decl) => { fields.set(decl.prop, decl.value.replace(/^"|"$/g, '')) })
-        })
-      })
-      expect(headers.map((_, index) => fields.get(`--field-${index + 1}`))).toEqual(headers)
+      // Every cell carries its column name so the mobile card can label it.
+      const labels = rows.map((row) => [...row[1].matchAll(/<td\b[^>]*data-label="([^"]*)"/g)].map((match) => match[1]))
+      for (const rowLabels of labels) expect(rowLabels).toEqual(headers)
       const desktopSvg = readAsset(chart.stem)
       const mobileSvg = readAsset(`${chart.stem}-mobile`)
       const scoreIndex = headers.indexOf('Slop Log Score')
