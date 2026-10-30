@@ -82,7 +82,7 @@
       <a href={`#${heading.id}`}>{heading.text}</a>
     {/each}
   </nav>
-  <div class="blog-article__body">
+  <div class="blog-article__body" class:video-benchmark={article.slug === 'agentic-video-benchmark'}>
     {@html article.html}
     <section class="article-author" aria-label={copy.author}>
       <h2>{copy.author}</h2>
@@ -116,7 +116,11 @@
     .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 1120px; max-width: none; }
   }
 
-  .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: auto; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
+  .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; margin: 0; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
+  @media (min-width: 901px) {
+    .video-benchmark :global(table) { display: block; max-width: 100%; overflow-x: auto; }
+    .video-benchmark :global(th), .video-benchmark :global(td) { padding: .6rem .35rem; }
+  }
   .article-toc { position: sticky; align-self: start; top: 6rem; display: flex; flex-direction: column; gap: .6rem; max-height: 65vh; overflow: auto; font-size: .85rem; }
   .article-toc a, .mobile-toc a { display: block; color: inherit; }
   .article-author { margin-top: 4rem; border-top: 1px solid currentColor; }
