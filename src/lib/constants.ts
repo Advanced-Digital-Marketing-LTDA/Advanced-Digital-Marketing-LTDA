@@ -191,7 +191,7 @@ const GEO_SERVICES_CARD: CopySource<HomeService> = {
     'Generative Engine Optimization. We structure your content, entities and authority signals so ChatGPT, Perplexity and Google AI Overviews quote you by name when your buyers ask.',
     'Conteúdo, entidades, autoridade e FAQs estruturadas para ChatGPT, Perplexity e AI Overviews do Google — visibilidade em respostas de IA, não só nos resultados tradicionais.',
   ),
-  tags: [L('Entity mapping', 'Entidades'), L('Answer-first content', 'Conteúdo para respostas'), L('Citation tracking', 'Monitoramento de citações'), L('llms.txt', 'llms.txt')],
+  tags: [L('Entity mapping', 'Entidades'), L('Answer-first content', 'Conteúdo para respostas'), L('Citation tracking', 'Monitoramento de citações'), C('llms.txt')],
   product: C('seo'),
 }
 
