@@ -16,13 +16,13 @@ const PROJECT_HEADING = /^(.+): (\d+\.\d{4}) Slop Log Score$/
 export type BenchmarkCellRole = 'name' | 'score' | 'category' | 'stat' | 'meta'
 
 /** Columns shown as the main figures on a mobile card; the rest are secondary. */
-const STAT_COLUMNS = ['Open issues', 'Open PRs', 'Merged PRs', 'Releases']
+const STAT_COLUMNS = new Set(['Open issues', 'Open PRs', 'Merged PRs', 'Releases'])
 
 export function benchmarkCellRole(header: string): BenchmarkCellRole {
   if (header === 'Project') return 'name'
   if (header === 'Slop Log Score') return 'score'
   if (header === 'Category') return 'category'
-  return STAT_COLUMNS.includes(header) ? 'stat' : 'meta'
+  return STAT_COLUMNS.has(header) ? 'stat' : 'meta'
 }
 
 function escapeAttribute(value: string): string {
@@ -67,7 +67,7 @@ export function formatBenchmarkHtml(html: string): string {
     // "Label: <a>…</a>; <a>…</a>." (also ", and" separators and a trailing
     // sentence) becomes a label, a list of the same links and that sentence.
     .replace(
-      /<p>([A-Z][^<:]{0,80}): ((?:<a href="[^"]+">[^<]+<\/a>(?:; |, and |, | and )?)+)\.(?: ([^<]+))?<\/p>/g,
+      /<p>([A-Z][^<:]{0,80}): ((?:<a href="[^"]+">[^<]+<\/a>(?:; |,? and |, )?)+)\.(?: ([^<]+))?<\/p>/g,
       (_paragraph: string, label: string, links: string, note: string | undefined) => {
         const items = [...links.matchAll(/<a href="[^"]+">[^<]+<\/a>/g)].map((link) => `<li>${link[0]}</li>`).join('')
         const trailing = note ? `<p>${note}</p>` : ''
