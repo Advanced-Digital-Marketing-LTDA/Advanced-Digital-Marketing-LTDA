@@ -68,7 +68,7 @@
   <header class="blog-article__header">
     <a class="blog-article__back" href={pt ? "/pt-br/blog/" : "/blog/"}>← Blog</a>
     <p class="section-label"><span class="font-jp">記事</span> {article.category === 'Review' ? copy.review : article.category} · {article.published}{#if !showReadingEstimate} · {article.readingMinutes} {copy.reading}{/if}</p>
-    <h1 class:benchmark-title={article.slug === 'slop-benchmark-ai-agents' || article.slug === 'agentic-video-benchmark'}>{article.title}</h1>
+    <h1>{article.title}</h1>
     <p class="blog-article__dek">{article.description}</p>
     {#if showReadingEstimate}
       <p class="blog-article__reading-time">{copy.readingEstimate}: {article.readingMinutes} {copy.reading}</p>
@@ -107,9 +107,9 @@
   .blog-article__reading-time { margin-top: 1rem; color: var(--ink-muted); }
   .blog-article__body { width: 100%; }
   .blog-article__body :global(h2[id]) { scroll-margin-top: 6rem; }
-  /* Benchmark charts retain legible native-size labels on narrow screens. */
   @media (max-width: 900px) {
-    .benchmark-title { overflow-wrap: anywhere; }
+    .blog-article__header h1 { overflow-wrap: anywhere; }
+    /* Benchmark charts retain legible native-size labels on narrow screens. */
     .blog-article__body :global(p:has(> img[src="/images/blog/slop-benchmark.svg"])),
     .blog-article__body :global(p:has(> img[src="/images/blog/agentic-video-benchmark.svg"])) { overflow-x: auto; }
     .blog-article__body :global(img[src="/images/blog/slop-benchmark.svg"]),
