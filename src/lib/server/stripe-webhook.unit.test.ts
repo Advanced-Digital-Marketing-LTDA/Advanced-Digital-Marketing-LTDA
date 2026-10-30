@@ -6,6 +6,7 @@
 import { createHmac } from 'node:crypto'
 import type { MailjetMessageInput } from './mailjet'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { assertReplayContract } from '../test-utils/webhook-replay'
 import { processStripeWebhookEvent, resetWebhookDedupe } from './stripe-webhook'
 
 const SECRET = 'whsec_test'
@@ -157,5 +158,18 @@ describe('processStripeWebhookEvent', () => {
     })
     expect(retried).toEqual({ handled: true, action: 'checkout.session.completed' })
     expect(healthy).toHaveBeenCalledTimes(1)
+  })
+
+  it('sends one owner email per event across any replay order, retrying after failures', async () => {
+    await assertReplayContract(async (id, sendEmail) => {
+      const sessionId = `cs_${id}`
+      const { payload, signatureHeader } = signedEvent(completedEvent(sessionId, `evt_${id}`))
+      return processStripeWebhookEvent({
+        payload,
+        signatureHeader,
+        getSessionImpl: async () => ({ id: sessionId, status: 'complete', paymentStatus: 'paid', customerEmail: null, amountTotal: 100, currency: 'usd', clientReferenceId: null }),
+        sendEmail,
+      })
+    }, resetWebhookDedupe)
   })
 })
