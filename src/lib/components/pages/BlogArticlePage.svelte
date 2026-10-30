@@ -122,10 +122,13 @@
     .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 1120px; max-width: none; }
   }
 
-  .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; margin: 0; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
+  .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: 0; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
   @media (min-width: 901px) {
     .video-benchmark :global(table) { display: block; max-width: 100%; overflow-x: auto; }
     .video-benchmark :global(th), .video-benchmark :global(td) { padding: .6rem .35rem; }
+  }
+  @media (min-width: 701px) and (max-width: 900px) {
+    .video-benchmark :global(table), .agent-benchmark :global(table) { display: block; max-width: 100%; overflow-x: auto; }
   }
   @media (max-width: 700px) {
     .video-benchmark, .agent-benchmark {
@@ -167,5 +170,5 @@
   .article-toc a, .mobile-toc a { display: block; color: inherit; }
   .article-author { margin-top: 4rem; border-top: 1px solid currentColor; }
   .mobile-toc { display: none; }
-  @media (max-width: 900px) { .article-layout { display: block; } .article-toc { display: none; } .mobile-toc { display: block; position: fixed; z-index: 30; bottom: 0; right: 1rem; max-width: 90vw; background: #171717; color: white; padding: .75rem; } .mobile-toc nav { display: flex; flex-direction: column; gap: .7rem; max-height: 55vh; overflow: auto; padding: .75rem; } }
+  @media (max-width: 900px) { .article-layout { display: block; } .article-toc { display: none; } .mobile-toc { display: block; position: fixed; z-index: 30; bottom: 0; right: 1rem; box-sizing: border-box; max-width: min(90vw, calc(100vw - var(--rail-w) - 2rem)); overflow-wrap: anywhere; background: #171717; color: white; padding: .75rem; } .mobile-toc nav { display: flex; flex-direction: column; gap: .7rem; max-height: 55vh; overflow: auto; padding: .75rem; } }
 </style>
