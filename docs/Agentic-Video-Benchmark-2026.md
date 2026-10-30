@@ -1,7 +1,7 @@
 ---
-title: "The Slop Benchmark: Comparing 49 Agentic Video Repositories"
-meta_title: "Slop Benchmark: 49 Agentic Video Repositories Compared"
-meta_description: "A GitHub backlog and activity comparison of 49 agentic video repositories, with a chart and a review of selected issue threads."
+title: "The Slop Benchmark: Comparing 38 Agentic Video Repositories"
+meta_title: "Slop Benchmark: 38 Agentic Video Repositories Compared"
+meta_description: "A GitHub backlog and activity comparison of 38 agentic video repositories, with a chart and a review of selected issue threads."
 published: "2026-10-30"
 updated: "2026-10-30"
 ---
@@ -10,7 +10,7 @@ A project can have millions of stars and still make you spend your afternoon deb
 
 ## What the ratio can and cannot say
 
-The 49 independent repositories include editors, headless engines, commercial-editor bridges, agent skills and research or production frameworks. They are not interchangeable full video editors. No repository was installed or executed for this comparison; capabilities below are documentation claims, not tested behavior.
+The 38 independent repositories include editors, headless engines, commercial-editor bridges, agent skills and research or production frameworks. They are not interchangeable full video editors. No repository was installed or executed for this comparison; capabilities below are documentation claims, not tested behavior.
 
 The score snapshot was collected October 30, 2026, 15:32:03–15:35:40 UTC, with batch labels 15:34 and 15:36 UTC. The collection is sequential, not atomic. Open issues exclude PRs. Published GitHub release records include prereleases and exclude drafts. Open PRs include drafts; PRs closed without merging are listed separately and excluded from B's denominator.
 
@@ -26,7 +26,7 @@ For the qualitative check, up to three currently open issues updated since April
 
 ## The comparison table
 
-The basis column distinguishes two available measures from the release-less fallback and unavailable scores. Stars are context, not a score input.
+The basis column distinguishes two available measures from the release-less fallback. Stars are context, not a score input.
 
 | Project | Category | GitHub stars | Open issues | Open PRs | Merged PRs | Closed unmerged | Releases | A | B | C | Slop Log Score | Basis |
 |:--|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|:--|
@@ -68,23 +68,12 @@ The basis column distinguishes two available measures from the release-less fall
 | [matrodrigs/shotcut-mcp](https://github.com/matrodrigs/shotcut-mcp) | Shotcut integration | 24 | 0 | 0 | 6 | 0 | 17 | 0.00 | 0.00 | 0.00 | 0.0000 | A + B |
 | [naman-sharma12345/kimo](https://github.com/naman-sharma12345/kimo) | Headless editing engine | 20 | 0 | 0 | 38 | 2 | 5 | 0.00 | 0.00 | 0.00 | 0.0000 | A + B |
 | [Remocn/remocn-studio](https://github.com/Remocn/remocn-studio) | Agent-directed code composition | 209 | 0 | 0 | 23 | 0 | 4 | 0.00 | 0.00 | 0.00 | 0.0000 | A + B |
-| [Aoike123/blender-vse](https://github.com/Aoike123/blender-vse) | Blender VSE integration | 4 | 0 | 0 | 0 | 0 | 2 | 0.00 | N/A | N/A | N/A | N/A |
-| [hassancs91/claude-youtube-editor](https://github.com/hassancs91/claude-youtube-editor) | Talking-head editing pipeline | 359 | 0 | 1 | 0 | 1 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [krshailendra/Agentic-Video-Editor](https://github.com/krshailendra/Agentic-Video-Editor) | Editing research/prototype | 1 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [martinsbrezauckis/shellx-cut](https://github.com/martinsbrezauckis/shellx-cut) | Local editor and agent API | 7 | 1 | 0 | 0 | 0 | 11 | 0.09 | N/A | N/A | N/A | N/A |
-| [Monet-AI-Editor/Monet](https://github.com/Monet-AI-Editor/Monet) | archived desktop editor | 119 | 0 | 0 | 0 | 0 | 10 | 0.00 | N/A | N/A | N/A | N/A |
-| [open-ribbi/velocut](https://github.com/open-ribbi/velocut) | browser editing/3D studio | 453 | 1 | 6 | 0 | 8 | 2 | 0.50 | N/A | N/A | N/A | N/A |
-| [paulduplessis/agentic-video-editor](https://github.com/paulduplessis/agentic-video-editor) | Transcript editing pipeline | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [poseljacob/agentic-video-editor](https://github.com/poseljacob/agentic-video-editor) | multi-agent footage-to-ad pipeline | 506 | 1 | 2 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [real-simple-labs/agentic-video-editing](https://github.com/real-simple-labs/agentic-video-editing) | Editing skill pipeline | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
-| [sandraschi/blender-mcp](https://github.com/sandraschi/blender-mcp) | Blender headless/live integration | 62 | 2 | 0 | 0 | 1 | 3 | 0.67 | N/A | N/A | N/A | N/A |
-| [YizhouWang777/agentic-video-editor](https://github.com/YizhouWang777/agentic-video-editor) | Agent editing scaffold | 0 | 0 | 0 | 0 | 0 | 0 | N/A | N/A | N/A | N/A | N/A |
 
 ## The ratio graphic
 
-The chart uses the same scores as the table, with unavailable entries labeled N/A. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, scroll the chart horizontally to read its labels. [Open the full-size chart](/images/blog/agentic-video-benchmark.svg) for a readable view on a small screen.
+The chart uses the same scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, scroll the chart horizontally to read its labels. [Open the full-size chart](/images/blog/agentic-video-benchmark.svg) for a readable view on a small screen.
 
-![Slop Log Scores for 49 agentic video repositories, October 30, 2026](/images/blog/agentic-video-benchmark.svg)
+![Slop Log Scores for 38 agentic video repositories, October 30, 2026](/images/blog/agentic-video-benchmark.svg)
 
 ## Project-by-project issue review
 
@@ -446,104 +435,8 @@ The repository is categorized here as Agent-directed code composition. Coding ag
 
 No qualifying recent open issues were selected. This does not establish that the software is bug-free.
 
-<a id="aoike123-blender-vse-n-a-log-score"></a>
-
-## Aoike123/blender-vse: N/A Slop Log Score
-
-The repository is categorized here as Blender VSE integration. Local MCP controls named Blender timelines using bounded reads, revision/hash guards, atomic patches and fresh-process structural verification. MIT, alpha. Blender 5.1 is its primary documented target. Structural persistence checks are not visual-quality verification; it is an execution layer rather than a creative agent.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-<a id="hassancs91-claude-youtube-editor-n-a-log-score"></a>
-
-## hassancs91/claude-youtube-editor: N/A Slop Log Score
-
-The repository is categorized here as Talking-head editing pipeline. Recording to cut list, clean master, timed Remotion visuals, audio and optional private YouTube upload. AssemblyAI transcription and optional paid providers; publishing is a capability, not tested or authorized here.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-<a id="krshailendra-agentic-video-editor-n-a-log-score"></a>
-
-## krshailendra/Agentic-Video-Editor: N/A Slop Log Score
-
-The repository is categorized here as Editing research/prototype. Raw clips plus prompt/transcript feed story-beat planning and a deterministic sequencing solver, with captions, reframing, grading and OTIO finishing. One-commit prototype; no visible top-level license.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-<a id="martinsbrezauckis-shellx-cut-n-a-log-score"></a>
-
-## martinsbrezauckis/shellx-cut: N/A Slop Log Score
-
-The repository is categorized here as Local editor and agent API. Human/agent timeline with REST/MCP verb API, reversible edits, render receipts and sampled frame/transcript/audio evidence. Documented QA functionality is not independent validation.
-
-A report describes playhead jumps and repeating video or audio after moving a cut segment in v0.6.115. There was no visible maintainer response and the report was not independently reproduced.
-
-Selected discussions: [bug/preview thread](https://github.com/martinsbrezauckis/shellx-cut/issues/2).
-
-<a id="monet-ai-editor-monet-n-a-log-score"></a>
-
-## Monet-AI-Editor/Monet: N/A Slop Log Score
-
-The repository is categorized here as archived desktop editor. macOS timeline/design canvas with an embedded coding-agent terminal, local API/MCP, transcription and Remotion composition. MIT, but archived; last push July 7, 2026. Its README describes automatically using Codex danger-full-access. That is a safety concern, not a recommended setup.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-<a id="open-ribbi-velocut-n-a-log-score"></a>
-
-## open-ribbi/velocut: N/A Slop Log Score
-
-The repository is categorized here as browser editing/3D studio. Browser multitrack editor and 3D director with shared projects/undo, Codex plugin/MCP, visual inspection and WebGPU/WebCodecs export. MIT, early release. Chrome/Edge are the clearest supported browsers; not a headless Node renderer. Projects use browser storage and AI observations may leave the browser.
-
-The selected thread does not establish a software defect. Its contents were not treated as evidence of product quality.
-
-Selected discussions: [other thread](https://github.com/open-ribbi/velocut/issues/13).
-
-<a id="paulduplessis-agentic-video-editor-n-a-log-score"></a>
-
-## paulduplessis/agentic-video-editor: N/A Slop Log Score
-
-The repository is categorized here as Transcript editing pipeline. Transcript rough cuts and waveform-validated boundaries, captions/music/export and editable Premiere handoff. Bash/Python/FFmpeg/WhisperX; third-party HyperFrames skill pack is excluded from its license.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-<a id="poseljacob-agentic-video-editor-n-a-log-score"></a>
-
-## poseljacob/agentic-video-editor: N/A Slop Log Score
-
-The repository is categorized here as multi-agent footage-to-ad pipeline. A director, trim refiner, FFmpeg/MoviePy editor and reviewer form a bounded-retry pipeline with versioned output and a structured brief. MIT. Requires Python, FFmpeg and a Google AI key. CLI is supported; web UI is pre-alpha/work in progress. Tests are documented, not run in this audit.
-
-A user reports an API-key compatibility problem without comments, independent reproduction or maintainer resolution.
-
-Selected discussions: [support thread](https://github.com/poseljacob/agentic-video-editor/issues/4).
-
-<a id="real-simple-labs-agentic-video-editing-n-a-log-score"></a>
-
-## real-simple-labs/agentic-video-editing: N/A Slop Log Score
-
-The repository is categorized here as Editing skill pipeline. Raw takes to ads through A/B-roll selection, captions, timestamped review and apply-notes rerender/QA. Claude Code skills, not a full NLE.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
-<a id="sandraschi-blender-mcp-n-a-log-score"></a>
-
-## sandraschi/blender-mcp: N/A Slop Log Score
-
-The repository is categorized here as Blender headless/live integration. Blender automation includes documented VSE import, cuts, trimming, effects, transitions, speed, audio and rendering; headless default with optional GUI bridge. MIT. Requires Blender separately. Broader 3D toolkit, but documented VSE functionality qualifies it for the editing comparison. Tool-count claims differ across its documentation.
-
-A user reports a CLI tool-listing coroutine error on specified versions while saying the MCP server listing still works. Another thread requests features described as placeholders; neither was independently tested.
-
-Selected discussions: [bug thread](https://github.com/sandraschi/blender-mcp/issues/7); [feature thread](https://github.com/sandraschi/blender-mcp/issues/5).
-
-<a id="yizhouwang777-agentic-video-editor-n-a-log-score"></a>
-
-## YizhouWang777/agentic-video-editor: N/A Slop Log Score
-
-The repository is categorized here as Agent editing scaffold. Assets/contact sheets/transcripts to EDL, validation, FFmpeg and QA. Explicit alpha scaffold; full Remotion and HyperFrames adapters not implemented.
-
-No qualifying recent open issues were selected. This does not establish that the software is bug-free.
-
 ## What the Slop Benchmark says overall
 
-Of 49 repositories, 38 have a calculable score and 11 are N/A. Release-less projects with merged PRs use the explicitly halved B fallback, so their scores are not directly comparable to a complete two-measure average. Release counts also reflect different publishing practices: mcut includes 195 prereleases in 206 records, while the Resolve MCP repository has 486 published releases.
+All 38 repositories shown have a calculable score. Release-less projects with merged PRs use the explicitly halved B fallback, so their scores are not directly comparable to a complete two-measure average. Release counts also reflect different publishing practices: mcut includes 195 prereleases in 206 records, while the Resolve MCP repository has 486 published releases.
 
-Licenses and product boundaries matter alongside the numbers. Kerf and Vex use PolyForm Noncommercial; Hypit uses a modified Apache license with restrictions. Palmier's public GPL source ends at v0.7.6/last-gpl-source, while later binaries are proprietary. Monet is archived and its README uses danger-full-access. Review current licenses, dependencies and the specific issue threads that intersect with your workflow before adoption.
+Licenses and product boundaries matter alongside the numbers. Kerf and Vex use PolyForm Noncommercial; Hypit uses a modified Apache license with restrictions. Palmier's public GPL source ends at v0.7.6/last-gpl-source, while later binaries are proprietary. Review current licenses, dependencies and the specific issue threads that intersect with your workflow before adoption.
