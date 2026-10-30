@@ -27,7 +27,7 @@ describe('mobile benchmark presentation', () => {
       expect(body).toContain(`srcset="/images/blog/${chart.stem}-mobile.svg"`)
       const table = body.match(/<table>[\s\S]*?<\/table>/)?.[0]
       expect(table).toBeDefined()
-      const headers = [...table!.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/g)].map((match) => match[1].replace(/<[^>]+>/g, '').trim())
+      const headers = [...table!.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/g)].map((match) => match[1].replace(/[<>]/g, '').trim())
       expect([...table!.matchAll(/<tr\b/g)]).toHaveLength(chart.count + 1)
 
       const component = readFileSync(new URL('./BlogArticlePage.svelte', import.meta.url), 'utf8')
