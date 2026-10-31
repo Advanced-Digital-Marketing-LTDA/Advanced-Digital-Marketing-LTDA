@@ -88,8 +88,11 @@ async function fetchSession(sessionId: string): Promise<CheckoutSessionStatus | 
     }
     throw error
   }
-  if (!session) console.warn(`[checkout-stripe] session ${sessionId} not found`)
-  return session ?? null
+  if (!session) {
+    console.warn(`[checkout-stripe] session ${sessionId} not found`)
+    return null
+  }
+  return session
 }
 
 /**
@@ -143,10 +146,15 @@ function isSiteStripeSession(session: CheckoutSessionStatus): boolean {
   const buildPrice = websiteBuildPriceForReference(reference)
   if (buildPrice !== null) return session.amountTotal === buildPrice
 
+  return subscriptionAmountMatches(reference, session.amountTotal)
+}
+
+/** Fixed-price packages must match exactly; packages with ads spend must sit at or above the floor. */
+function subscriptionAmountMatches(reference: string, amountTotal: number): boolean {
   const floor = authoritativeSubscriptionTotalUSD(reference)
   if (floor === null) return false
   const hasAdsSpend = reference.split('+').some((id) => getService(id)?.pricing.kind === 'ads-spend')
-  return hasAdsSpend ? session.amountTotal >= floor : session.amountTotal === floor
+  return hasAdsSpend ? amountTotal >= floor : amountTotal === floor
 }
 
 /** The server-derived USD price for a website-build reference, or null when the reference is not one. */
