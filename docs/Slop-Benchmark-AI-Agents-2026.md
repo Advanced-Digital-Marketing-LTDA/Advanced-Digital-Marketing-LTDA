@@ -16,9 +16,9 @@ The score snapshot was collected October 30, 2026, 17:27:15–17:29:31 UTC. The 
 >
 > **B = (open issues + open PRs) ÷ lifetime merged PRs**
 >
-> **C = (A + B) ÷ 2; Slop Log Score = log10(1 + C)**
+> **C = (A + B) ÷ 2 when there are releases; otherwise C = B. Slop Log Score = log10(1 + C)**
 
-When releases are absent but B exists, C is B/2: this intentionally halves B and can lower the result compared with averaging two available measures. When merged PRs are zero, B and the Slop Log Score are N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; A, B and C are displayed to two decimals and the Slop Log Score to four. Lower scores indicate less public backlog relative to these activity denominators, not proof of software quality or reliability. Release cadence, project age, issue type and contributor practices affect the result. Stars are not a score input.
+When releases are absent, C is B. When merged PRs are zero, B and the Slop Log Score are N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; A, B and C are displayed to two decimals and the Slop Log Score to four. Lower scores indicate less public backlog relative to these activity denominators, not proof of software quality or reliability. Release cadence, project age, issue type and contributor practices affect the result. Stars are not a score input.
 
 For the qualitative check, I reviewed each project's three most-commented open issue threads updated since April 27, 2026, as of October 27. These are not necessarily the most-commented issues of all time. Comments are not independent affected users, and the examples are not a complete audit. An issue can be a bug report, a question, a feature request, or a tracker.
 
