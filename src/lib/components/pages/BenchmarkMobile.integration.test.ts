@@ -6,7 +6,7 @@ import { BLOG_ARTICLES } from '$lib/server/blog'
 
 const charts = [
   { slug: 'slop-benchmark-ai-agents', stem: 'slop-benchmark', className: '.agent-benchmark', count: 24 },
-  { slug: 'agentic-video-benchmark', stem: 'agentic-video-benchmark', className: '.video-benchmark', count: 38 },
+  { slug: 'agentic-video-benchmark', stem: 'agentic-video-benchmark', className: '.video-benchmark', count: 21 },
 ]
 
 function readAsset(stem: string): string {
