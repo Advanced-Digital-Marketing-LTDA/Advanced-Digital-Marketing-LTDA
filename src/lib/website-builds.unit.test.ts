@@ -53,6 +53,10 @@ describe('authoritative USD pricing (checkout currency, both locales)', () => {
     expect(websiteBuildPriceUSD('ecommerce', 'migration')).toBe(3000)
   })
 
+  it('keeps the pt-BR display prices in reais', () => {
+    expect(WEBSITE_BUILD_BASE_PRICE['pt-BR']).toEqual({ website: 3000, ecommerce: 6000 })
+  })
+
   it('keeps the USD display prices equal to what checkout charges', () => {
     // The checkout forms show websiteBuildPrice('en-US') formatted as USD on
     // both locales; if it ever diverges from the charged amount, this fails.

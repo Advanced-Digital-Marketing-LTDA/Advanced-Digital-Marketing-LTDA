@@ -48,16 +48,8 @@ export async function loadStripeCompletion({ url, getClientAddress, setHeaders }
     return { state: 'error' }
   }
 
-  let address: string
-  try {
-    address = clientIpAddress(getClientAddress)
-  } catch (error) {
-    if (error instanceof ClientAddressError) {
-      console.error('[checkout-stripe] cannot determine client IP for completion verification; refusing request')
-      return { state: 'error' }
-    }
-    throw error
-  }
+  const address = resolveClientAddress(getClientAddress)
+  if (address === null) return { state: 'error' }
 
   const rateLimit = checkRateLimit(rateLimitKey('stripeVerify', address))
   if (!rateLimit.allowed) {
@@ -65,22 +57,39 @@ export async function loadStripeCompletion({ url, getClientAddress, setHeaders }
     return { state: 'rate_limited' }
   }
 
+  const session = await fetchSession(sessionId)
+  if (!session) return { state: 'error' }
+
+  return classifySession(session)
+}
+
+/** Client IP for the rate limit, or null (logged) when it cannot be determined. */
+function resolveClientAddress(getClientAddress: () => string): string | null {
+  try {
+    return clientIpAddress(getClientAddress)
+  } catch (error) {
+    if (error instanceof ClientAddressError) {
+      console.error('[checkout-stripe] cannot determine client IP for completion verification; refusing request')
+      return null
+    }
+    throw error
+  }
+}
+
+/** The live Checkout Session, or null (logged) when Stripe fails or does not know it. */
+async function fetchSession(sessionId: string): Promise<CheckoutSessionStatus | null> {
   let session
   try {
     session = await getCheckoutSession(sessionId)
   } catch (error) {
     if (error instanceof StripeError) {
       console.error(`[checkout-stripe] completion verification failed: ${error.code}`)
-      return { state: 'error' }
+      return null
     }
     throw error
   }
-  if (!session) {
-    console.warn(`[checkout-stripe] session ${sessionId} not found`)
-    return { state: 'error' }
-  }
-
-  return classifySession(session)
+  if (!session) console.warn(`[checkout-stripe] session ${sessionId} not found`)
+  return session ?? null
 }
 
 /**
@@ -92,26 +101,31 @@ export async function loadStripeCompletion({ url, getClientAddress, setHeaders }
  */
 function classifySession(session: CheckoutSessionStatus): StripeCompletionState {
   if (session.paymentStatus === 'paid') {
-    if (!isSiteStripeSession(session)) {
-      console.warn(
-        `[checkout-stripe] paid session ${session.id} does not match a server-created checkout ` +
-          `(client_reference_id=${session.clientReferenceId}, amount=${session.amountTotal}, currency=${session.currency}); refusing success claim`,
-      )
-      return { state: 'error' }
-    }
-    return { state: 'confirmed', sessionId: session.id, amountTotal: session.amountTotal, clientReferenceId: session.clientReferenceId }
+    return claimIfBound(session, 'paid', 'success', {
+      state: 'confirmed',
+      sessionId: session.id,
+      amountTotal: session.amountTotal,
+      clientReferenceId: session.clientReferenceId,
+    })
   }
-  if (session.status === 'open' || session.status === 'processing' || session.paymentStatus === 'processing') {
-    if (!isSiteStripeSession(session)) {
-      console.warn(
-        `[checkout-stripe] pending session ${session.id} does not match a server-created checkout ` +
-          `(client_reference_id=${session.clientReferenceId}, amount=${session.amountTotal}, currency=${session.currency}); refusing pending claim`,
-      )
-      return { state: 'error' }
-    }
-    return { state: 'payment_pending', sessionId: session.id }
+  if (isPendingSession(session)) {
+    return claimIfBound(session, 'pending', 'pending', { state: 'payment_pending', sessionId: session.id })
   }
   return { state: 'payment_unconfirmed', sessionId: session.id }
+}
+
+function isPendingSession(session: CheckoutSessionStatus): boolean {
+  return session.status === 'open' || session.status === 'processing' || session.paymentStatus === 'processing'
+}
+
+/** Returns the claim only for a session bound to a server-created checkout; otherwise logs and returns the error state. */
+function claimIfBound(session: CheckoutSessionStatus, kind: string, claim: string, state: StripeCompletionState): StripeCompletionState {
+  if (isSiteStripeSession(session)) return state
+  console.warn(
+    `[checkout-stripe] ${kind} session ${session.id} does not match a server-created checkout ` +
+      `(client_reference_id=${session.clientReferenceId}, amount=${session.amountTotal}, currency=${session.currency}); refusing ${claim} claim`,
+  )
+  return { state: 'error' }
 }
 
 /**
@@ -126,16 +140,21 @@ function isSiteStripeSession(session: CheckoutSessionStatus): boolean {
   if (session.currency !== 'usd' || session.clientReferenceId === null || session.amountTotal === null) return false
   const reference = session.clientReferenceId
 
-  for (const type of WEBSITE_BUILD_TYPES) {
-    for (const kind of WEBSITE_BUILD_KINDS) {
-      if (reference === websiteBuildExternalReference(type, kind)) {
-        return session.amountTotal === websiteBuildPriceUSD(type, kind)
-      }
-    }
-  }
+  const buildPrice = websiteBuildPriceForReference(reference)
+  if (buildPrice !== null) return session.amountTotal === buildPrice
 
   const floor = authoritativeSubscriptionTotalUSD(reference)
   if (floor === null) return false
   const hasAdsSpend = reference.split('+').some((id) => getService(id)?.pricing.kind === 'ads-spend')
   return hasAdsSpend ? session.amountTotal >= floor : session.amountTotal === floor
+}
+
+/** The server-derived USD price for a website-build reference, or null when the reference is not one. */
+function websiteBuildPriceForReference(reference: string): number | null {
+  for (const type of WEBSITE_BUILD_TYPES) {
+    for (const kind of WEBSITE_BUILD_KINDS) {
+      if (reference === websiteBuildExternalReference(type, kind)) return websiteBuildPriceUSD(type, kind)
+    }
+  }
+  return null
 }

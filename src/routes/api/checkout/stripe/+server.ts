@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import type { Locale } from '$lib/locale'
+import { LOCALES, type Locale } from '$lib/locale'
 import { PricingError } from '$lib/server/pricing'
 import { StripeError, computeUsdMonthlyQuote, createCheckoutSession } from '$lib/server/stripe'
 import { isValidEmail, stripeCheckoutUrls } from '$lib/server/checkout'
@@ -23,11 +23,13 @@ type ValidPayload =
 
 type ValidationOutcome = { payload: ValidPayload } | { error: string }
 
+const isLocale = (value: unknown): value is Locale => (LOCALES as readonly unknown[]).includes(value)
+
 function validatePayload(body: Record<string, unknown>): ValidationOutcome {
   // Only the site's own locales are accepted; anything else is rejected
   // loudly instead of silently falling back to one locale's copy and URLs.
-  if (body.locale !== 'en-US' && body.locale !== 'pt-BR') return { error: 'invalid_locale' }
-  const locale: Locale = body.locale
+  if (!isLocale(body.locale)) return { error: 'invalid_locale' }
+  const locale = body.locale
   const idempotencyKey = typeof body.idempotencyKey === 'string' ? body.idempotencyKey.trim() : ''
   if (!UUID_V4_RE.test(idempotencyKey)) return { error: 'invalid_idempotency_key' }
 
