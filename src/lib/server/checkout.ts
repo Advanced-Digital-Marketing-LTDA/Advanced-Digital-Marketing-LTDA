@@ -34,11 +34,15 @@ const STRIPE_SUCCESS_PATHS: Record<Locale, string> = {
   'pt-BR': '/pt-br/checkout/complete/',
 }
 
+// Stripe replaces this placeholder with the Checkout Session id on redirect;
+// the return page needs it to verify the payment.
+const STRIPE_SESSION_QUERY = '?session_id={CHECKOUT_SESSION_ID}'
+
 /** Locale-aware success/cancel URLs for the Stripe hosted checkout. */
 export function stripeCheckoutUrls(locale: Locale): { successUrl: string; cancelUrl: string } {
   const origin = publicSiteOrigin()
   return {
-    successUrl: new URL(STRIPE_SUCCESS_PATHS[locale], origin).toString(),
+    successUrl: new URL(STRIPE_SUCCESS_PATHS[locale], origin).toString() + STRIPE_SESSION_QUERY,
     cancelUrl: new URL(SERVICES_INDEX_ROUTES[locale], origin).toString(),
   }
 }

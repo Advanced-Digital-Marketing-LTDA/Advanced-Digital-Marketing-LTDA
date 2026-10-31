@@ -91,7 +91,7 @@ describe('POST /api/checkout/stripe', () => {
   it('sends the en-US return URLs and English item names for en-US', async () => {
     await POST(requestEvent(validSubscription))
     const body = sentBody()
-    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/checkout/complete/')
+    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/checkout/complete/?session_id={CHECKOUT_SESSION_ID}')
     expect(body.get('cancel_url')).toBe('https://advanceddigitalmarketingltda.com/services/')
     expect(body.get('line_items[0][price_data][product_data][name]')).toBe('SEO Content')
     expect(body.get('line_items[1][price_data][product_data][name]')).toBe('Hosting')
@@ -104,7 +104,7 @@ describe('POST /api/checkout/stripe', () => {
     const body = sentBody()
     expect(body.get('mode')).toBe('subscription')
     expect(body.get('client_reference_id')).toBe('seo-content+hosting')
-    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/checkout/complete/')
+    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/checkout/complete/?session_id={CHECKOUT_SESSION_ID}')
     expect(body.get('cancel_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/servicos/')
     expect(body.get('line_items[0][price_data][product_data][name]')).toBe('Conteúdo SEO')
     expect(body.get('line_items[1][price_data][product_data][name]')).toBe('Hospedagem')
@@ -124,7 +124,7 @@ describe('POST /api/checkout/stripe', () => {
     expect(body.get('line_items[0][price_data][product_data][name]')).toBe('Desenvolvimento de Site E-commerce (Migração)')
     expect(body.get('line_items[0][price_data][currency]')).toBe('usd')
     expect(body.get('line_items[0][price_data][unit_amount]')).toBe('300000')
-    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/checkout/complete/')
+    expect(body.get('success_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/checkout/complete/?session_id={CHECKOUT_SESSION_ID}')
     expect(body.get('cancel_url')).toBe('https://advanceddigitalmarketingltda.com/pt-br/servicos/')
   })
 
