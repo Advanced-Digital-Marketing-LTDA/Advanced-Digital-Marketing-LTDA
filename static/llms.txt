@@ -1,0 +1,49 @@
+# Advanced Digital Marketing LTDA
+
+> Advanced Digital Marketing LTDA is a search engineering company in São Paulo, Brazil, founded and run by Andrew Philip Weilbacher. It offers technical SEO, GEO (visibility in AI answers), web development, Google Ads, Meta Ads and AI automation to businesses in the United States and Brazil. The site is in English (en-US) and Brazilian Portuguese (pt-BR).
+
+Clients subscribe to services monthly or hire them per project. AI automation is scoped and quoted per project.
+
+## Company
+
+- [Home](https://advanceddigitalmarketingltda.com/): SEO, GEO, paid search and web engineering for US businesses, run from São Paulo.
+- [About](https://advanceddigitalmarketingltda.com/about/): Andrew Weilbacher, founder and lead engineer of Advanced Digital Marketing LTDA.
+- [Contact](https://advanceddigitalmarketingltda.com/contact/): Get in touch about SEO, GEO, paid media or web engineering.
+
+## Services
+
+- [All services](https://advanceddigitalmarketingltda.com/services/): SEO, GEO, paid media, web development and AI automation, as a monthly subscription to the mix you need or per project.
+- [Technical SEO](https://advanceddigitalmarketingltda.com/services/technical-seo/): Scoped fixes for crawl, rendering, indexing, template and content-planning issues, from diagnosis to implementation and validation.
+- [GEO](https://advanceddigitalmarketingltda.com/services/geo/): Visibility in AI answers through entity mapping, answer-first content and citation tracking for ChatGPT, Perplexity and Google AI Overviews.
+- [Web development](https://advanceddigitalmarketingltda.com/services/web-development/): Next.js and Astro sites with performance budgets, semantic HTML and structured data from the first commit.
+- [Paid search](https://advanceddigitalmarketingltda.com/services/paid-search/): Google Ads campaigns managed on the same keyword map as the organic strategy.
+- [Meta Ads](https://advanceddigitalmarketingltda.com/services/meta-ads/): Facebook and Instagram campaigns managed on the same keyword and conversion data as the organic strategy.
+- [AI automation](https://advanceddigitalmarketingltda.com/services/ai-automation/): Agents, integrations and internal tools that cut repetitive operations work, scoped and quoted per project.
+
+## Articles
+
+- [Blog](https://advanceddigitalmarketingltda.com/blog/): Guides, reviews and benchmarks.
+- [ChatGPT Ads complete guide](https://advanceddigitalmarketingltda.com/blog/chatgpt-ads-complete-guide-august-2026/)
+- [Paperclip review](https://advanceddigitalmarketingltda.com/blog/paperclip-review-coolify-codex/)
+- [OpenClaw review](https://advanceddigitalmarketingltda.com/blog/openclaw-review-coolify-codex/)
+- [Slop Benchmark](https://advanceddigitalmarketingltda.com/blog/slop-benchmark-ai-agents/)
+- [Agentic video benchmark](https://advanceddigitalmarketingltda.com/blog/agentic-video-benchmark/)
+
+## Português (pt-BR)
+
+- [Início](https://advanceddigitalmarketingltda.com/pt-br/): Engenharia de busca para empresas brasileiras que precisam ser encontradas no Google, no Maps e nas respostas de IA.
+- [Sobre](https://advanceddigitalmarketingltda.com/pt-br/sobre/): Andrew Weilbacher, fundador e responsável pela Advanced Digital Marketing LTDA, atua com SEO técnico, GEO, desenvolvimento web e mídia paga.
+- [Contato](https://advanceddigitalmarketingltda.com/pt-br/contato/): Converse sobre como fazer sua empresa aparecer no Google, no Maps e nas respostas de IA.
+- [Serviços](https://advanceddigitalmarketingltda.com/pt-br/servicos/): SEO, GEO, mídia paga, sites e automação com IA, por assinatura mensal ou por projeto.
+- [SEO técnico e local](https://advanceddigitalmarketingltda.com/pt-br/servicos/technical-seo/): Rastreamento, renderização, indexação e URLs canônicas, com escopo definido, responsáveis e validação de cada mudança.
+- [GEO e visibilidade em IA](https://advanceddigitalmarketingltda.com/pt-br/servicos/geo/): Mapeamento de entidades, conteúdo com a resposta logo no início e monitoramento de citações no ChatGPT, no Perplexity e nos AI Overviews do Google.
+- [Sites e landing pages](https://advanceddigitalmarketingltda.com/pt-br/servicos/web-development/): Sites em Next.js e Astro com orçamento de performance, HTML semântico e dados estruturados desde o primeiro commit.
+- [Google Ads](https://advanceddigitalmarketingltda.com/pt-br/servicos/paid-search/): Campanhas gerenciadas com o mesmo mapa de palavras-chave da estratégia orgânica.
+- [Meta Ads](https://advanceddigitalmarketingltda.com/pt-br/servicos/meta-ads/): Campanhas no Facebook e no Instagram com os mesmos dados de palavras-chave e conversão da estratégia orgânica.
+- [Automação com IA](https://advanceddigitalmarketingltda.com/pt-br/servicos/ai-automation/): Agentes, integrações e ferramentas internas que tiram o trabalho repetitivo da operação, com orçamento sob consulta.
+- [Blog](https://advanceddigitalmarketingltda.com/pt-br/blog/)
+- [Guia completo do ChatGPT Ads](https://advanceddigitalmarketingltda.com/pt-br/blog/chatgpt-ads-complete-guide-august-2026/)
+- [Avaliação do Paperclip](https://advanceddigitalmarketingltda.com/pt-br/blog/paperclip-review-coolify-codex/)
+- [Avaliação do OpenClaw](https://advanceddigitalmarketingltda.com/pt-br/blog/openclaw-review-coolify-codex/)
+- [Slop Benchmark](https://advanceddigitalmarketingltda.com/pt-br/blog/slop-benchmark-ai-agents/)
+- [Benchmark de vídeo com IA agêntica](https://advanceddigitalmarketingltda.com/pt-br/blog/agentic-video-benchmark/)
