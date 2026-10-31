@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { SERVICES, type CatalogService, type CatalogServiceId } from '$lib/catalog'
-import { PricingError, authoritativeSubscriptionTotalBRL, computeMonthlyQuote } from './pricing'
+import { PricingError, authoritativeSubscriptionTotalUSD } from './pricing'
+import { computeUsdMonthlyQuote } from './stripe'
+
+/*
+ * The shared quote pipeline (`buildQuote`) is exercised through its checkout
+ * caller, `computeUsdMonthlyQuote` (Stripe bills USD on both locales).
+ */
 
 const CATALOG = SERVICES as Record<CatalogServiceId, CatalogService>
 
@@ -14,52 +20,52 @@ const ADS_SPEND = {
   'meta-ads': { monthlyAdSpend: 3000 },
 }
 
-describe('computeMonthlyQuote — totals', () => {
+describe('computeUsdMonthlyQuote — totals', () => {
   it('prices a single fixed service', () => {
-    const quote = computeMonthlyQuote(['seo-content'], {}, 'pt-BR')
-    expect(quote.totalBRL).toBe(2000)
-    expect(quote.items).toEqual([{ id: 'seo-content', name: 'Conteúdo SEO', monthlyBRL: 2000 }])
+    const quote = computeUsdMonthlyQuote(['seo-content'], {}, 'pt-BR')
+    expect(quote.totalUSD).toBe(400)
+    expect(quote.items).toEqual([{ id: 'seo-content', name: 'Conteúdo SEO', monthlyUSD: 400 }])
   })
 
   it('sums multiple fixed services', () => {
-    const quote = computeMonthlyQuote(['seo-content', 'backlinks', 'hosting'], {}, 'pt-BR')
-    expect(quote.totalBRL).toBe(2000 + 3000 + 300)
+    const quote = computeUsdMonthlyQuote(['seo-content', 'backlinks', 'hosting'], {}, 'pt-BR')
+    expect(quote.totalUSD).toBe(400 + 600 + 60)
     expect(quote.items.map((item) => item.id)).toEqual(['seo-content', 'backlinks', 'hosting'])
   })
 
   it('applies the ad-spend rule and sums everything (all services)', () => {
-    const quote = computeMonthlyQuote(
+    const quote = computeUsdMonthlyQuote(
       ['seo-content', 'backlinks', 'hosting', 'paid-search', 'meta-ads'],
       ADS_SPEND,
       'pt-BR',
     )
-    // 2000 + 3000 + 300 + max(10%×10000, 500) + max(10%×3000, 500)
-    expect(quote.totalBRL).toBe(2000 + 3000 + 300 + 1000 + 500)
+    // 400 + 600 + 60 + max(10%×10000, 100) + max(10%×3000, 100)
+    expect(quote.totalUSD).toBe(400 + 600 + 60 + 1000 + 300)
   })
 
-  it('charges the R$ 500 minimum for a low ad spend', () => {
-    const quote = computeMonthlyQuote(['meta-ads'], { 'meta-ads': { monthlyAdSpend: 3000 } }, 'pt-BR')
-    expect(quote.totalBRL).toBe(500)
+  it('charges the US$ 100 minimum for a low ad spend', () => {
+    const quote = computeUsdMonthlyQuote(['meta-ads'], { 'meta-ads': { monthlyAdSpend: 500 } }, 'pt-BR')
+    expect(quote.totalUSD).toBe(100)
   })
 
   it('rounds the total to cent precision', () => {
-    const quote = computeMonthlyQuote(
+    const quote = computeUsdMonthlyQuote(
       ['paid-search'],
       { 'paid-search': { monthlyAdSpend: 12345.67 } },
       'pt-BR',
     )
-    expect(quote.totalBRL).toBe(1234.57)
+    expect(quote.totalUSD).toBe(1234.57)
   })
 
   it('charges 10% above the minimum', () => {
-    const quote = computeMonthlyQuote(['paid-search'], { 'paid-search': { monthlyAdSpend: 10000 } }, 'pt-BR')
-    expect(quote.totalBRL).toBe(1000)
+    const quote = computeUsdMonthlyQuote(['paid-search'], { 'paid-search': { monthlyAdSpend: 10000 } }, 'pt-BR')
+    expect(quote.totalUSD).toBe(1000)
   })
 })
 
-describe('computeMonthlyQuote — reason and external_reference', () => {
+describe('computeUsdMonthlyQuote — reason and external_reference', () => {
   it('builds a localized, human-readable reason', () => {
-    const quote = computeMonthlyQuote(
+    const quote = computeUsdMonthlyQuote(
       ['hosting', 'seo-content'],
       {},
       'pt-BR',
@@ -68,12 +74,12 @@ describe('computeMonthlyQuote — reason and external_reference', () => {
   })
 
   it('uses English names for the en-US locale', () => {
-    const quote = computeMonthlyQuote(['seo-content', 'backlinks'], {}, 'en-US')
+    const quote = computeUsdMonthlyQuote(['seo-content', 'backlinks'], {}, 'en-US')
     expect(quote.reason).toBe('SEO Content + Backlinks')
   })
 
   it('builds a deterministic id-based external reference in catalog order', () => {
-    const scrambled = computeMonthlyQuote(
+    const scrambled = computeUsdMonthlyQuote(
       ['meta-ads', 'seo-content', 'paid-search', 'hosting', 'backlinks'],
       ADS_SPEND,
       'pt-BR',
@@ -85,22 +91,22 @@ describe('computeMonthlyQuote — reason and external_reference', () => {
   })
 })
 
-describe('computeMonthlyQuote — validation', () => {
+describe('computeUsdMonthlyQuote — validation', () => {
   it('rejects an empty selection', () => {
-    expect(() => computeMonthlyQuote([], {}, 'pt-BR')).toThrowError(
+    expect(() => computeUsdMonthlyQuote([], {}, 'pt-BR')).toThrowError(
       expect.objectContaining({ code: 'no_services_selected' }),
     )
-    expect(() => computeMonthlyQuote(undefined, {}, 'pt-BR')).toThrowError(
+    expect(() => computeUsdMonthlyQuote(undefined, {}, 'pt-BR')).toThrowError(
       expect.objectContaining({ code: 'no_services_selected' }),
     )
-    expect(() => computeMonthlyQuote('seo-content', {}, 'pt-BR')).toThrowError(
+    expect(() => computeUsdMonthlyQuote('seo-content', {}, 'pt-BR')).toThrowError(
       expect.objectContaining({ code: 'no_services_selected' }),
     )
   })
 
   it('rejects unknown service ids', () => {
     for (const bad of [['nope'], ['seo-content', 'hosting-evil'], ['seo-content', 42]]) {
-      expect(() => computeMonthlyQuote(bad, {}, 'pt-BR')).toThrowError(
+      expect(() => computeUsdMonthlyQuote(bad, {}, 'pt-BR')).toThrowError(
         expect.objectContaining({ code: 'invalid_service' }),
       )
     }
@@ -110,7 +116,7 @@ describe('computeMonthlyQuote — validation', () => {
     // 'toString' / 'constructor' pass a prototype-chain `in` check but are not
     // catalog services — they must fail as invalid_service, not resolve.
     for (const bad of [['toString'], ['constructor'], ['seo-content', 'hasOwnProperty']]) {
-      expect(() => computeMonthlyQuote(bad, {}, 'pt-BR')).toThrowError(
+      expect(() => computeUsdMonthlyQuote(bad, {}, 'pt-BR')).toThrowError(
         expect.objectContaining({ code: 'invalid_service' }),
       )
     }
@@ -118,17 +124,17 @@ describe('computeMonthlyQuote — validation', () => {
 
   it('rejects inactive services', () => {
     const inactiveCatalog = catalogWithInactive('hosting')
-    expect(() => computeMonthlyQuote(['hosting'], {}, 'pt-BR', inactiveCatalog)).toThrowError(
+    expect(() => computeUsdMonthlyQuote(['hosting'], {}, 'pt-BR', inactiveCatalog)).toThrowError(
       expect.objectContaining({ code: 'service_unavailable' }),
     )
   })
 
   it('rejects quote-only services', () => {
-    expect(() => computeMonthlyQuote(['ai-automation'], {}, 'pt-BR')).toThrowError(
+    expect(() => computeUsdMonthlyQuote(['ai-automation'], {}, 'pt-BR')).toThrowError(
       expect.objectContaining({ code: 'quote_only_service' }),
     )
     // A quote-only service alongside valid ones still fails.
-    expect(() => computeMonthlyQuote(['seo-content', 'ai-automation'], {}, 'pt-BR')).toThrowError(
+    expect(() => computeUsdMonthlyQuote(['seo-content', 'ai-automation'], {}, 'pt-BR')).toThrowError(
       expect.objectContaining({ code: 'quote_only_service' }),
     )
   })
@@ -145,25 +151,25 @@ describe('computeMonthlyQuote — validation', () => {
       { 'paid-search': { monthlyAdSpend: 1_000_001 } },
     ]
     for (const config of badConfigs) {
-      expect(() => computeMonthlyQuote(['paid-search'], config, 'pt-BR')).toThrowError(
+      expect(() => computeUsdMonthlyQuote(['paid-search'], config, 'pt-BR')).toThrowError(
         expect.objectContaining({ code: 'invalid_ad_spend' }),
       )
     }
   })
 
   it('ignores configuration for services that are not selected', () => {
-    const quote = computeMonthlyQuote(['seo-content'], { 'paid-search': { monthlyAdSpend: -5 } }, 'pt-BR')
-    expect(quote.totalBRL).toBe(2000)
+    const quote = computeUsdMonthlyQuote(['seo-content'], { 'paid-search': { monthlyAdSpend: -5 } }, 'pt-BR')
+    expect(quote.totalUSD).toBe(400)
   })
 
   it('accepts zero ad spend (minimum fee applies)', () => {
-    const quote = computeMonthlyQuote(['meta-ads'], { 'meta-ads': { monthlyAdSpend: 0 } }, 'pt-BR')
-    expect(quote.totalBRL).toBe(500)
+    const quote = computeUsdMonthlyQuote(['meta-ads'], { 'meta-ads': { monthlyAdSpend: 0 } }, 'pt-BR')
+    expect(quote.totalUSD).toBe(100)
   })
 
   it('throws PricingError instances with machine-readable codes', () => {
     try {
-      computeMonthlyQuote(['nope'], {}, 'pt-BR')
+      computeUsdMonthlyQuote(['nope'], {}, 'pt-BR')
       expect.unreachable('should have thrown')
     } catch (error) {
       expect(error).toBeInstanceOf(PricingError)
@@ -172,19 +178,19 @@ describe('computeMonthlyQuote — validation', () => {
   })
 })
 
-describe('authoritativeSubscriptionTotalBRL — checkout binding', () => {
+describe('authoritativeSubscriptionTotalUSD — checkout binding', () => {
   it('returns the exact monthly total for fixed-price packages', () => {
-    expect(authoritativeSubscriptionTotalBRL('seo-content')).toBe(2000)
-    expect(authoritativeSubscriptionTotalBRL('seo-content+backlinks')).toBe(5000)
-    expect(authoritativeSubscriptionTotalBRL('seo-content+backlinks+hosting')).toBe(5300)
+    expect(authoritativeSubscriptionTotalUSD('seo-content')).toBe(400)
+    expect(authoritativeSubscriptionTotalUSD('seo-content+backlinks')).toBe(1000)
+    expect(authoritativeSubscriptionTotalUSD('seo-content+backlinks+hosting')).toBe(1060)
   })
 
   it('returns the ad-spend floor for ads-spend packages', () => {
     // The recorded amount can be higher (fee tracks the customer's spend);
     // the floor is the minimum fee the server can ever create.
-    expect(authoritativeSubscriptionTotalBRL('paid-search')).toBe(500)
-    expect(authoritativeSubscriptionTotalBRL('meta-ads')).toBe(500)
-    expect(authoritativeSubscriptionTotalBRL('seo-content+paid-search')).toBe(2500)
+    expect(authoritativeSubscriptionTotalUSD('paid-search')).toBe(100)
+    expect(authoritativeSubscriptionTotalUSD('meta-ads')).toBe(100)
+    expect(authoritativeSubscriptionTotalUSD('seo-content+paid-search')).toBe(500)
   })
 
   it('rejects references this server never creates', () => {
@@ -197,7 +203,7 @@ describe('authoritativeSubscriptionTotalBRL — checkout binding', () => {
       'paid-search+seo-content', // out of catalog order
       'constructor', // inherited Object.prototype key
     ]) {
-      expect(authoritativeSubscriptionTotalBRL(reference)).toBeNull()
+      expect(authoritativeSubscriptionTotalUSD(reference)).toBeNull()
     }
   })
 })

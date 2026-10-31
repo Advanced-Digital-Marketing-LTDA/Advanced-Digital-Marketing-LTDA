@@ -3,7 +3,7 @@
  *
  * Double opt-in needs a link the visitor can click from their inbox; the link
  * carries a token that proves the submission was real and recent. This repo
- * has no local database (Mercado Pago / MailJet are the systems of record),
+ * has no local database (Stripe / MailJet are the systems of record),
  * so the token is self-contained: a versioned JSON payload (email, name,
  * locale, issued-at, expiry, optional subject) signed with an HMAC-SHA256
  * over the exact encoded payload bytes, using a server-only secret from the

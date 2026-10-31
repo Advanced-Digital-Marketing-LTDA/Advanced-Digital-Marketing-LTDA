@@ -32,12 +32,8 @@ container.
    ever unreliable, see the verify-then-trigger fallback below.
 4. **Environment variables** (Application → Environment Variables) — never
    baked into the image; `.env` is excluded via `.dockerignore`:
-   - `MERCADO_PAGO_ACCESS_TOKEN` (and `MERCADO_PAGO_SANDBOX_ACCESS_TOKEN` for
-     test mode), `MERCADO_PAGO_WEBHOOK_SECRET` (webhook signatures; the
-     hosted-checkout redirect flow needs no public key — see
-     docs/mercado-pago-subscriptions.md)
-   - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (en-US USD checkout — see
-     docs/stripe-checkout.md)
+   - `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (the USD checkout for the
+     English and Portuguese pages — see docs/stripe-checkout.md)
    - `MAILJET_API_KEY`, `MAILJET_API_SECRET`, `MAILJET_SENDER_EMAIL`,
      `MAILJET_SENDER_NAME`, `MAILJET_SANDBOX_MODE` (local/testing only — the
      server refuses to send in sandbox mode when `NODE_ENV=production`, so
@@ -53,7 +49,7 @@ container.
      Coolify's reverse proxy in front of the container). Without these, every
      visitor shares the proxy/container address and the per-IP rate limiter
      throttles the whole site after a few aggregate requests.
-   Full descriptions: `docs/mercado-pago-subscriptions.md`,
+   Full descriptions: `docs/stripe-checkout.md`,
    `docs/contact-form.md`, `.env.example`.
 5. **Healthcheck**: point Coolify's healthcheck at `GET /api/health` (returns
    `200 {"status":"ok"}`; no side effects, no secrets).
@@ -103,5 +99,5 @@ guarantee — implemented in `scripts/wait-for-coolify-deploy.mjs`:
   Bunny cache (manual `workflow_dispatch` on the workflow, or
   `node scripts/purge-bunny-cache.mjs` with the env above).
 - The container is stateless (in-memory rate-limit and verification maps
-  reset on restart); production data lives in third-party services (Mercado
-  Pago, MailJet), never in the container.
+  reset on restart); production data lives in third-party services (Stripe,
+  MailJet), never in the container.

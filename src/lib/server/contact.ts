@@ -10,7 +10,7 @@
  *      same inbox the site's mailto/WhatsApp channels used before.
  *
  * There is no local database: the token is the only state, and MailJet is the
- * mail system of record — matching how Mercado Pago owns all checkout state.
+ * mail system of record — matching how Stripe owns all checkout state.
  *
  * Failure philosophy (AGENTS.md): every misconfiguration fails loud on the
  * server log with a stable error code for the caller. The owner notification

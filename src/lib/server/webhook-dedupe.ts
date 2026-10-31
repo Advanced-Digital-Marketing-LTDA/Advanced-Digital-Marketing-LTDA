@@ -1,11 +1,10 @@
 /**
- * Shared bounded in-memory dedupe for webhook events (Mercado Pago + Stripe).
+ * Shared bounded in-memory dedupe for webhook events (Stripe).
  *
- * Both webhook receivers treat redeliveries the same way: an event that was
- * already processed within DEDUPE_TTL_MS is acknowledged without repeating the
- * side effect (the owner notification). One copy instead of one per webhook
- * implementation (AGENTS.md: DO create reusable code — the two modules also
- * had to stay in step on eviction and TTL).
+ * Redeliveries are acknowledged without repeating the side effect: an event
+ * that was already processed within DEDUPE_TTL_MS does not trigger the owner
+ * notification again. Kept as its own module (AGENTS.md: DO create reusable
+ * code) so any future webhook receiver shares the same eviction and TTL.
  */
 
 const processedEvents = new Map<string, number>()

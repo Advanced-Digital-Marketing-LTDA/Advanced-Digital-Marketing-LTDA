@@ -26,7 +26,7 @@ Owner is emailed the verified contact (name, email, subject, consent
     reaches the lead directly
 ```
 
-Design principle (same as Mercado Pago checkout):
+Design principle (same as the Stripe checkout):
 
 ```text
 Our website:   name + email + explicit opt-in

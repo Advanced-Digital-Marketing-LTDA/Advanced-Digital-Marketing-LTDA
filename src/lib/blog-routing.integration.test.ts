@@ -33,7 +33,7 @@ describe('blog language switching', () => {
   })
 
   it('preserves hidden checkout switching and unknown-route homepage destinations', () => {
-    state.url = new URL('/pt-br/checkout/complete/?preapproval_id=synthetic', 'https://example.test')
+    state.url = new URL('/pt-br/checkout/complete/?session_id=synthetic', 'https://example.test')
     expect(render(LanguageSwitcher).body).not.toContain('language-switcher')
     state.url = new URL('/unknown/', 'https://example.test')
     const { body } = render(LanguageSwitcher)

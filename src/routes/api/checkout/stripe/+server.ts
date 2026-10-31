@@ -1,17 +1,17 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import type { Locale } from '$lib/locale'
+import { LOCALES, type Locale } from '$lib/locale'
 import { PricingError } from '$lib/server/pricing'
 import { StripeError, computeUsdMonthlyQuote, createCheckoutSession } from '$lib/server/stripe'
 import { isValidEmail, stripeCheckoutUrls } from '$lib/server/checkout'
 import { parseJsonBody, resolveClientAddress, rateLimitOrError, upstreamErrorResponse } from '$lib/server/api-route'
 import { isWebsiteBuildKind, isWebsiteBuildType, websiteBuildExternalReference, websiteBuildPriceUSD, websiteBuildTitle } from '$lib/website-builds'
 
-// en-US (USD) checkout via Stripe Checkout. BRL flows stay on Mercado Pago
-// (/api/checkout/subscription, /api/checkout/build); this endpoint serves the
-// English pages and bills USD. All amounts are derived server-side from the
-// catalog at the 5:1 reference rate (or the explicit USD build prices) — a
-// browser-supplied amount is never accepted.
+// USD checkout via Stripe Checkout for both locales: the English and the
+// Portuguese pages post here and are billed in USD (the locale only picks the
+// line-item names and the success/cancel URLs). All amounts are derived
+// server-side from the catalog at the 5:1 reference rate (or the explicit USD
+// build prices) — a browser-supplied amount is never accepted.
 export const prerender = false
 export const trailingSlash = 'ignore'
 
@@ -23,11 +23,13 @@ type ValidPayload =
 
 type ValidationOutcome = { payload: ValidPayload } | { error: string }
 
+const isLocale = (value: unknown): value is Locale => (LOCALES as readonly unknown[]).includes(value)
+
 function validatePayload(body: Record<string, unknown>): ValidationOutcome {
-  // The en-US USD checkout must not silently serve pt-BR copy; any locale
-  // other than en-US is rejected loudly.
-  if (body.locale !== 'en-US') return { error: 'invalid_locale' }
-  const locale: Locale = body.locale
+  // Only the site's own locales are accepted; anything else is rejected
+  // loudly instead of silently falling back to one locale's copy and URLs.
+  if (!isLocale(body.locale)) return { error: 'invalid_locale' }
+  const locale = body.locale
   const idempotencyKey = typeof body.idempotencyKey === 'string' ? body.idempotencyKey.trim() : ''
   if (!UUID_V4_RE.test(idempotencyKey)) return { error: 'invalid_idempotency_key' }
 
@@ -116,7 +118,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     throw error
   }
 
-  const { successUrl, cancelUrl } = stripeCheckoutUrls()
+  const { successUrl, cancelUrl } = stripeCheckoutUrls(validated.payload.locale)
   try {
     const session = await createCheckoutSession({
       mode: validated.payload.flow === 'subscription' ? 'subscription' : 'payment',

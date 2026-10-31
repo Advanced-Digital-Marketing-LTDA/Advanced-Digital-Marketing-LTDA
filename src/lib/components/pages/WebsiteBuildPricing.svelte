@@ -6,20 +6,19 @@
    *  - build type: Website Development / Ecommerce Website Development
    *  - project kind: New website / Migration (migration costs 2×)
    *
-   * pt-BR: "Comprar site" starts a one-time Mercado Pago Checkout Pro payment
-   * for the selected build (server-priced in BRL). The monthly hosting
-   * subscription — maintenance + site changes — stays in the SubscribeSection
-   * right below, preselected as the recurring monthly charge.
-   * en-US: "Buy this website" starts a one-time Stripe Checkout payment
-   * (server-priced in USD; activated by STRIPE_SECRET_KEY — see
-   * docs/stripe-checkout.md).
+   * "Buy this website" (en-US) / "Comprar site" (pt-BR) starts a one-time
+   * Stripe Checkout payment for the selected build, server-priced in USD on
+   * both locales (activated by STRIPE_SECRET_KEY — see
+   * docs/stripe-checkout.md). The monthly hosting subscription — maintenance +
+   * site changes — stays in the SubscribeSection right below, preselected as
+   * the recurring monthly charge.
    */
   import {
     WEBSITE_BUILD_KINDS,
     WEBSITE_BUILD_NAMES,
     WEBSITE_BUILD_TYPES,
     formatBuildPrice,
-    websiteBuildPrice,
+    websiteBuildPriceUSD,
     type WebsiteBuildKind,
     type WebsiteBuildType,
   } from '$lib/website-builds'
@@ -60,8 +59,8 @@
       migrationNote: 'migração \u00B7 2\u00D7',
       buyCta: 'Comprar site',
       hostingNote: 'Depois de comprar o site, adicione a hospedagem como cobrança mensal abaixo — manutenção e alterações incluídas.',
-      submitting: 'Abrindo o Mercado Pago...',
-      genericError: 'Não foi possível iniciar o pagamento pelo Mercado Pago. Tente novamente.',
+      submitting: 'Abrindo o Stripe...',
+      genericError: 'Não foi possível iniciar o pagamento pelo Stripe. Tente novamente.',
       missingCredentials: 'O pagamento ainda não está configurado. Tente novamente mais tarde.',
       rateLimited: 'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
       invalidBuild: 'Seleção inválida. Atualize a página.',
@@ -71,12 +70,13 @@
   let text = $derived(copy[locale])
   let type = $state<WebsiteBuildType>('website')
   let kind = $state<WebsiteBuildKind>('new')
-  let price = $derived(websiteBuildPrice(locale, type, kind))
+  // Both locales are charged the USD build price, so both display it.
+  let price = $derived(websiteBuildPriceUSD(type, kind))
   let submitting = $state(false)
   let errorMessage = $state<string | undefined>(undefined)
   // One idempotency key per selected build (type:kind), reused across retries:
   // if the server created the checkout but the response was lost, retrying the
-  // SAME build must reuse the key so Stripe/MP dedupes instead of creating a
+  // SAME build must reuse the key so Stripe dedupes instead of creating a
   // second payable checkout. A new selection generates a new key.
   let idempotencyKey = $state<string | undefined>(undefined)
   let keySelection = $state('')
@@ -99,14 +99,13 @@
     errorMessage = undefined
     submitting = true
     try {
-      // pt-BR bills BRL through Mercado Pago; en-US bills USD through Stripe.
-      const endpoint = locale === 'en-US' ? '/api/checkout/stripe' : '/api/checkout/build'
       const selection = `${type}:${kind}`
       if (selection !== keySelection) {
         idempotencyKey = crypto.randomUUID()
         keySelection = selection
       }
-      const result = await fetchCheckoutUrl(endpoint, {
+      // Both locales bill USD through the same Stripe checkout.
+      const result = await fetchCheckoutUrl({
         flow: 'build',
         type,
         kind,
@@ -162,7 +161,7 @@
         </div>
       </div>
       <div class="sub-price build-price" aria-live="polite">
-        <b>{formatBuildPrice(locale, price)}</b>
+        <b>{formatBuildPrice('en-US', price)}</b>
         <small>{kind === 'migration' ? text.migrationNote : text.oneTime}</small>
       </div>
       <div class="build-cta">
