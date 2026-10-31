@@ -58,6 +58,12 @@ The chart uses the same scores as the table. The table is the exact lookup, whil
 
 ![Slop Log Scores for 21 agentic video repositories, October 30, 2026](/images/blog/agentic-video-benchmark.svg)
 
+## Stars vs. slop
+
+Stars measure hype, and the Slop Log Score measures backlog pressure. Plotting them together shows which projects are popular and still keep their backlog under control. The dotted Pareto line connects the repositories that no other repository beats on both counts. The shaded corner marks above-median stars with below-median slop. Stars run up the vertical axis on a log scale (stars + 1), and stars remain context rather than a score input.
+
+![Stars against Slop Log Score for 21 agentic video repositories, with a dotted Pareto line, October 30, 2026](/images/blog/agentic-video-pareto.svg)
+
 ## Project-by-project issue review
 
 The score is a screening signal, not a verdict on maintainers or users. The linked discussions below reflect the selected sample and do not establish the prevalence or present status of reported problems.

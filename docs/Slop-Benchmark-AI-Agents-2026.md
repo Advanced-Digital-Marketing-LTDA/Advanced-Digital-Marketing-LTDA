@@ -59,6 +59,12 @@ The chart shows the same October 30 Slop Log Scores as the table. The table is t
 
 ![Slop Log Scores for 24 AI agent repositories, October 30, 2026](/images/blog/slop-benchmark.svg)
 
+## Stars vs. slop
+
+Stars measure hype, and the Slop Log Score measures backlog pressure. Plotting them together shows which projects are popular and still keep their backlog under control. The dotted Pareto line connects the repositories that no other repository beats on both counts. The shaded corner marks above-average stars with below-average slop. Stars run up the vertical axis on a log scale (stars + 1), and stars remain context rather than a score input.
+
+![Stars against Slop Log Score for 24 AI agent repositories, with a dotted Pareto line, October 30, 2026](/images/blog/slop-pareto.svg)
+
 ## Project-by-project issue review
 
 The issue discussions below were reviewed October 27. They are a screening sample, not a verdict on maintainers or users; issue status and comments can change.

@@ -11,7 +11,7 @@
   let benchmark = $derived(isBenchmarkArticle(article.headings))
   let articleHtml = $derived.by(() => {
     const html = article.html.replace(
-      /<img src="(\/images\/blog\/(?:slop-benchmark|agentic-video-benchmark))\.svg"[^>]*>/g,
+      /<img src="(\/images\/blog\/(?:slop-benchmark|agentic-video-benchmark|slop-pareto|agentic-video-pareto))\.svg"[^>]*>/g,
       (image, stem: string) => `<picture><source media="(max-width: 700px)" srcset="${stem}-mobile.svg">${image}</picture>`,
     )
     return benchmark ? formatBenchmarkHtml(html) : html
@@ -137,6 +137,13 @@
     .blog-article__body :global(p:has(> picture > img[src="/images/blog/agentic-video-benchmark.svg"])) { overflow-x: auto; }
     .blog-article__body :global(img[src="/images/blog/slop-benchmark.svg"]),
     .blog-article__body :global(img[src="/images/blog/agentic-video-benchmark.svg"]) { width: 1120px; max-width: none; }
+  }
+  /* Stars vs. Slop charts: the wide version scrolls between 701 and 900px; the mobile version fits its column. */
+  @media (min-width: 701px) and (max-width: 900px) {
+    .blog-article__body :global(p:has(> picture > img[src="/images/blog/slop-pareto.svg"])),
+    .blog-article__body :global(p:has(> picture > img[src="/images/blog/agentic-video-pareto.svg"])) { overflow-x: auto; }
+    .blog-article__body :global(img[src="/images/blog/slop-pareto.svg"]),
+    .blog-article__body :global(img[src="/images/blog/agentic-video-pareto.svg"]) { width: 1120px; max-width: none; }
   }
 
   .article-layout { display: grid; grid-template-columns: minmax(12rem, 18rem) minmax(0, 820px); gap: 2rem; max-width: 1200px; margin: 0; padding: 0 1.5rem 0 max(1.5rem, calc(var(--rail-w) + 1rem)); }
