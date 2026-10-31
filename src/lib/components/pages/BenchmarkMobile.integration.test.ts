@@ -5,8 +5,8 @@ import BlogArticlePage from './BlogArticlePage.svelte'
 import { BLOG_ARTICLES } from '$lib/server/blog'
 
 const charts = [
-  { slug: 'slop-benchmark-ai-agents', stem: 'slop-benchmark', className: '.agent-benchmark', count: 24 },
-  { slug: 'agentic-video-benchmark', stem: 'agentic-video-benchmark', className: '.video-benchmark', count: 21 },
+  { slug: 'slop-benchmark-ai-agents', stem: 'slop-benchmark', pareto: 'slop-pareto', className: '.agent-benchmark', count: 24 },
+  { slug: 'agentic-video-benchmark', stem: 'agentic-video-benchmark', pareto: 'agentic-video-pareto', className: '.video-benchmark', count: 21 },
 ]
 
 function readAsset(stem: string): string {
@@ -58,6 +58,19 @@ describe('mobile benchmark presentation', () => {
         return owner ? `${owner.slice(0, -2)}/${mobileParts[index * 2 + 1]}` : mobileParts[index * 2 + 1]
       })
       expect(mobileNames).toEqual(desktopNames)
+    })
+
+    it(`serves ${chart.slug} Stars vs. Slop chart with a mobile version`, () => {
+      const article = BLOG_ARTICLES.find((item) => item.slug === chart.slug)
+      expect(article).toBeDefined()
+      const { body } = render(BlogArticlePage, { props: { article: article! } })
+      expect(body).toContain(`srcset="/images/blog/${chart.pareto}-mobile.svg"`)
+      expect(body).toContain(`src="/images/blog/${chart.pareto}.svg"`)
+      const desktopPoints = readAsset(chart.pareto).match(/<circle [^>]*r="6.5"/g)
+      const mobilePoints = readAsset(`${chart.pareto}-mobile`).match(/<circle [^>]*r="5"/g)
+      // Every repository is one plotted point; two more circles per version are legend keys.
+      expect(desktopPoints).toHaveLength(chart.count + 2)
+      expect(mobilePoints).toHaveLength(chart.count + 2)
     })
   }
 })
