@@ -16,6 +16,16 @@ describe('blog rendering', () => {
     }
   })
 
+  it('opens every external Markdown link in a new tab', () => {
+    for (const article of [PAPERCLIP_REVIEW_PT, ...BLOG_ARTICLES]) {
+      const anchors = article.html.match(/<a [^>]*href="https?:\/\/[^"]*"[^>]*>/g) ?? []
+      for (const anchor of anchors) {
+        expect(anchor).toContain('target="_blank"')
+        expect(anchor).toContain('rel="noopener noreferrer"')
+      }
+    }
+  })
+
   it('does not expose frontmatter or the internal publishing appendix', () => {
     for (const article of [PAPERCLIP_REVIEW_PT, ...BLOG_ARTICLES]) {
       expect(article.html).not.toContain('meta_description')

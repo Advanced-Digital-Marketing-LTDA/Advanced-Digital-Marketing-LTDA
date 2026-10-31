@@ -99,6 +99,13 @@ function createArticle(
     headings.push({ id, text })
     return `<h2 id="${id}">${html}</h2>\n`
   }
+  // External (http/https) links open in a new tab; internal links are untouched.
+  renderer.link = function ({ href, title, tokens }) {
+    const text = this.parser.parseInline(tokens)
+    const titleAttr = title ? ` title="${title.replaceAll('"', '&quot;')}"` : ''
+    const external = /^https?:\/\//i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : ''
+    return `<a href="${href}"${titleAttr}${external}>${text}</a>`
+  }
   const readingMinutes = Math.max(1, Math.ceil(content.trim().split(/\s+/).length / 200))
   const renderedArticle = marked.parse(content, { async: false, gfm: true, renderer })
   if (typeof renderedArticle !== 'string') throw new Error('Blog article rendering must be synchronous')
