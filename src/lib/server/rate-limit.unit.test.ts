@@ -12,8 +12,8 @@ const MAX_REQUESTS_PER_WINDOW = 10
 const MAX_BUCKETS = 10_000
 
 /** Key for a given endpoint/IP pair, mirroring production call sites. */
-const createKey = (ip: string) => rateLimitKey('subscriptionCreate', ip)
-const verifyKey = (ip: string) => rateLimitKey('subscriptionVerify', ip)
+const createKey = (ip: string) => rateLimitKey('stripeCreate', ip)
+const verifyKey = (ip: string) => rateLimitKey('stripeVerify', ip)
 
 beforeEach(() => {
   resetRateLimitBuckets()
@@ -21,8 +21,8 @@ beforeEach(() => {
 
 describe('rateLimitKey — per-endpoint bucket keys', () => {
   it('embeds the endpoint bucket and the client IP', () => {
-    expect(createKey('203.0.113.7')).toBe('subscription-create:203.0.113.7')
-    expect(verifyKey('203.0.113.7')).toBe('subscription-verify:203.0.113.7')
+    expect(createKey('203.0.113.7')).toBe('stripe-create:203.0.113.7')
+    expect(verifyKey('203.0.113.7')).toBe('stripe-verify:203.0.113.7')
   })
 
   it('gives distinct endpoints separate buckets for the same IP', () => {
@@ -31,7 +31,7 @@ describe('rateLimitKey — per-endpoint bucket keys', () => {
     }
     // The create bucket is exhausted, but verify traffic from the same client
     // is untouched — a redirected customer is never punished for their own
-    // checkout, and a verify flood cannot starve subscription creation.
+    // checkout, and a verify flood cannot starve checkout creation.
     expect(checkRateLimit(verifyKey('ip-a'), NOW).allowed).toBe(true)
     expect(checkRateLimit(createKey('ip-a'), NOW).allowed).toBe(false)
   })

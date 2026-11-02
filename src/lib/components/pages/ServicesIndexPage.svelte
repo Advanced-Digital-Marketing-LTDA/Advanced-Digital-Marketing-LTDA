@@ -32,7 +32,7 @@
     'pt-BR': {
       kicker: 'Serviços',
       heading: 'Todo canal, um padrão de trabalho.',
-      sub: 'Visibilidade em busca, mídia paga, web e automação com IA. Assine mensalmente a combinação que faz sentido para você, ou contrate por projeto — assinaturas mensais são cobradas com segurança pelo Mercado Pago.',
+      sub: 'Visibilidade em busca, mídia paga, web e automação com IA. Assine mensalmente a combinação que faz sentido para você, ou contrate por projeto — o Stripe cobra as assinaturas mensais com segurança.',
       perMonth: 'por mês',
       monthly: 'Assinatura mensal',
       quoteOnly: 'Sob consulta',

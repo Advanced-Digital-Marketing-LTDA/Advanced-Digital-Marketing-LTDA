@@ -1,17 +1,17 @@
 /**
  * Best-effort in-memory rate limiter for the public checkout entry points.
  *
- * The POST /api/checkout/subscription handler is unauthenticated and calls a
- * paid third-party API on every accepted request, so a scripted flood could
- * create unbounded Mercado Pago preapprovals. This limiter caps accepted
+ * The POST /api/checkout/stripe handler is unauthenticated and calls a
+ * third-party API on every accepted request, so a scripted flood could
+ * create unbounded Stripe Checkout Sessions. This limiter caps accepted
  * requests per bucket key inside a sliding window and rejects the rest with
  * HTTP 429.
  *
  * Keys are built by `rateLimitKey` from a named endpoint bucket and the client
  * IP: each entry point gets its own bucket, so traffic on one endpoint never
  * exhausts the budget that guards another (a customer redirected back from
- * Mercado Pago must not consume the budget that protects the paid
- * subscription-creation call, and vice versa).
+ * Stripe must not consume the budget that protects the checkout-creation
+ * call, and vice versa).
  *
  * LIMITATION (deliberate and documented): the Node server may be restarted —
  * each warm instance keeps its OWN in-memory bucket, so this is a
@@ -36,10 +36,6 @@ const buckets = new Map<string, number[]>()
  * per-IP window, keyed as `<bucket>:<ip>`.
  */
 export const RATE_LIMIT_BUCKETS = {
-  subscriptionCreate: 'subscription-create',
-  subscriptionVerify: 'subscription-verify',
-  buildCreate: 'build-create',
-  paymentVerify: 'payment-verify',
   contactSubmit: 'contact-submit',
   stripeCreate: 'stripe-create',
   stripeVerify: 'stripe-verify',

@@ -1,7 +1,7 @@
 /**
  * Guards the public-origin resolution contract (src/lib/server/site-url.ts):
  * only a real public HTTPS origin is ever used for verification links and
- * Mercado Pago back_urls; loopback/local/private values fall back to the
+ * Stripe success/cancel URLs; loopback/local/private values fall back to the
  * canonical SITE_ORIGIN with a loud server log — including fully qualified
  * hostnames with a terminal dot, which URL parsing preserves.
  */

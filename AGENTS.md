@@ -25,8 +25,8 @@ This is a SvelteKit 2 / Svelte 5 site using TypeScript, Vite, and Tailwind CSS.
 
 **Tech stack:** Node 24 / npm 11, SvelteKit 2 + Svelte 5 (runes), TypeScript (strict), Vite 6, Tailwind CSS 3 + PostCSS/autoprefixer. Fonts: Fontsource (Archivo, JetBrains Mono, Overpass). Tests: Vitest + fast-check, Stryker for mutation testing. Deployment: Docker + Coolify (adapter-node) behind Bunny CDN.
 
-- `src/routes/` — public pages in English (`en`) and Brazilian Portuguese (`pt-BR`): home, `about/`, `contact/`, the `services/` index + `services/[slug]/` details (and `pt-br/servicos/` variants), plus the `checkout/complete/` return pages (en Stripe + pt-BR Mercado Pago).
-- API routes run on the Node server: `api/checkout/subscription/`, `api/checkout/build/`, `api/checkout/stripe/`, `api/contact/submit/`, `api/webhooks/*`, `api/health/`.
+- `src/routes/` — public pages in English (`en`) and Brazilian Portuguese (`pt-BR`): home, `about/`, `contact/`, the `services/` index + `services/[slug]/` details (and `pt-br/servicos/` variants), plus the `checkout/complete/` return pages (en + pt-BR, both Stripe).
+- API routes run on the Node server: `api/checkout/stripe/` (both locales, USD), `api/contact/submit/`, `api/webhooks/*`, `api/health/`.
 - `src/lib/components/` contains reusable `chrome` (navigation and footer), `cyber` (visual effects), and `pages` components.
 - `src/lib/` contains locale logic, constants, client helpers, and tests.
 - `static/` contains public fonts and static assets; `src/lib/assets/` contains imported visual assets.
@@ -53,8 +53,7 @@ npm run mutate           # run configured Stryker mutation tests
 
 The public site requires no environment variables. Server-side secrets are
 read from the environment at runtime (never committed, never baked into the
-image — `.env` is dockerignored): Mercado Pago (`MERCADO_PAGO_ACCESS_TOKEN`,
-`MERCADO_PAGO_SANDBOX_ACCESS_TOKEN`, `MERCADO_PAGO_WEBHOOK_SECRET`), Stripe
+image — `.env` is dockerignored): Stripe
 (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`), MailJet
 (`MAILJET_API_KEY`, `MAILJET_API_SECRET`, `MAILJET_SENDER_EMAIL`), the contact
 form (`CONTACT_FORM_TOKEN_SECRET`, `CONTACT_FORM_OWNER_EMAIL`), and

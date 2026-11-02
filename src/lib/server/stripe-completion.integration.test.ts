@@ -1,10 +1,15 @@
 /**
- * Guards the en-US Stripe return page (src/routes/checkout/complete/+page.server.ts):
- * live session verification before any success claim, malformed-id rejection,
- * per-IP rate limiting, and truthful unconfirmed states.
+ * Guards both Stripe return pages — en-US (src/routes/checkout/complete/) and
+ * pt-BR (src/routes/pt-br/checkout/complete/), which share
+ * src/lib/server/stripe-completion.ts: live session verification before any
+ * success claim, malformed-id rejection, per-IP rate limiting, and truthful
+ * unconfirmed states. Every case runs against each route's own `load`, so the
+ * two locales cannot drift apart.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { load, type StripeCompletionState } from './+page.server'
+import type { StripeCompletionState } from './stripe-completion'
+import { load as englishLoad } from '../../routes/checkout/complete/+page.server'
+import { load as portugueseLoad } from '../../routes/pt-br/checkout/complete/+page.server'
 import { getCheckoutSession, StripeError } from '$lib/server/stripe'
 import { resetRateLimitBuckets } from '$lib/server/rate-limit'
 
@@ -15,12 +20,10 @@ vi.mock('$lib/server/stripe', async (importOriginal) => {
 
 const mockGetSession = vi.mocked(getCheckoutSession)
 
-const loadArgs = (query: string, ip = '203.0.113.9') => ({
-  url: new URL(`https://example.com/checkout/complete/${query}`),
-  request: new Request(`https://example.com/checkout/complete/${query}`),
-  getClientAddress: (): string => ip,
-  setHeaders: () => undefined,
-})
+const ROUTES = [
+  { locale: 'en-US', path: '/checkout/complete/', routeLoad: englishLoad },
+  { locale: 'pt-BR', path: '/pt-br/checkout/complete/', routeLoad: portugueseLoad },
+] as const
 
 const paidSession = {
   id: 'cs_test_1',
@@ -32,7 +35,15 @@ const paidSession = {
   clientReferenceId: 'seo-content+hosting',
 }
 
-describe('checkout/complete (Stripe) load', () => {
+describe.each(ROUTES)('$path (Stripe, $locale) load', ({ path, routeLoad }) => {
+  const loadArgs = (query: string, ip = '203.0.113.9') => ({
+    url: new URL(`https://example.com${path}${query}`),
+    request: new Request(`https://example.com${path}${query}`),
+    getClientAddress: (): string => ip,
+    setHeaders: () => undefined,
+  })
+  const load = (args: ReturnType<typeof loadArgs>) => routeLoad(args as never) as Promise<StripeCompletionState>
+
   beforeEach(() => {
     mockGetSession.mockReset()
     resetRateLimitBuckets()
@@ -41,13 +52,13 @@ describe('checkout/complete (Stripe) load', () => {
   afterEach(() => vi.unstubAllEnvs())
 
   it('reports missing when there is no session_id', async () => {
-    expect(await load(loadArgs('') as never)).toEqual({ state: 'missing' })
+    expect(await load(loadArgs(''))).toEqual({ state: 'missing' })
     expect(mockGetSession).not.toHaveBeenCalled()
   })
 
   it('confirms only a paid session and surfaces the verified amount', async () => {
     mockGetSession.mockResolvedValue(paidSession)
-    expect(await load(loadArgs('?session_id=cs_test_1') as never)).toEqual({
+    expect(await load(loadArgs('?session_id=cs_test_1'))).toEqual({
       state: 'confirmed',
       sessionId: 'cs_test_1',
       amountTotal: 460,
@@ -69,7 +80,7 @@ describe('checkout/complete (Stripe) load', () => {
     ]
     for (const patch of combos) {
       mockGetSession.mockResolvedValue({ ...paidSession, ...patch })
-      expect(await load(loadArgs('?session_id=cs_test_1') as never)).toEqual({
+      expect(await load(loadArgs('?session_id=cs_test_1'))).toEqual({
         state: 'confirmed',
         sessionId: 'cs_test_1',
         amountTotal: patch.amountTotal,
@@ -79,8 +90,8 @@ describe('checkout/complete (Stripe) load', () => {
   })
 
   it('never claims success for a paid session not bound to a server-created checkout', async () => {
-    // Same binding rule as the Mercado Pago flows: wrong client_reference_id,
-    // amount or currency must render the loud error state, never the success.
+    // Binding rule: a wrong client_reference_id, amount or currency must
+    // render the loud error state, never the success.
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     try {
       const mismatches = [
@@ -96,7 +107,7 @@ describe('checkout/complete (Stripe) load', () => {
       ]
       for (const patch of mismatches) {
         mockGetSession.mockResolvedValue({ ...paidSession, ...patch })
-        expect(await load(loadArgs('?session_id=cs_test_1') as never)).toEqual({ state: 'error' })
+        expect(await load(loadArgs('?session_id=cs_test_1'))).toEqual({ state: 'error' })
       }
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('does not match a server-created checkout'))
     } finally {
@@ -106,7 +117,7 @@ describe('checkout/complete (Stripe) load', () => {
 
   it('reports pending while the session is open', async () => {
     mockGetSession.mockResolvedValue({ ...paidSession, status: 'open', paymentStatus: 'unpaid' })
-    expect(await load(loadArgs('?session_id=cs_test_1') as never)).toEqual({
+    expect(await load(loadArgs('?session_id=cs_test_1'))).toEqual({
       state: 'payment_pending',
       sessionId: 'cs_test_1',
     })
@@ -128,7 +139,7 @@ describe('checkout/complete (Stripe) load', () => {
       ]
       for (const patch of mismatches) {
         mockGetSession.mockResolvedValue({ ...paidSession, status: 'open', paymentStatus: 'unpaid', ...patch })
-        expect(await load(loadArgs('?session_id=cs_test_1') as never)).toEqual({ state: 'error' })
+        expect(await load(loadArgs('?session_id=cs_test_1'))).toEqual({ state: 'error' })
       }
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('refusing pending claim'))
     } finally {
@@ -138,32 +149,41 @@ describe('checkout/complete (Stripe) load', () => {
 
   it('reports unconfirmed for a complete-but-unpaid session (never claims success)', async () => {
     mockGetSession.mockResolvedValue({ ...paidSession, status: 'complete', paymentStatus: 'unpaid' })
-    expect(await load(loadArgs('?session_id=cs_test_1') as never)).toEqual({
+    expect(await load(loadArgs('?session_id=cs_test_1'))).toEqual({
       state: 'payment_unconfirmed',
       sessionId: 'cs_test_1',
     })
   })
 
   it('rejects malformed session ids without touching the API', async () => {
-    expect(await load(loadArgs('?session_id=<script>') as never)).toEqual({ state: 'error' })
+    expect(await load(loadArgs('?session_id=<script>'))).toEqual({ state: 'error' })
     expect(mockGetSession).not.toHaveBeenCalled()
   })
 
   it('maps API failures to the error state loudly', async () => {
     mockGetSession.mockRejectedValue(new StripeError('api_error', 'boom'))
-    expect(await load(loadArgs('?session_id=cs_test_1') as never)).toEqual({ state: 'error' })
+    expect(await load(loadArgs('?session_id=cs_test_1'))).toEqual({ state: 'error' })
   })
 
   it('reports error when the session does not exist', async () => {
     mockGetSession.mockResolvedValue(undefined)
-    expect(await load(loadArgs('?session_id=cs_missing') as never)).toEqual({ state: 'error' })
+    expect(await load(loadArgs('?session_id=cs_missing'))).toEqual({ state: 'error' })
+  })
+
+  it('marks every result private and uncacheable for the CDN', async () => {
+    mockGetSession.mockResolvedValue(paidSession)
+    for (const query of ['', '?session_id=cs_test_1']) {
+      const headers: Record<string, string>[] = []
+      await routeLoad({ ...loadArgs(query), setHeaders: (value: Record<string, string>) => headers.push(value) } as never)
+      expect(headers).toEqual([{ 'Cache-Control': 'private, no-store' }])
+    }
   })
 
   it('rate-limits verification per client', async () => {
     mockGetSession.mockResolvedValue(paidSession)
     for (let i = 0; i < 10; i += 1) {
-      expect(((await load(loadArgs('?session_id=cs_test_1') as never)) as StripeCompletionState).state).toBe('confirmed')
+      expect((await load(loadArgs('?session_id=cs_test_1'))).state).toBe('confirmed')
     }
-    expect(await load(loadArgs('?session_id=cs_test_1') as never)).toEqual({ state: 'rate_limited' })
+    expect(await load(loadArgs('?session_id=cs_test_1'))).toEqual({ state: 'rate_limited' })
   })
 })

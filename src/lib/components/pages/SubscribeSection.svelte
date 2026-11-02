@@ -2,28 +2,23 @@
   /**
    * Mix-and-match monthly subscription configurator (spec §3).
    *
-   * pt-BR: full checkout flow — select services, enter ad spend (R$), email,
-   * and redirect to the Mercado Pago hosted subscription checkout (BRL).
-   * en-US: full checkout flow too — ad spend in US$, billed by Stripe
-   * Checkout in USD (activated by STRIPE_SECRET_KEY; see
-   * docs/stripe-checkout.md).
+   * Both locales run the same checkout flow — select services, enter ad spend
+   * (US$), email, and redirect to Stripe Checkout, billed in USD (activated by
+   * STRIPE_SECRET_KEY; see docs/stripe-checkout.md). Only the copy differs.
    *
    * The total shown here is a client-side mirror for display only. The server
    * independently recalculates every price; a manipulated browser total can
-   * never change what Mercado Pago bills.
+   * never change what Stripe bills.
    */
   import { untrack } from 'svelte'
   import {
     CATALOG_SERVICE_IDS,
     SERVICES,
-    adSpendFeeBRL,
     adSpendFeeUSD,
-    formatPrice,
     formatUSD,
     isSubscribable,
     type CatalogServiceId,
   } from '$lib/catalog'
-  import { parseBRLInput } from '$lib/brl'
   import { BRL_USD_REFERENCE_RATE } from '$lib/catalog'
   import { parseUSDInput } from '$lib/usd'
   import { fetchCheckoutUrl } from '$lib/client/checkout'
@@ -44,8 +39,8 @@
   let email = $state('')
   let submitting = $state(false)
   let errorMessage = $state<string | undefined>(undefined)
-  // Stable per checkout session: reused across retries so Mercado Pago's
-  // X-Idempotency-Key dedupes a double-submit or a retry after a network drop.
+  // Stable per checkout session: reused across retries so Stripe's
+  // Idempotency-Key dedupes a double-submit or a retry after a network drop.
   let idempotencyKey = $state<string | undefined>(undefined)
   let payloadFingerprint = $state('')
 
@@ -70,16 +65,16 @@
     'pt-BR': {
       kicker: 'Assine',
       heading: 'Monte seu pacote mensal.',
-      lead: 'Escolha os serviços, veja o total mensal na hora e pague pelo Mercado Pago. Os valores abaixo são os mesmos cobrados no checkout.',
-      adSpendLabel: 'Investimento mensal em anúncios (R$)',
-      adSpendHint: '10% do investimento, mínimo de R$ 500',
+      lead: 'Escolha os serviços e veja o total mensal na hora. Você paga pelo Stripe, em dólares americanos (USD).',
+      adSpendLabel: 'Investimento mensal em anúncios (US$)',
+      adSpendHint: '10% do investimento, mínimo de US$ 100',
       perMonth: '/mês',
       total: 'Total mensal',
       emailLabel: 'E-mail',
       emailPlaceholder: 'voce@empresa.com.br',
-      cta: 'Assinar com Mercado Pago',
-      submitting: 'Redirecionando para o Mercado Pago...',
-      secureNote: 'Você continuará no ambiente seguro do Mercado Pago para concluir o pagamento.',
+      cta: 'Assinar com Stripe',
+      submitting: 'Redirecionando para o Stripe...',
+      secureNote: 'Você conclui o pagamento no ambiente seguro do Stripe.',
       selectOne: 'Selecione ao menos um serviço.',
       invalidEmail: 'Informe um e-mail válido.',
       invalidSpend: 'Informe um valor de investimento mensal válido para os anúncios.',
@@ -112,12 +107,11 @@
     })
   })
 
-  /** Parses an ad-spend input with the locale's separator conventions — the
-   *  SAME parser must validate and price, or a valid USD entry like
-   *  "1,000.50" would fail validation while a BRL-shaped "1.000,50" would
+  /** Parses a US$ ad-spend input (both locales bill USD) — the SAME parser
+   *  must validate and price, so an entry the checkout would reject can never
    *  silently price as 0. */
   function parseSpend(value: string): number | undefined {
-    return locale === 'en-US' ? parseUSDInput(value) : parseBRLInput(value)
+    return parseUSDInput(value)
   }
 
   function spendOf(id: CatalogServiceId): number {
@@ -126,32 +120,22 @@
     return parseSpend(value) ?? 0
   }
 
-  function priceOf(id: CatalogServiceId): { amount: string } {
+  /** Monthly USD amount of one service — the checkout currency on every locale. */
+  function monthlyUSDOf(id: CatalogServiceId): number {
     const pricing = SERVICES[id].pricing
-    if (pricing.kind === 'fixed') {
-      // One currency per locale: BRL on pt-BR pages, USD on en-US pages.
-      return { amount: formatPrice(locale, pricing.monthlyBRL, pricing.monthlyUSD) }
-    }
-    // ads-spend services show their live fee (or the minimum) in the
-    // checkout currency: BRL fee on pt-BR, USD fee on en-US.
-    return locale === 'en-US'
-      ? { amount: formatUSD(adSpendFeeUSD(spendOf(id))) }
-      : { amount: formatPrice(locale, adSpendFeeBRL(spendOf(id))) }
+    if (pricing.kind === 'fixed') return pricing.monthlyUSD ?? pricing.monthlyBRL / BRL_USD_REFERENCE_RATE
+    // ads-spend services show their live fee (or the minimum).
+    return adSpendFeeUSD(spendOf(id))
   }
 
-  // Client-side display total in the checkout currency (BRL pt-BR / USD
-  // en-US). The server independently reprices everything; this is display only.
+  function priceOf(id: CatalogServiceId): { amount: string } {
+    return { amount: formatUSD(monthlyUSDOf(id)) }
+  }
+
+  // Client-side display total in the checkout currency (USD on every locale).
+  // The server independently reprices everything; this is display only.
   let totalAmount = $derived(
-    subscribable.reduce((sum, id) => {
-      if (!selected.has(id)) return sum
-      const pricing = SERVICES[id].pricing
-      if (pricing.kind === 'fixed') {
-        return locale === 'en-US'
-          ? sum + (pricing.monthlyUSD ?? pricing.monthlyBRL / BRL_USD_REFERENCE_RATE)
-          : sum + pricing.monthlyBRL
-      }
-      return locale === 'en-US' ? sum + adSpendFeeUSD(spendOf(id)) : sum + adSpendFeeBRL(spendOf(id))
-    }, 0),
+    subscribable.reduce((sum, id) => (selected.has(id) ? sum + monthlyUSDOf(id) : sum), 0),
   )
 
   function toggle(id: CatalogServiceId) {
@@ -170,7 +154,7 @@
 
   let genericError = $derived(
     locale === 'pt-BR'
-      ? 'Não foi possível iniciar o pagamento pelo Mercado Pago. Tente novamente.'
+      ? 'Não foi possível iniciar o pagamento pelo Stripe. Tente novamente.'
       : 'Could not start the Stripe payment. Please try again.',
   )
 
@@ -234,17 +218,16 @@
 
       // Regenerate the idempotency key whenever the checkout payload changes:
       // a retry after a lost response must not bind the customer to a stale
-      // package, while retrying the SAME payload reuses the key so Mercado
-      // Pago's X-Idempotency-Key dedupes it.
+      // package, while retrying the SAME payload reuses the key so Stripe's
+      // Idempotency-Key dedupes it.
       const fingerprint = `${email.trim()}|${serviceIds.join(',')}|${JSON.stringify(config)}`
       if (fingerprint !== payloadFingerprint) {
         idempotencyKey = crypto.randomUUID()
         payloadFingerprint = fingerprint
       }
 
-      // pt-BR bills BRL through Mercado Pago; en-US bills USD through Stripe.
-      const endpoint = locale === 'en-US' ? '/api/checkout/stripe' : '/api/checkout/subscription'
-      const result = await fetchCheckoutUrl(endpoint, {
+      // Both locales bill USD through the same Stripe checkout.
+      const result = await fetchCheckoutUrl({
         flow: 'subscription',
         email: email.trim(),
         serviceIds,
@@ -319,7 +302,7 @@
 
     <div class="sub-total" aria-live="polite" aria-atomic="true">
       <span>{text.total}</span>
-      <b>{locale === 'en-US' ? formatUSD(totalAmount) : formatPrice(locale, totalAmount)}<small>{text.perMonth}</small></b>
+      <b>{formatUSD(totalAmount)}<small>{text.perMonth}</small></b>
     </div>
 
     <form class="sub-checkout" onsubmit={(e) => { e.preventDefault(); submit() }}>
