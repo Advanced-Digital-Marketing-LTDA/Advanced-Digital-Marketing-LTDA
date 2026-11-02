@@ -16,9 +16,9 @@ The score snapshot was collected October 30, 2026, 17:27:15–17:29:31 UTC. The 
 >
 > **B = (open issues + open PRs) ÷ lifetime merged PRs**
 >
-> **C = (A + B) ÷ 2; Slop Log Score = log10(1 + C)**
+> **C = (A + B) ÷ 2 when there are releases; otherwise C = B. Slop Log Score = log10(1 + C)**
 
-When releases are absent but B exists, C is B/2: this intentionally halves B and can lower the result compared with averaging two available measures. When merged PRs are zero, B and the Slop Log Score are N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; A, B and C are displayed to two decimals and the Slop Log Score to four. Lower scores indicate less public backlog relative to these activity denominators, not proof of software quality or reliability. Release cadence, project age, issue type and contributor practices affect the result. Stars are not a score input.
+When releases are absent, C is B. When merged PRs are zero, B and the Slop Log Score are N/A even if A exists. N/A is not zero. Calculations use unrounded ratios; A, B and C are displayed to two decimals and the Slop Log Score to four. Lower scores indicate less public backlog relative to these activity denominators, not proof of software quality or reliability. Release cadence, project age, issue type and contributor practices affect the result. Stars are not a score input.
 
 For the qualitative check, I reviewed each project's three most-commented open issue threads updated since April 27, 2026, as of October 27. These are not necessarily the most-commented issues of all time. Comments are not independent affected users, and the examples are not a complete audit. An issue can be a bug report, a question, a feature request, or a tracker.
 
@@ -58,6 +58,12 @@ Higher values indicate more backlog relative to the activity measures in this sn
 The chart shows the same October 30 Slop Log Scores as the table. The table is the exact lookup, while the bars make the spread easier to see. On a narrow screen, the chart is arranged vertically for easier reading. You can also [open the full-size chart](/images/blog/slop-benchmark.svg).
 
 ![Slop Log Scores for 24 AI agent repositories, October 30, 2026](/images/blog/slop-benchmark.svg)
+
+## Stars vs. slop
+
+Stars measure hype, and the Slop Log Score measures backlog pressure. Plotting them together shows which projects are popular and still keep their backlog under control. The dotted Pareto line connects the repositories that no other repository beats on both counts. The green area marks above-median stars with below-median slop, and the amber area marks above-average stars with below-average slop; where they overlap, a repository clears both. Stars run up the vertical axis on a log scale (stars + 1), and stars remain context rather than a score input.
+
+![Stars against Slop Log Score for 24 AI agent repositories, with a dotted Pareto line, stars October 27 and scores October 30, 2026](/images/blog/slop-pareto.svg)
 
 ## Project-by-project issue review
 

@@ -128,8 +128,9 @@ describe('Portuguese technical SEO page', () => {
     expect(body).toContain('Planejamento de conteúdo e topicalidade')
     expect(body.match(/<details(?:\s[^>]*)?>/g)).toHaveLength(5)
     expect(body).toContain('href="/pt-br/contato/"')
-    expect(body).toContain('Assinar com Mercado Pago')
+    expect(body).toContain('Assinar com Stripe')
     expect(body).not.toContain('Subscribe with Stripe')
+    expect(body).not.toMatch(/mercado ?pago/i)
   })
 
   it('advertises the content checkout amount while preserving audit and separate backlink terms', () => {
@@ -157,11 +158,11 @@ describe('Portuguese technical SEO page', () => {
   })
 
   it.each([
-    { query: '?preselect=seo-content', names: ['Conteúdo SEO'], total: 'R$ 2.000,00' },
-    { query: '?preselect=backlinks', names: ['Backlinks'], total: 'R$ 3.000,00' },
-    { query: '', names: ['Conteúdo SEO', 'Backlinks'], total: 'R$ 5.000,00' },
-    { query: '?preselect=meta-ads', names: ['Conteúdo SEO', 'Backlinks'], total: 'R$ 5.000,00' },
-  ])('preserves selection and BRL total for $query', ({ query, names, total }) => {
+    { query: '?preselect=seo-content', names: ['Conteúdo SEO'], total: '$400.00' },
+    { query: '?preselect=backlinks', names: ['Backlinks'], total: '$600.00' },
+    { query: '', names: ['Conteúdo SEO', 'Backlinks'], total: '$1,000.00' },
+    { query: '?preselect=meta-ads', names: ['Conteúdo SEO', 'Backlinks'], total: '$1,000.00' },
+  ])('preserves selection and the USD checkout total for $query', ({ query, names, total }) => {
     const { body } = portugueseDocument(query)
     expect(selectedServices(body)).toEqual(names)
     expect(body).toContain('<span>Total mensal</span> <b>' + total + '<small>/mês</small>')

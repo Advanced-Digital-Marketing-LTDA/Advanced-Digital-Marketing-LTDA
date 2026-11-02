@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { isProcessed, markProcessed, resetWebhookDedupe } from './webhook-dedupe'
 
-// Replay behaviour through the real receivers lives in stripe-webhook.unit.test.ts
-// and mercadoPago-webhook.unit.test.ts; these cover the store's own window and bounds.
+// Replay behaviour through the real receiver lives in stripe-webhook.unit.test.ts;
+// these cover the store's own window and bounds.
 describe('webhook dedupe store', () => {
   beforeEach(() => resetWebhookDedupe())
   afterEach(() => {

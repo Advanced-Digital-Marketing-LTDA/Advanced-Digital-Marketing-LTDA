@@ -1,6 +1,6 @@
 /**
  * Public-site-origin resolution shared by every flow that must link back to
- * the deployed site (Mercado Pago back_urls, contact-form verification links).
+ * the deployed site (Stripe success/cancel URLs, contact-form verification links).
  *
  * The production hostname is never hard-coded: it comes from PUBLIC_SITE_URL,
  * falling back to the site's canonical origin constant. The fallback is loud

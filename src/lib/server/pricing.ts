@@ -4,15 +4,13 @@
  * The browser sends only selections and configuration; this module
  * independently recalculates every price from the server-side catalog. A
  * client-supplied total is never accepted — the trust boundary is:
- * browser picks services, server prices them, Mercado Pago bills them.
+ * browser picks services, server prices them, Stripe bills them.
  */
 import {
   ADS_SPEND_RULE,
   BRL_USD_REFERENCE_RATE,
   CATALOG_SERVICE_IDS,
   MAX_MONTHLY_AD_SPEND,
-  SERVICES,
-  adSpendFeeBRL,
   getService,
   isSubscribable,
   type CatalogService,
@@ -36,19 +34,6 @@ export class PricingError extends Error {
     this.name = 'PricingError'
     this.code = code
   }
-}
-
-export type LineItem = {
-  id: CatalogServiceId
-  name: string
-  monthlyBRL: number
-}
-
-export type PriceQuote = {
-  items: LineItem[]
-  totalBRL: number
-  reason: string
-  externalReference: string
 }
 
 /**
@@ -78,8 +63,9 @@ export function monthlyAdSpendOf(rawConfig: Record<string, unknown>, id: Catalog
 export type QuoteItem = { id: CatalogServiceId; name: string; amount: number }
 
 /**
- * Shared subscription-quote pipeline (single source of truth for the BRL and
- * USD quote paths — they must never drift apart): validates the selection,
+ * Shared subscription-quote pipeline (single source of truth for the quote
+ * validation and shape; `computeUsdMonthlyQuote` in stripe.ts supplies the
+ * USD amounts): validates the selection,
  * iterates the catalog in order (deduplicated), resolves each amount with
  * `resolveAmount`, enforces the zero-total guard, rounds to cents, and builds
  * the reason + deterministic externalReference.
@@ -141,59 +127,17 @@ export function buildQuote(
 }
 
 /**
- * Computes the authoritative monthly quote for the selected services.
+ * Validates a Stripe `client_reference_id` against the subscription catalog
+ * and returns the authoritative monthly USD total that a server-created
+ * subscription of that package carries: the sum of the fixed USD references
+ * (or the 5:1 BRL conversion) plus the US$ 100 minimum fee per ads service —
+ * a floor for ads-spend packages, since their fee tracks the customer's
+ * spend. Returns `null` for any reference this server never creates (unknown
+ * ids, quote-only services, duplicates, or ids out of catalog order —
+ * `buildQuote` always emits catalog-ordered, deduplicated references).
  *
- * `serviceIds` — array of catalog ids selected by the browser.
- * `config` — spec-shaped configuration, `{ [serviceId]: { monthlyAdSpend } }`
- *   for ads services. Anything else is ignored.
- * `locale` — used for the human-readable `reason` and item names.
- * `catalog` — injectable for tests (e.g. to simulate an inactive service).
- *
- * Throws `PricingError` with a machine-readable code on any invalid input.
- */
-export function computeMonthlyQuote(
-  serviceIds: unknown,
-  config: unknown,
-  locale: Locale,
-  catalog: Record<CatalogServiceId, CatalogService> = SERVICES,
-): PriceQuote {
-  const quote = buildQuote(serviceIds, config, locale, catalog, (id, service, rawConfig) => {
-    if (service.pricing.kind === 'fixed') return service.pricing.monthlyBRL
-    if (service.pricing.kind === 'ads-spend') return adSpendFeeBRL(monthlyAdSpendOf(rawConfig, id))
-    // quote-only services never reach this point (rejected in buildQuote).
-    throw new PricingError('quote_only_service', `Service is quote-only: ${id}`)
-  })
-  return {
-    items: quote.items.map((item) => ({ id: item.id, name: item.name, monthlyBRL: item.amount })),
-    totalBRL: quote.total,
-    reason: quote.reason,
-    externalReference: quote.externalReference,
-  }
-}
-
-/**
- * Validates a Mercado Pago preapproval `external_reference` against the
- * subscription catalog and returns the authoritative monthly total in BRL
- * that a server-created subscription of that package carries — the minimum
- * for ads-spend services (their recorded amount can be higher because the
- * fee tracks the customer's monthly spend). Returns `null` for any reference
- * this server never creates (unknown ids, quote-only services, duplicates,
- * or ids out of catalog order — `computeMonthlyQuote` always emits
- * catalog-ordered, deduplicated references).
- *
- * Used by the checkout-completion page to refuse success claims for
- * authorized preapprovals that are not bound to a checkout this site created.
- */
-export function authoritativeSubscriptionTotalBRL(reference: string): number | null {
-  return authoritativeSubscriptionTotal(reference, (_id, service) =>
-    service.pricing.kind === 'fixed' ? service.pricing.monthlyBRL : ADS_SPEND_RULE.minimumBRL,
-  )
-}
-
-/**
- * Same binding check for the en-US Stripe checkout: the reference must be a
- * valid catalog package and the floor is the sum of the fixed USD references
- * (or the 5:1 BRL conversion) plus the US$ 100 minimum fee per ads service.
+ * Used by the checkout-completion pages to refuse success claims for paid
+ * sessions that are not bound to a checkout this site created.
  */
 export function authoritativeSubscriptionTotalUSD(reference: string): number | null {
   return authoritativeSubscriptionTotal(reference, (_id, service) => {
@@ -209,7 +153,7 @@ export function authoritativeSubscriptionTotalUSD(reference: string): number | n
  * Shared reference validator: splits the external_reference, requires a
  * catalog-ordered, deduplicated, subscribable package, accumulates each
  * service's authoritative amount via `resolveAmount`, and rounds the total to
- * cent precision (the same money hygiene as `computeMonthlyQuote` — a float
+ * cent precision (the same money hygiene as `buildQuote` — a float
  * drift here could refuse a valid paid checkout).
  */
 function authoritativeSubscriptionTotal(

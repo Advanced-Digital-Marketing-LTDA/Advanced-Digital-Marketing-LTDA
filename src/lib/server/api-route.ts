@@ -1,14 +1,13 @@
 /**
  * Shared request-handling plumbing for the public POST API routes:
- * `/api/checkout/subscription`, `/api/checkout/build` and `/api/contact/submit`.
+ * `/api/checkout/stripe` and `/api/contact/submit`.
  *
- * The three endpoints follow the same trust-boundary shape — parse the JSON
- * body, validate it into a typed payload, resolve the client IP for per-IP
- * abuse protection, enforce the rate limit, then run the paid upstream call —
- * and previously duplicated this boilerplate in three places. Keeping the
- * shared steps here (single source of truth) means a fix to parsing, IP
- * resolution, rate limiting or upstream error mapping lands in exactly one
- * file, and the three routes stay behaviourally identical.
+ * The endpoints follow the same trust-boundary shape — parse the JSON body,
+ * validate it into a typed payload, resolve the client IP for per-IP abuse
+ * protection, enforce the rate limit, then run the paid upstream call.
+ * Keeping the shared steps here (single source of truth) means a fix to
+ * parsing, IP resolution, rate limiting or upstream error mapping lands in
+ * exactly one file, and the routes stay behaviourally identical.
  */
 import { json } from '@sveltejs/kit'
 import { ClientAddressError, clientIpAddress } from './client-ip.ts'

@@ -10,7 +10,7 @@
 
   // The checkout return page exists only in pt-BR — there is no counterpart
   // to switch to. Rendering the switcher there would drop the customer out of
-  // the payment-status flow and discard the preapproval_id query string.
+  // the payment-status flow and discard the session_id query string.
   let hidden = $derived(isCheckoutPath(page.url.pathname))
 </script>
 

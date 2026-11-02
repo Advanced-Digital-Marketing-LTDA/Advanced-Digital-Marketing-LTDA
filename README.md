@@ -27,10 +27,10 @@ npm run check
 npm run dev
 ```
 
-No environment variables are required for the public site. The subscription
-checkout needs Mercado Pago credentials (`MERCADO_PAGO_ACCESS_TOKEN`,
-optionally `MERCADO_PAGO_SANDBOX_ACCESS_TOKEN` and `PUBLIC_SITE_URL`) — see
-`docs/mercado-pago-subscriptions.md`.
+No environment variables are required for the public site. The checkout
+(English and Portuguese pages, billed in USD through Stripe) needs Stripe
+credentials (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and
+`PUBLIC_SITE_URL`) — see `docs/stripe-checkout.md`.
 
 ## Build
 
@@ -63,7 +63,7 @@ The supplied Andrew portrait (`src/lib/assets/andrew.png`) is committed with the
 
 ## Structure
 
-- `src/routes/` — home, `about/`, `contact/`, `services/` + `services/[slug]/` (and `pt-br/` variants), the `pt-br/checkout/complete/` return page, and the single API route `api/checkout/subscription`
+- `src/routes/` — home, `about/`, `contact/`, `services/` + `services/[slug]/` (and `pt-br/` variants), the `checkout/complete/` and `pt-br/checkout/complete/` Stripe return pages, and the API routes under `api/` (`checkout/stripe`, `contact/submit`, `webhooks/stripe`, `health`)
 - `src/lib/components/pages/` — Home, About, Contact, ServicesIndex, Service, SubscribeSection, WebsiteBuildPricing page components
 - `src/lib/components/cyber/` — boot blinds, CRT overlay, terminal typing, hover scramble, glitch word, scroll reveals
 - `src/lib/components/chrome/` — nav, footer, LocalizedHead, curtain, language suggestion
