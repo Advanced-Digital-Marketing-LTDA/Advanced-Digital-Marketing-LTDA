@@ -111,6 +111,11 @@ function isLinkSequence([lead, ...between]: string[]): boolean {
   return lead === '' && between.every((separator) => LINK_SEPARATORS.has(separator))
 }
 
+/** The project name of a scored heading, or undefined for any other heading. */
+function projectName(text: string): string | undefined {
+  return PROJECT_HEADING.exec(text)?.groups?.name
+}
+
 export type TocLink = { id: string; text: string }
 export type TocEntry = { kind: 'link'; link: TocLink } | { kind: 'projects'; links: TocLink[] }
 
@@ -121,7 +126,7 @@ export function groupContents(headings: TocLink[], benchmark: boolean): TocEntry
   const entries: TocEntry[] = []
   let group: TocLink[] | undefined
   for (const heading of headings) {
-    const name = PROJECT_HEADING.exec(heading.text)?.groups?.name
+    const name = projectName(heading.text)
     if (name === undefined) {
       group = undefined
       entries.push({ kind: 'link', link: heading })
