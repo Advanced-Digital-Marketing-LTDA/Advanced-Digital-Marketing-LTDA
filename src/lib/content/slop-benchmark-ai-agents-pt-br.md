@@ -16,9 +16,9 @@ O retrato das pontuações foi coletado em 30 de outubro de 2026, das 17:27:15 �
 >
 > **B = (issues abertas + PRs abertos) ÷ PRs mesclados desde o início do projeto**
 >
-> **C = (A + B) ÷ 2; Slop Log Score = log10(1 + C)**
+> **C = (A + B) ÷ 2 quando há releases; caso contrário, C = B. Slop Log Score = log10(1 + C)**
 
-Quando não há releases, mas B existe, C é B/2: isso reduz B pela metade de propósito e pode baixar o resultado em comparação com a média de duas medidas disponíveis. Quando o número de PRs mesclados é zero, B e o Slop Log Score ficam como N/A, mesmo que A exista. N/A não é zero. Os cálculos usam razões sem arredondamento; A, B e C aparecem com duas casas decimais, e o Slop Log Score, com quatro. Pontuações menores indicam menos backlog público em relação a esses denominadores de atividade, não uma prova de qualidade ou confiabilidade do software. O ritmo de releases, a idade do projeto, o tipo de issue e as práticas dos colaboradores afetam o resultado. As estrelas não entram no cálculo.
+Quando não há releases, C é igual a B. Quando o número de PRs mesclados é zero, B e o Slop Log Score ficam como N/A, mesmo que A exista. N/A não é zero. Os cálculos usam razões sem arredondamento; A, B e C aparecem com duas casas decimais, e o Slop Log Score, com quatro. Pontuações menores indicam menos backlog público em relação a esses denominadores de atividade, não uma prova de qualidade ou confiabilidade do software. O ritmo de releases, a idade do projeto, o tipo de issue e as práticas dos colaboradores afetam o resultado. As estrelas não entram no cálculo.
 
 Na verificação qualitativa, analisei as três threads de issues abertas mais comentadas de cada projeto, atualizadas desde 27 de abril de 2026, conforme a situação em 27 de outubro. Não são necessariamente as issues mais comentadas de todos os tempos. Comentários não equivalem a usuários afetados independentes, e os exemplos não formam uma auditoria completa. Uma issue pode ser um relato de bug, uma pergunta, uma solicitação de recurso ou uma issue de acompanhamento.
 
@@ -58,6 +58,12 @@ Valores mais altos indicam mais backlog em relação às medidas de atividade de
 O gráfico mostra os mesmos Slop Log Scores de 30 de outubro que aparecem na tabela. A tabela serve para a consulta exata, e as barras deixam a dispersão mais fácil de ver. Em telas estreitas, o gráfico fica na vertical para facilitar a leitura. Você também pode [abrir o gráfico em tamanho real](/images/blog/slop-benchmark.svg).
 
 ![Slop Log Scores de 24 repositórios de agentes de IA, 30 de outubro de 2026](/images/blog/slop-benchmark.svg)
+
+## Estrelas vs. slop
+
+As estrelas medem o hype, e o Slop Log Score mede a pressão do backlog. Com os dois no mesmo gráfico, dá para ver quais projetos são populares e ainda mantêm o backlog sob controle. A linha pontilhada de Pareto liga os repositórios que nenhum outro repositório supera nos dois critérios. A área verde marca estrelas acima da mediana com slop abaixo da mediana, e a área âmbar marca estrelas acima da média com slop abaixo da média; onde as duas se sobrepõem, o repositório passa nos dois critérios. As estrelas ficam no eixo vertical, em escala logarítmica (estrelas + 1), e continuam servindo de contexto, sem entrar no cálculo da pontuação.
+
+![Estrelas versus Slop Log Score de 24 repositórios de agentes de IA, com linha de Pareto pontilhada, estrelas de 27 de outubro e pontuações de 30 de outubro de 2026](/images/blog/slop-pareto.svg)
 
 ## Análise das issues, projeto por projeto
 
