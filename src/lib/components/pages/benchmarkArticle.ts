@@ -80,7 +80,7 @@ function formatProjectHeading(heading: string, id: string, text: string): string
     + `<span class="benchmark-project__score"><span class="benchmark-project__value">${match[2]}</span> Slop Log Score</span></h2>`
 }
 
-const LINK = /(<a href="[^"]+">[^<]+<\/a>)/
+const LINK = /(<a href="[^"]+"[^>]*>[^<]+<\/a>)/
 const LINK_SEPARATORS = new Set(['; ', ', ', ', and ', ' and '])
 
 /** Splits "<a>…</a>; <a>…</a>. Note" into list items, or keeps the paragraph
