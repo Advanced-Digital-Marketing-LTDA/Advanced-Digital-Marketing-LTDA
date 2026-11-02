@@ -5,7 +5,8 @@
  * Each transform fails loudly when the article no longer has the expected
  * shape, so a content change cannot silently ship the old broken layout.
  */
-const PROJECT_HEADING = /^(.+): (\d+\.\d{4}) Slop Log Score$/
+// English "Name: 0.9031 Slop Log Score" or Portuguese "Name: Slop Log Score de 0.9031".
+const PROJECT_HEADING = /^(?<name>.+): (?:(?<score>\d+\.\d{4}) Slop Log Score|Slop Log Score de (?<ptScore>\d+\.\d{4}))$/
 
 /** An article is a Slop Benchmark when its headings score projects. */
 export function isBenchmarkArticle(headings: TocLink[]): boolean {
@@ -18,11 +19,16 @@ export type BenchmarkCellRole = 'name' | 'score' | 'category' | 'stat' | 'meta'
  *  any other column is secondary 'meta'. */
 const CELL_ROLES = new Map<string, BenchmarkCellRole>([
   ['Project', 'name'],
+  ['Projeto', 'name'],
   ['Slop Log Score', 'score'],
   ['Category', 'category'],
+  ['Categoria', 'category'],
   ['Open issues', 'stat'],
+  ['Issues abertas', 'stat'],
   ['Open PRs', 'stat'],
+  ['PRs abertos', 'stat'],
   ['Merged PRs', 'stat'],
+  ['PRs mesclados', 'stat'],
   ['Releases', 'stat'],
 ])
 
@@ -36,7 +42,7 @@ function escapeAttribute(value: string): string {
 
 function formatTable(table: string): string {
   const headers = [...table.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/g)].map((match) => match[1].trim())
-  if (!headers.includes('Project') || !headers.includes('Slop Log Score')) {
+  if (!headers.some((header) => benchmarkCellRole(header) === 'name') || !headers.includes('Slop Log Score')) {
     throw new Error(`Benchmark table is missing its Project or Slop Log Score column: ${headers.join(', ')}`)
   }
   const tagged = table.replace(/<tr>([\s\S]*?)<\/tr>/g, (_row: string, cells: string) => `<tr>${tagRowCells(cells, headers)}</tr>`)
@@ -71,13 +77,16 @@ export function formatBenchmarkHtml(html: string): string {
   return formatted
 }
 
-/** Splits "Name: 0.9031 Slop Log Score" into a name and a score badge, keeping the text. */
+/** Splits a project heading into a name and a score badge, keeping the text and its word order. */
 function formatProjectHeading(heading: string, id: string, text: string): string {
-  const match = PROJECT_HEADING.exec(text)
-  if (!match) return heading
-  return `<h2 id="${id}" class="benchmark-project"><span class="benchmark-project__name">${match[1]}</span>`
+  const groups = PROJECT_HEADING.exec(text)?.groups
+  if (!groups) return heading
+  const score = groups.score === undefined
+    ? `Slop Log Score de <span class="benchmark-project__value">${groups.ptScore}</span>`
+    : `<span class="benchmark-project__value">${groups.score}</span> Slop Log Score`
+  return `<h2 id="${id}" class="benchmark-project"><span class="benchmark-project__name">${groups.name}</span>`
     + `<span class="benchmark-project__sep">: </span>`
-    + `<span class="benchmark-project__score"><span class="benchmark-project__value">${match[2]}</span> Slop Log Score</span></h2>`
+    + `<span class="benchmark-project__score">${score}</span></h2>`
 }
 
 const LINK = /(<a href="[^"]+"[^>]*>[^<]+<\/a>)/
@@ -112,8 +121,8 @@ export function groupContents(headings: TocLink[], benchmark: boolean): TocEntry
   const entries: TocEntry[] = []
   let group: TocLink[] | undefined
   for (const heading of headings) {
-    const match = PROJECT_HEADING.exec(heading.text)
-    if (!match) {
+    const name = PROJECT_HEADING.exec(heading.text)?.groups?.name
+    if (name === undefined) {
       group = undefined
       entries.push({ kind: 'link', link: heading })
       continue
@@ -122,7 +131,7 @@ export function groupContents(headings: TocLink[], benchmark: boolean): TocEntry
       group = []
       entries.push({ kind: 'projects', links: group })
     }
-    group.push({ id: heading.id, text: match[1] })
+    group.push({ id: heading.id, text: name })
   }
   if (!entries.some((entry) => entry.kind === 'projects')) throw new Error('Benchmark contents have no project headings')
   return entries
