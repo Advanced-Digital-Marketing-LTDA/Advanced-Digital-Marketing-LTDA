@@ -22,7 +22,7 @@ describe('Portuguese benchmark presentation', () => {
       expect(headings).toHaveLength(benchmark.count)
       for (const heading of headings) {
         expect(heading).toMatch(/<span class="benchmark-project__score">Slop Log Score de <span class="benchmark-project__value">\d+\.\d{4}<\/span><\/span>$/)
-        expect(heading.replace(/<[^>]+>/g, '')).toMatch(/^.+: Slop Log Score de \d+\.\d{4}$/)
+        expect(heading).toMatch(/^<span class="benchmark-project__name">[^<]+<\/span><span class="benchmark-project__sep">: <\/span>/)
       }
       expect(body).not.toMatch(/<p>[A-Z][^<:]{0,80}: <a href=/)
 
