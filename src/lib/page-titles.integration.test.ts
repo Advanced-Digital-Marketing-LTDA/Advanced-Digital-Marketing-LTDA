@@ -1,7 +1,7 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { createServer } from 'node:net'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { PAGE_META, LOCALE_ROUTES, SERVICES_INDEX_META, SERVICES_INDEX_ROUTES, SITE_ORIGIN, CHROME_COPY } from './locale'
+import { PAGE_META, LOCALE_ROUTES, SERVICES_INDEX_META, SERVICES_INDEX_ROUTES, SITE_ORIGIN, CHROME_COPY, TRANSLATED_BLOG_SLUGS } from './locale'
 import { SERVICE_META, SERVICE_ROUTES } from './services'
 import { BLOG_ARTICLES } from './server/blog'
 
@@ -117,7 +117,7 @@ function canonicalHref(head: string): string {
 }
 
 describe('rendered page titles', () => {
-  it.each(BLOG_ARTICLES.filter((article) => article.slug !== 'paperclip-review-coolify-codex').map((article) => `/blog/${article.slug}/`))(
+  it.each(BLOG_ARTICLES.filter((article) => !TRANSLATED_BLOG_SLUGS.includes(article.slug)).map((article) => `/blog/${article.slug}/`))(
     'keeps %s in English with its original canonical and no false alternate', async (path) => {
       const { response, html } = await page(`${path}?utm_source=synthetic`)
       const head = documentHead(html)
@@ -132,7 +132,7 @@ describe('rendered page titles', () => {
     }, 15_000,
   )
 
-  it.each(['/blog/', '/blog/paperclip-review-coolify-codex/'])('renders matching Portuguese alternate for %s', async (path) => {
+  it.each(['/blog/', ...TRANSLATED_BLOG_SLUGS.map((slug) => `/blog/${slug}/`)])('renders matching Portuguese alternate for %s', async (path) => {
     for (const localized of [path, `/pt-br${path}`]) {
       const { response, html } = await page(localized)
       const head = documentHead(html)

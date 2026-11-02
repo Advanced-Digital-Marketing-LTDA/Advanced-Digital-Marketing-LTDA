@@ -3,7 +3,7 @@
   import { SITE_ORIGIN, BLOG_INDEX_COPY, type Locale } from '$lib/locale'
   import { resolveCopy } from '$lib/localized-copy'
   let { articles, locale }: { articles: { slug: string; title: string; category?: string; description: string; published: string }[]; locale: Locale } = $props()
-  let copy = $derived(resolveCopy<{description:string;title:string;intro:string;review:string;read:string;guide:string;more:string}>(BLOG_INDEX_COPY, locale))
+  let copy = $derived(resolveCopy<{description:string;title:string;intro:string;review:string;read:string;guide:string;guideLabel:string;more:string}>(BLOG_INDEX_COPY, locale))
   let prefix = $derived(locale === 'pt-BR' ? '/pt-br' : '')
   $effect(() => { if (browser) document.documentElement.lang = locale })
 </script>
@@ -19,7 +19,7 @@
   <div class="blog-index-list">
     {#each articles as article (article.slug)}
       <a class="blog-card" href={`${prefix}/blog/${article.slug}/`}>
-        <div class="blog-card__meta"><span>{article.category === 'Guide' ? 'Guide' : copy.review}</span><time datetime={article.published}>{article.published}</time></div>
+        <div class="blog-card__meta"><span>{article.category === 'Guide' ? copy.guideLabel : copy.review}</span><time datetime={article.published}>{article.published}</time></div>
         <h2>{article.title}</h2><p>{article.description}</p><span class="blog-card__link">{article.category === 'Guide' ? copy.guide : copy.read} <span aria-hidden="true">→</span></span>
       </a>
     {/each}

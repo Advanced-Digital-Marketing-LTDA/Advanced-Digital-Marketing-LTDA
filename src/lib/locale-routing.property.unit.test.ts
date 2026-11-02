@@ -8,7 +8,7 @@ const sitemap = readFileSync(new URL('../../static/sitemap.xml', import.meta.url
 const sitemapPaths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1].slice(SITE_ORIGIN.length))
 
 // Untranslated articles: each one listed here must lose its entry when it gets a pt-BR version.
-const englishOnlyArticles = ['/blog/chatgpt-ads-complete-guide-august-2026/', '/blog/openclaw-review-coolify-codex/', '/blog/slop-benchmark-ai-agents/', '/blog/agentic-video-benchmark/']
+const englishOnlyArticles: string[] = []
 
 const otherLocale = (locale: Locale): Locale => LOCALES.find((candidate) => candidate !== locale)!
 
